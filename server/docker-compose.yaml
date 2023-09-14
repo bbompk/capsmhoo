@@ -1,0 +1,10 @@
+version: '1.0'
+services:
+
+ user-service:
+  container_name: user-service
+  build:
+    context: ./ 
+    dockerfile: ./cmd/user/Dockerfile
+  ports:
+   - "5001:8080"
