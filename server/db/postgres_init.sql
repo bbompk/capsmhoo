@@ -44,7 +44,7 @@ CREATE TABLE students (
     team_id VARCHAR(255) REFERENCES teams(id)
 );
 
-CREATE TABLE project (
+CREATE TABLE projects (
     project_id VARCHAR(255) PRIMARY KEY,
     team_id VARCHAR(255) REFERENCES teams(id),
     professor_id VARCHAR(255) REFERENCES users(id),
