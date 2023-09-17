@@ -1,10 +1,43 @@
 version: '1.0'
 services:
+  # postgresql db
+  postgres:
+    build:
+      context: ./
+      dockerfile: ./dockerfiles/db.Dockerfile
+    container_name: capsmhoo-postgres
+    restart: always
+    environment:
+      POSTGRES_ROOT_PASSWORD: ${POSTGRES_ROOT_PASSWORD}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_vol:/var/lib/postgresql/data
+    expose:
+      - 5432
+    ports:
+      - "5432:5432"
+    networks:
+      - capsmhoo-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready --username=${POSTGRES_USER} --dbname=${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  # user service
+  user-service:
+    container_name: user-service
+    build:
+      context: ./ 
+      dockerfile: ./dockerfiles/user-service.Dockerfile
+    ports:
+      - "5001:8080"
+    networks:
+      - capsmhoo-net
 
- user-service:
-  container_name: user-service
-  build:
-    context: ./ 
-    dockerfile: ./cmd/user/Dockerfile
-  ports:
-   - "5001:8080"
+networks:
+  capsmhoo-net: {}
+
+volumes:
+  postgres_vol:
