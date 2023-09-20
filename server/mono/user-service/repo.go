@@ -1,24 +1,96 @@
 package user
 
+import (
+	"errors"
+
+	"github.com/google/uuid"
+	"gorm.io/gorm"
+)
+
 // Define Dependencies
 type Repository struct {
 	// should have a database connection here
+	// users []User // Simulating a user database
+	db *gorm.DB
 }
 
 // Define what this will do
 type UserRepository interface {
-	GetUser() User
+	// GetUser() User
+	GetUsers() []User
+	GetUserByID(id string) (*User, error)
+	CreateUser(user User) (*User, error)
+	UpdateUserByID(id string, user User) (*User, error)
+	DeleteUserByID(id string) error
 }
 
-func (r *Repository) GetUser() User {
-	return User{
-		ID:       "1",
-		Email:    "email@example.com",
-		Password: "password",
+func (r *Repository) GetUsers() []User {
+	// return r.users
+
+	var users []User
+	r.db.Find(&users)
+	return users
+}
+
+func (r *Repository) GetUserByID(id string) (*User, error) {
+	// for _, user := range r.users {
+	// 	if user.ID == id {
+	// 		return &user, nil
+	// 	}
+	// }
+	// return nil, errors.New("User not found")
+	var user User
+	if err := r.db.Where("id = ?", id).First(&user).Error; err != nil {
+		return nil, errors.New("User not found")
 	}
+	return &user, nil
+}
+
+func (r *Repository) CreateUser(user User) (*User, error) {
+	// Assign a unique ID to the new user (you may use a UUID generator)
+	id := uuid.New()
+	user.ID = id.String() // Replace with your logic
+
+	if err := r.db.Create(&user).Error; err != nil {
+		return nil, err
+	}
+	return &user, nil
+	// r.users = append(r.users, user)
+	// return &user, nil
+}
+
+func (r *Repository) UpdateUserByID(id string, user User) (*User, error) {
+	if err := r.db.Where("id = ?", id).Save(&user).Error; err != nil {
+		return nil, errors.New("User not found")
+	}
+	return &user, nil
+	// for i, u := range r.users {
+	// 	if u.ID == id {
+	// 		user.ID = id
+	// 		r.users[i] = user
+	// 		return &user, nil
+	// 	}
+	// }
+	// return nil, errors.New("User not found")
+}
+
+func (r *Repository) DeleteUserByID(id string) error {
+
+	if err := r.db.Where("id = ?", id).Delete(User{}).Error; err != nil {
+		return errors.New("User not found")
+	}
+	return nil
+	// for i, user := range r.users {
+	// 	if user.ID == id {
+	// 		// Remove the user from the slice
+	// 		r.users = append(r.users[:i], r.users[i+1:]...)
+	// 		return nil
+	// 	}
+	// }
+	// return errors.New("User not found")
 }
 
 // Dependency Injection
-func ProvideRepository() *Repository {
-	return &Repository{}
+func ProvideRepository(db *gorm.DB) *Repository {
+	return &Repository{db: db}
 }
