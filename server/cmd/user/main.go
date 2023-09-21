@@ -28,11 +28,23 @@ func main() {
 
 	// Dependency Injection
 	repo := user.ProvideRepository(db)
-	handler := user.ProvideHandler(repo)
+	handler := user.ProvideUserHandler(repo)
 
-	// Init http endpoint routes
-	user.ProvideRouter(r, handler)
+	studentdb, studenterr := initDatabase()
+	if studenterr != nil {
+		panic("Can't connect to Database")
+	}
+	studentrepo := user.ProvideStudentRepository(studentdb)
+	studenthandler := user.ProvideStudentHandler(studentrepo, repo)
 
+	professordb, professorerr := initDatabase()
+	if professorerr != nil {
+		panic("Can't connect to Database")
+	}
+	professorrepo := user.ProvideProfessorRepository(professordb)
+	professorhandler := user.ProvideProfessorHandler(professorrepo, repo)
+
+	user.ProvideRouter(r, handler, studenthandler, professorhandler)
 	r.Run(":" + viper.GetString("user-service.port"))
 }
 

@@ -7,7 +7,7 @@ import (
 )
 
 // Define Dependencies
-type Handler struct {
+type UserHandler struct {
 	repo UserRepository
 }
 
@@ -18,9 +18,10 @@ type UserHttpHandler interface {
 	CreateUser(c *gin.Context)
 	UpdateUserByID(c *gin.Context)
 	DeleteUserByID(c *gin.Context)
+	DeleteAll(c *gin.Context)
 }
 
-func (h *Handler) GetUser(c *gin.Context) {
+func (h *UserHandler) GetUser(c *gin.Context) {
 	user := h.repo.GetUsers()
 
 	c.JSON(200, common.HttpResponse{
@@ -28,7 +29,7 @@ func (h *Handler) GetUser(c *gin.Context) {
 		Data: user,
 	})
 }
-func (h *Handler) GetUserByID(c *gin.Context) {
+func (h *UserHandler) GetUserByID(c *gin.Context) {
 	id := c.Param("id")
 	user, err := h.repo.GetUserByID(id)
 	if err != nil {
@@ -44,7 +45,7 @@ func (h *Handler) GetUserByID(c *gin.Context) {
 		Data: user,
 	})
 }
-func (h *Handler) CreateUser(c *gin.Context) {
+func (h *UserHandler) CreateUser(c *gin.Context) {
 	var user User
 	if err := c.ShouldBindJSON(&user); err != nil {
 		c.JSON(200, common.HttpResponse{
@@ -70,7 +71,7 @@ func (h *Handler) CreateUser(c *gin.Context) {
 		Data: createdUser,
 	})
 }
-func (h *Handler) UpdateUserByID(c *gin.Context) {
+func (h *UserHandler) UpdateUserByID(c *gin.Context) {
 	id := c.Param("id")
 	var user User
 	if err := c.ShouldBindJSON(&user); err != nil {
@@ -95,7 +96,7 @@ func (h *Handler) UpdateUserByID(c *gin.Context) {
 		Data: updatedUser,
 	})
 }
-func (h *Handler) DeleteUserByID(c *gin.Context) {
+func (h *UserHandler) DeleteUserByID(c *gin.Context) {
 	id := c.Param("id")
 	err := h.repo.DeleteUserByID(id)
 	if err != nil {
@@ -111,10 +112,17 @@ func (h *Handler) DeleteUserByID(c *gin.Context) {
 		Data: "",
 	})
 }
+func (h *UserHandler) DeleteAll(c *gin.Context) {
+	h.repo.DeleteAll()
+	c.JSON(200, common.HttpResponse{
+		Code: "200",
+		Data: "",
+	})
+}
 
 // Dependency Injection
-func ProvideHandler(repo UserRepository) *Handler {
-	return &Handler{
+func ProvideUserHandler(repo UserRepository) *UserHandler {
+	return &UserHandler{
 		repo: repo,
 	}
 }

@@ -22,13 +22,14 @@ type UserRepository interface {
 	CreateUser(user User) (*User, error)
 	UpdateUserByID(id string, user User) (*User, error)
 	DeleteUserByID(id string) error
+	DeleteAll() error
 }
 
 func (r *Repository) GetUsers() []User {
 	// return r.users
 
 	var users []User
-	r.db.Find(&users)
+	r.db.Table("users").Find(&users)
 	return users
 }
 
@@ -40,7 +41,7 @@ func (r *Repository) GetUserByID(id string) (*User, error) {
 	// }
 	// return nil, errors.New("User not found")
 	var user User
-	if err := r.db.Where("id = ?", id).First(&user).Error; err != nil {
+	if err := r.db.Table("users").Where("id = ?", id).First(&user).Error; err != nil {
 		return nil, errors.New("User not found")
 	}
 	return &user, nil
@@ -51,7 +52,7 @@ func (r *Repository) CreateUser(user User) (*User, error) {
 	id := uuid.New()
 	user.ID = id.String() // Replace with your logic
 
-	if err := r.db.Create(&user).Error; err != nil {
+	if err := r.db.Table("users").Create(&user).Error; err != nil {
 		return nil, err
 	}
 	return &user, nil
@@ -60,7 +61,8 @@ func (r *Repository) CreateUser(user User) (*User, error) {
 }
 
 func (r *Repository) UpdateUserByID(id string, user User) (*User, error) {
-	if err := r.db.Where("id = ?", id).Save(&user).Error; err != nil {
+	user.ID = id
+	if err := r.db.Table("users").Where("id = ?", id).Updates(&user).Error; err != nil {
 		return nil, errors.New("User not found")
 	}
 	return &user, nil
@@ -76,7 +78,7 @@ func (r *Repository) UpdateUserByID(id string, user User) (*User, error) {
 
 func (r *Repository) DeleteUserByID(id string) error {
 
-	if err := r.db.Where("id = ?", id).Delete(User{}).Error; err != nil {
+	if err := r.db.Table("users").Where("id = ?", id).Delete(User{}).Error; err != nil {
 		return errors.New("User not found")
 	}
 	return nil
@@ -88,6 +90,15 @@ func (r *Repository) DeleteUserByID(id string) error {
 	// 	}
 	// }
 	// return errors.New("User not found")
+}
+func (r *Repository) DeleteAll() error {
+
+	if err := r.db.Table("users").Where("id > ''").Delete(&User{}).Error; err != nil {
+		// Handle database error.
+		return err
+	}
+	// User was deleted successfully.
+	return nil
 }
 
 // Dependency Injection
