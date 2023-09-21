@@ -119,8 +119,26 @@ func (h *StudentHandler) UpdateStudentByID(c *gin.Context) {
 }
 func (h *StudentHandler) DeleteStudentByID(c *gin.Context) {
 	id := c.Param("id")
-	err := h.repo.DeleteStudentByID(id)
+	student, err := h.repo.GetStudentByID(id)
 	if err != nil {
+		c.JSON(200, common.HttpResponse{
+			Code: "400",
+			// Data: {},
+			Error: err.Error(),
+		})
+		return
+	}
+	errrr := h.repo.DeleteStudentByID(id)
+	if errrr != nil {
+		c.JSON(200, common.HttpResponse{
+			Code: "400",
+			// Data: {},
+			Error: err.Error(),
+		})
+		return
+	}
+	errr := h.userrepo.DeleteUserByID(student.UserID)
+	if errr != nil {
 		c.JSON(200, common.HttpResponse{
 			Code: "400",
 			// Data: {},
