@@ -120,8 +120,26 @@ func (h *ProfessorHandler) UpdateProfessorByID(c *gin.Context) {
 }
 func (h *ProfessorHandler) DeleteProfessorByID(c *gin.Context) {
 	id := c.Param("id")
-	err := h.repo.DeleteProfessorByID(id)
+	professor, err := h.repo.GetProfessorByID(id)
 	if err != nil {
+		c.JSON(200, common.HttpResponse{
+			Code: "400",
+			// Data: {},
+			Error: err.Error(),
+		})
+		return
+	}
+	errrr := h.repo.DeleteProfessorByID(id)
+	if errrr != nil {
+		c.JSON(200, common.HttpResponse{
+			Code: "400",
+			// Data: {},
+			Error: err.Error(),
+		})
+		return
+	}
+	errr := h.userrepo.DeleteUserByID(professor.UserID)
+	if errr != nil {
 		c.JSON(200, common.HttpResponse{
 			Code: "400",
 			// Data: {},

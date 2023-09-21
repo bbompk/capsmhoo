@@ -93,7 +93,7 @@ func (r *Repository) DeleteUserByID(id string) error {
 }
 func (r *Repository) DeleteAll() error {
 
-	if err := r.db.Table("users").Where("id > ''").Delete(&User{}).Error; err != nil {
+	if err := r.db.Table("users").Where("id >= ''").Delete(&User{}).Error; err != nil {
 		// Handle database error.
 		return err
 	}
