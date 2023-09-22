@@ -1,13 +1,15 @@
 syntax ="proto3";
 
+option go_package = "capsmhoo/server/proto";
+
 service TeamService {
-    rpc GetAllTeams() returns (TeamList);
+    rpc GetAllTeams(Empty) returns (TeamList);
     rpc GetTeamById(TeamId) returns (Team);
     rpc CreateTeam(Team) returns (Team);
     rpc UpdateTeam(Team) returns (Team);
     rpc DeleteTeam(TeamId) returns (Team);
-    rpc AddStudentToTeam(TeamId, StudentId) returns (Empty);
-    rpc RemoveStudentFromTeam(TeamId, StudentId) returns (Empty);
+    rpc AddStudentToTeam(TeamAndStudentID) returns (Empty);
+    rpc RemoveStudentFromTeam(TeamAndStudentID) returns (Empty);
 }
 
 message Empty {}
@@ -28,5 +30,10 @@ message StudentId {
 
 message TeamId {
     string id = 1;
+}
+
+message TeamAndStudentID {
+    string teamId = 1;
+    string studentId = 2;
 }
 
