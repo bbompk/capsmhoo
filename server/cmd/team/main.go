@@ -1,15 +1,20 @@
 package main
 
 import (
+	"context"
+	"errors"
+	"flag"
 	"fmt"
+	"log"
+	"net"
 	"os"
 	"os/signal"
 	"syscall"
-	"flag"
 
-	"capsmhoo/mono/team-service"
 	//"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/spf13/viper"
+	"google.golang.org/grpc"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -17,12 +22,15 @@ import (
 	pb "capsmhoo/proto"
 )
 
+var db *gorm.DB
+
 func main() {
 	defer gracefulShutdown()
 
 	initConfig()
 
-	db, err := initDatabase()
+	var err error
+	db, err = initDatabase()
 
 	if err != nil {
 		panic("Can't connect to Database")
@@ -52,6 +60,12 @@ func initConfig() {
 	if err != nil {
 		panic(fmt.Errorf("fatal error config file: %s", err))
 	}
+}
+
+type Team struct {
+	Id      string `json:"id"`
+	Name    string `json:"title"`
+	Profile string `json:"profile"`
 }
 
 func initDatabase() (*gorm.DB, error) {
@@ -89,36 +103,40 @@ var (
 
 type teamServer struct {
 	// Implements the generated TeamServer interface
-	pb.UnimplementedRouteGuideServer
+	pb.UnimplementedTeamServiceServer
 }
 
-func (s *teamServer) GetAllTeams(ctx context.Context, empty *pb.Enpty) (*pb.TeamList, error) {
+func (s *teamServer) mustEmbedUnimplementedTeamServiceServer() {}
+
+func (s *teamServer) GetAllTeams(ctx context.Context, empty *pb.Empty) (*pb.TeamList, error) {
 	fmt.Println("Get Teams")
 	teams := []*pb.Team{}
 	res := db.Find(&teams)
 	if res.RowsAffected == 0 {
-       	return nil, errors.New("Team not found")
-   	}
-   	return teams, nil
+		return nil, errors.New("Team not found")
+	}
+	return &pb.TeamList{
+		Teams: teams,
+	}, nil
 }
 
 func (s *teamServer) GetTeamById(ctx context.Context, teamId *pb.TeamId) (*pb.Team, error) {
 	fmt.Println("Get Team By ID")
-   	var team Team
-   	res := db.Find(&team, "id = ?", teamId)
-   	if res.RowsAffected == 0 {
-       return nil, errors.New("Team not found")
+	var team pb.Team
+	res := db.Find(&team, "id = ?", teamId)
+	if res.RowsAffected == 0 {
+		return nil, errors.New("Team not found")
 	}
-	return team, nil
+	return &team, nil
 }
 
 func (s *teamServer) CreateTeam(ctx context.Context, team *pb.Team) (*pb.Team, error) {
 	fmt.Println("Create Team")
- 
-	data := Team {
-       ID:		uuid.New().String(),
-       Name:	team.name,
-       Profile:	team.profile,
+
+	data := pb.Team{
+		Id:      uuid.New().String(),
+		Name:    team.Name,
+		Profile: team.Profile,
 	}
 
 	res := db.Create(&data)
@@ -126,41 +144,39 @@ func (s *teamServer) CreateTeam(ctx context.Context, team *pb.Team) (*pb.Team, e
 		return nil, errors.New("team creation unsuccessful")
 	}
 
-	return data, nil
+	return &data, nil
 }
 
 func (s *teamServer) UpdateTeam(ctx context.Context, team *pb.Team) (*pb.Team, error) {
 	fmt.Println("Update Team")
-	
-	res := db.Model(&team).Where("id=?", team.id).Updates(Team{Title: team.Name, Profile: team.Profile})
- 
+
+	res := db.Model(&team).Where("id=?", team.Id).Updates(Team{Name: team.Name, Profile: team.Profile})
+
 	if res.RowsAffected == 0 {
-       	return nil, errors.New("team not found")
-   	}
- 
-	return &pb.Team{
-       	Team: &pb.Team{
-			ID:			team.id,
-			Name:		team.name,
-			Profile:	team.profile,
-       },
-   }, nil
+		return nil, errors.New("team not found")
+	}
+
+	return team, nil
 }
 
 func (s *teamServer) DeleteTeam(ctx context.Context, teamId *pb.TeamId) (*pb.Team, error) {
 	fmt.Println("Delete Team")
-   	var team Team
-   	res := db.Where("id = ?", teamId.id).Delete(&team)
-   	if res.RowsAffected == 0 {
-       	return nil, errors.New("Team not found")
-   	}
- 
-   	return team, nil
+	var team pb.Team
+	res := db.Where("id = ?", teamId.Id).Delete(&team)
+	if res.RowsAffected == 0 {
+		return nil, errors.New("Team not found")
+	}
+
+	return &team, nil
 }
 
-//func (s *teamServer) AddStudentToTeam(ctx context.Context, teamAndStudentID *pb.TeamAndStudentID) (*pb.Error, error) {}
+func (s *teamServer) AddStudentToTeam(ctx context.Context, teamAndStudentID *pb.TeamAndStudentID) (*pb.Empty, error) {
+	return nil, nil
+}
 
-//func (s *teamServer) RemoveStudentFromTeam(ctx context.Context, teamAndStudentID *pb.TeamAndStudentID) (*pb.Error, error) {}
+func (s *teamServer) RemoveStudentFromTeam(ctx context.Context, teamAndStudentID *pb.TeamAndStudentID) (*pb.Empty, error) {
+	return nil, nil
+}
 
 func startServer() {
 	fmt.Println("gRPC server running ...")
@@ -172,11 +188,11 @@ func startServer() {
 
 	s := grpc.NewServer()
 
-	pb.RegisterTeamServiceServer(grpcServer, &server{})
+	pb.RegisterTeamServiceServer(s, &teamServer{})
 	log.Printf("Server listening at %v", lis.Addr())
- 
-   	if err := s.Serve(lis); err != nil {
-       	log.Fatalf("failed to serve : %v", err)
-   	}
+
+	if err := s.Serve(lis); err != nil {
+		log.Fatalf("failed to serve : %v", err)
+	}
 	fmt.Println("Go gRPC server started")
 }

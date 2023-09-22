@@ -9,10 +9,5 @@ user-service:
   port: 8080
 team-service:
   port: 8081
-db:
-  host: localhost
-  port: 5432
-  POSTGRES_ROOT_PASSWORD: postgres
-  POSTGRES_USER: admin
-  POSTGRES_PASSWORd: postgres
-  POSTGRES_DB: capsmhoo
+api-gateway:
+  port: 8082
