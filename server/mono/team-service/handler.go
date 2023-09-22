@@ -97,7 +97,7 @@ func (h *TeamHandler) UpdateTeamByID(c *gin.Context) {
 }
 func (h *TeamHandler) DeleteTeamByID(c *gin.Context) {
 	id := c.Param("id")
-	err := h.repo.DeleteTeamByID(id)
+	team, err := h.repo.DeleteTeamByID(id)
 	if err != nil {
 		c.JSON(200, common.HttpResponse{
 			Code: "400",
@@ -108,7 +108,7 @@ func (h *TeamHandler) DeleteTeamByID(c *gin.Context) {
 	}
 	c.JSON(200, common.HttpResponse{
 		Code: "200",
-		Data: "",
+		Data: team,
 	})
 }
 func (h *TeamHandler) DeleteAll(c *gin.Context) {

@@ -1,6 +1,6 @@
 syntax ="proto3";
 
-option go_package = "capsmhoo/server/proto";
+option go_package = "./proto";
 
 service TeamService {
     rpc GetAllTeams(Empty) returns (TeamList);

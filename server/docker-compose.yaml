@@ -32,7 +32,27 @@ services:
       context: ./ 
       dockerfile: ./dockerfiles/user-service.Dockerfile
     ports:
-      - "5001:8080"
+      - "8080:8080"
+    networks:
+      - capsmhoo-net
+  # team service
+  team-service:
+    container_name: team-service
+    build:
+      context: ./ 
+      dockerfile: ./dockerfiles/team-service.Dockerfile
+    ports:
+      - "50051:50051"
+    networks:
+      - capsmhoo-net
+  # api gateway
+  api-gateway:
+    container_name: api-gateway
+    build:
+      context: ./ 
+      dockerfile: ./dockerfiles/api-gateway.Dockerfile
+    ports:
+      - "8082:8082"
     networks:
       - capsmhoo-net
 

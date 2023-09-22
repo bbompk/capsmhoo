@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -13,15 +12,11 @@ import (
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 
-	pb "capsmhoo/proto"
+	pb "capsmhoo/gen/proto"
+	gatewaygRPCClient "capsmhoo/mono/api-gateway/client_grpc"
+	gatewayHTTPHandler "capsmhoo/mono/api-gateway/http_handler"
 )
-
-var db *gorm.DB
-
-var addr = flag.String("addr", "localhost:8081", "127.0.0.1:8081")
 
 type Team struct {
 	Id      string `json:"id"`
@@ -31,99 +26,22 @@ type Team struct {
 
 func main() {
 	flag.Parse()
-	conn, err := grpc.Dial(*addr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 
-	if err != nil {
-		log.Fatalf("did not connect: %v", err)
-	}
+	defer gracefulShutdown()
 
-	defer conn.Close()
-	client := pb.NewTeamServiceClient(conn)
-	log.Println("Client connected to grpc server...")
+	initConfig()
 
 	r := gin.Default()
+	teamgRPCConn := initTeamgRPCConnection()
+	teamgRPCClienter := pb.NewTeamServiceClient(teamgRPCConn)
 
-	r.GET("/team", func(c *gin.Context) {
-		res, err := client.GetAllTeams(c, &pb.Empty{})
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-		var teams []*Team
-		for _, team := range res.Teams {
-			teams = append(teams, &Team{
-				Id:      team.Id,
-				Name:    team.Name,
-				Profile: team.Profile,
-			})
-		}
-		c.JSON(http.StatusOK, gin.H{"teams": teams})
-	})
-	r.GET("/team/:id", func(c *gin.Context) {
-		id := c.Param("id")
-		teamRes, err := client.GetTeamById(c, &pb.TeamId{Id: id})
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-		team := &Team{
-			Id:      teamRes.Id,
-			Name:    teamRes.Name,
-			Profile: teamRes.Profile,
-		}
-		c.JSON(http.StatusOK, gin.H{"team": team})
-	})
-	r.POST("/team", func(c *gin.Context) {
-		var team Team
-		if err := c.ShouldBindJSON(&team); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-		teamRes, err := client.CreateTeam(c, &pb.Team{Name: team.Name, Profile: team.Profile})
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-		team = Team{
-			Id:      teamRes.Id,
-			Name:    teamRes.Name,
-			Profile: teamRes.Profile,
-		}
-		c.JSON(http.StatusOK, gin.H{"team": team})
-	})
-	r.PUT("/team/:id", func(c *gin.Context) {
-		id := c.Param("id")
-		var team Team
-		if err := c.ShouldBindJSON(&team); err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-		teamRes, err := client.UpdateTeam(c, &pb.Team{Id: id, Name: team.Name, Profile: team.Profile})
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-		team = Team{
-			Id:      teamRes.Id,
-			Name:    teamRes.Name,
-			Profile: teamRes.Profile,
-		}
-		c.JSON(http.StatusOK, gin.H{"team": team})
-	})
-	r.DELETE("/team/:id", func(c *gin.Context) {
-		id := c.Param("id")
-		teamRes, err := client.DeleteTeam(c, &pb.TeamId{Id: id})
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			return
-		}
-		team := Team{
-			Id:      teamRes.Id,
-			Name:    teamRes.Name,
-			Profile: teamRes.Profile,
-		}
-		c.JSON(http.StatusOK, gin.H{"team": team})
-	})
+	defer teamgRPCConn.Close()
+
+	// dependency injection
+	teamgRPCClient := gatewaygRPCClient.ProvideTeamClient(&teamgRPCClienter)
+	teamHandler := gatewayHTTPHandler.ProvideTeamHandler(teamgRPCClient)
+
+	gatewayHTTPHandler.ProvideRouter(r, teamHandler)
 
 	r.Run(":" + "8082")
 }
@@ -140,25 +58,15 @@ func initConfig() {
 	}
 }
 
-func initDatabase() (*gorm.DB, error) {
-	// Read database connection parameters from config or environment variables
-	dbHost := viper.GetString("db.host")
-	dbPort := viper.GetString("db.port")
-	dbUser := viper.GetString("db.POSTGRES_USER")
-	dbPassword := viper.GetString("db.POSTGRES_ROOT_PASSWORD")
-	dbName := viper.GetString("db.POSTGRES_DB")
-
-	// Construct the connection string
-	connStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-		dbHost, dbPort, dbUser, dbPassword, dbName)
-
-	fmt.Println(connStr)
-	// Open a database connection
-	db, err := gorm.Open(postgres.Open(connStr), &gorm.Config{})
+func initTeamgRPCConnection() *grpc.ClientConn {
+	dest := fmt.Sprintf("%s:%s", viper.GetString("team-service.grpc-host"), viper.GetString("team-service.grpc-port"))
+	// Set up a connection to the server.
+	conn, err := grpc.Dial(dest, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		return nil, err
+		log.Fatalf("did not connect: %v", err)
 	}
-	return db, nil
+	log.Default().Println("Connected to Team gRPC Service")
+	return conn
 }
 
 func gracefulShutdown() {

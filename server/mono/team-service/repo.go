@@ -16,7 +16,7 @@ type TeamRepository interface {
 	GetTeamByID(id string) (*Team, error)
 	CreateTeam(team Team) (*Team, error)
 	UpdateTeamByID(id string, team Team) (*Team, error)
-	DeleteTeamByID(id string) error
+	DeleteTeamByID(id string) (*Team, error)
 	DeleteAll() error
 }
 
@@ -53,12 +53,15 @@ func (r *Repository) UpdateTeamByID(id string, team Team) (*Team, error) {
 	return &team, nil
 }
 
-func (r *Repository) DeleteTeamByID(id string) error {
-
-	if err := r.db.Table("teams").Where("id = ?", id).Delete(Team{}).Error; err != nil {
-		return errors.New("Team not found.")
+func (r *Repository) DeleteTeamByID(id string) (*Team, error) {
+	var team Team
+	if err := r.db.Table("teams").Where("id = ?", id).First(&team).Error; err != nil {
+		return nil, errors.New("Team not found.")
 	}
-	return nil
+	if err := r.db.Table("teams").Where("id = ?", id).Delete(Team{}).Error; err != nil {
+		return nil, errors.New("Team not found.")
+	}
+	return &team, nil
 }
 func (r *Repository) DeleteAll() error {
 
@@ -69,7 +72,6 @@ func (r *Repository) DeleteAll() error {
 	// User was deleted successfully.
 	return nil
 }
-
 
 // Dependency Injection
 func ProvideRepository(db *gorm.DB) *Repository {

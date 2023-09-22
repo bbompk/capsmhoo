@@ -9,5 +9,8 @@ user-service:
   port: 8080
 team-service:
   port: 8081
+  grpc-host: 127.0.0.1
+  grpc-port: 50051
 api-gateway:
   port: 8082
+
