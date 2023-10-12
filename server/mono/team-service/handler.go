@@ -1,4 +1,4 @@
-package user
+package team
 
 import (
 	"capsmhoo/common"
@@ -7,74 +7,73 @@ import (
 )
 
 // Define Dependencies
-type UserHandler struct {
-	repo UserRepository
+type TeamHandler struct {
+	repo TeamRepository
 }
 
 // Define what this will do
-type UserHttpHandler interface {
-	GetUsers(c *gin.Context)
-	GetUserByID(c *gin.Context)
-	CreateUser(c *gin.Context)
-	UpdateUserByID(c *gin.Context)
-	DeleteUserByID(c *gin.Context)
+type TeamHttpHandler interface {
+	GetTeams(c *gin.Context)
+	GetTeamByID(c *gin.Context)
+	CreateTeam(c *gin.Context)
+	UpdateTeamByID(c *gin.Context)
+	DeleteTeamByID(c *gin.Context)
 	DeleteAll(c *gin.Context)
 }
 
-func (h *UserHandler) GetUser(c *gin.Context) {
-	user := h.repo.GetUsers()
+func (h *TeamHandler) GetTeams(c *gin.Context) {
+	teams := h.repo.GetTeams()
 
 	c.JSON(200, common.HttpResponse{
 		Code: "200",
-		Data: user,
+		Data: teams,
 	})
 }
-func (h *UserHandler) GetUserByID(c *gin.Context) {
+func (h *TeamHandler) GetTeamByID(c *gin.Context) {
 	id := c.Param("id")
-	user, err := h.repo.GetUserByID(id)
+	team, err := h.repo.GetTeamByID(id)
 	if err != nil {
 		c.JSON(200, common.HttpResponse{
-			Code: "400",
-			// Data: {},
+			Code:  "400",
 			Error: err.Error(),
 		})
 		return
 	}
 	c.JSON(200, common.HttpResponse{
 		Code: "200",
-		Data: user,
+		Data: team,
 	})
 }
-func (h *UserHandler) CreateUser(c *gin.Context) {
-	var user User
-	if err := c.ShouldBindJSON(&user); err != nil {
+func (h *TeamHandler) CreateTeam(c *gin.Context) {
+	var team Team
+	if err := c.ShouldBindJSON(&team); err != nil {
 		c.JSON(200, common.HttpResponse{
 			Code: "400",
 			// Data: {},
-			Error: err.Error(),
+			Error: "Couldn't bind input to json",
 		})
 		return
 	}
-	createdUser, err := h.repo.CreateUser(user)
+	createdTeam, err := h.repo.CreateTeam(team)
 	if err != nil {
 		c.JSON(200, common.HttpResponse{
 			Code: "400",
 			// Data: {},
-			Error: err.Error(),
+			Error: "Team cannot be created",
 		})
 		return
 	}
-	// user := h.repo.CreateUser()
 
 	c.JSON(200, common.HttpResponse{
 		Code: "200",
-		Data: createdUser,
+		Data: createdTeam,
 	})
 }
-func (h *UserHandler) UpdateUserByID(c *gin.Context) {
+
+func (h *TeamHandler) UpdateTeamByID(c *gin.Context) {
 	id := c.Param("id")
-	var user User
-	if err := c.ShouldBindJSON(&user); err != nil {
+	var team Team
+	if err := c.ShouldBindJSON(&team); err != nil {
 		c.JSON(200, common.HttpResponse{
 			Code: "400",
 			// Data: {},
@@ -82,7 +81,7 @@ func (h *UserHandler) UpdateUserByID(c *gin.Context) {
 		})
 		return
 	}
-	updatedUser, err := h.repo.UpdateUserByID(id, user)
+	updatedTeam, err := h.repo.UpdateTeamByID(id, team)
 	if err != nil {
 		c.JSON(200, common.HttpResponse{
 			Code: "400",
@@ -93,12 +92,12 @@ func (h *UserHandler) UpdateUserByID(c *gin.Context) {
 	}
 	c.JSON(200, common.HttpResponse{
 		Code: "200",
-		Data: updatedUser,
+		Data: updatedTeam,
 	})
 }
-func (h *UserHandler) DeleteUserByID(c *gin.Context) {
+func (h *TeamHandler) DeleteTeamByID(c *gin.Context) {
 	id := c.Param("id")
-	err := h.repo.DeleteUserByID(id)
+	team, err := h.repo.DeleteTeamByID(id)
 	if err != nil {
 		c.JSON(200, common.HttpResponse{
 			Code: "400",
@@ -109,10 +108,10 @@ func (h *UserHandler) DeleteUserByID(c *gin.Context) {
 	}
 	c.JSON(200, common.HttpResponse{
 		Code: "200",
-		Data: "",
+		Data: team,
 	})
 }
-func (h *UserHandler) DeleteAll(c *gin.Context) {
+func (h *TeamHandler) DeleteAll(c *gin.Context) {
 	h.repo.DeleteAll()
 	c.JSON(200, common.HttpResponse{
 		Code: "200",
@@ -121,8 +120,8 @@ func (h *UserHandler) DeleteAll(c *gin.Context) {
 }
 
 // Dependency Injection
-func ProvideUserHandler(repo UserRepository) *UserHandler {
-	return &UserHandler{
+func ProvideTeamHandler(repo TeamRepository) *TeamHandler {
+	return &TeamHandler{
 		repo: repo,
 	}
 }

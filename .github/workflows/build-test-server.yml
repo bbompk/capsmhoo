@@ -1,6 +1,17 @@
 name: Build and Test Server
 
 on:
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'warning'
+        type: choice
+        options:
+        - info
+        - warning
+        - debug
   push:
     branches: [ "master", "dev" ]
     paths:
@@ -21,8 +32,18 @@ jobs:
       with:
         go-version: '1.20'
 
-    - name: Build
-      run: go build -v ./...
+    - name: Build User Service
+      working-directory: ./server
+      run: go build -v cmd/user/main.go
 
-    - name: Test
-      run: go test -v ./...
+    - name: Build Team Service
+      working-directory: ./server
+      run: go build -v cmd/team/main.go
+
+    - name: Build Project Service
+      working-directory: ./server
+      run: go build -v cmd/proj/main.go
+
+    - name: Build API Gateway
+      working-directory: ./server
+      run: go build -v cmd/gateway/main.go

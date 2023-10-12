@@ -1,0 +1,39 @@
+syntax ="proto3";
+
+option go_package = "./proto";
+
+service TeamService {
+    rpc GetAllTeams(Empty) returns (TeamList);
+    rpc GetTeamById(TeamId) returns (Team);
+    rpc CreateTeam(Team) returns (Team);
+    rpc UpdateTeam(Team) returns (Team);
+    rpc DeleteTeam(TeamId) returns (Team);
+    rpc AddStudentToTeam(TeamAndStudentID) returns (Empty);
+    rpc RemoveStudentFromTeam(TeamAndStudentID) returns (Empty);
+}
+
+message Empty {}
+
+message Team {
+    string id = 1;
+    string name = 2;
+    string profile = 3;
+}
+
+message TeamList {
+    repeated Team teams = 1;
+}
+
+message StudentId {
+    string id = 1;
+}
+
+message TeamId {
+    string id = 1;
+}
+
+message TeamAndStudentID {
+    string teamId = 1;
+    string studentId = 2;
+}
+
