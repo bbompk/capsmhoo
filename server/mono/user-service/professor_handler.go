@@ -95,8 +95,48 @@ func (h *ProfessorHandler) CreateProfessor(c *gin.Context) {
 }
 func (h *ProfessorHandler) UpdateProfessorByID(c *gin.Context) {
 	id := c.Param("id")
+	type Params struct {
+		Email    string `json:"email"`
+		Password string `json:"password"`
+		Name     string `json:"name"`
+		Profile  string `json:"profile"`
+	}
+	var params Params
 	var professor Professor
-	if err := c.ShouldBindJSON(&professor); err != nil {
+	var user User
+	if err := c.ShouldBindJSON(&params); err != nil {
+		c.JSON(200, common.HttpResponse{
+			Code: "400",
+			// Data: {},
+			Error: "Couldn't bind input to json",
+		})
+		return
+	}
+	if params.Email != "" {
+		user.Email = params.Email
+	}
+	if params.Password != "" {
+		user.Password = params.Password
+	}
+	if params.Name != "" {
+		professor.Name = params.Name
+	}
+	if params.Profile != "" {
+		professor.Profile = params.Profile
+	}
+	professor.ID = id
+	professorr, err := h.repo.GetProfessorByID(id)
+	if err != nil {
+		c.JSON(200, common.HttpResponse{
+			Code: "400",
+			// Data: {},
+			Error: err.Error(),
+		})
+		return
+	}
+	user.ID = professorr.UserID
+	_, errr := h.userrepo.UpdateUserByID(user.ID, user)
+	if errr != nil {
 		c.JSON(200, common.HttpResponse{
 			Code: "400",
 			// Data: {},
