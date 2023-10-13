@@ -5,12 +5,18 @@ db:
   POSTGRES_USER: admin
   POSTGRES_PASSWORD: postgres
   POSTGRES_DB: capsmhoo
+rabbitmq:
+  url: amqp://guest:guest@localhost:5672/
+  noti_queue_name: capsmhooo-noti
 user-service:
   port: 8080
 team-service:
   port: 8081
   grpc-host: 127.0.0.1
   grpc-port: 50051
+noti-service:
+  grpc-host: 127.0.0.1
+  grpc-port: 50054
 api-gateway:
   port: 8082
 

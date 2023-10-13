@@ -25,6 +25,16 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+  # rabbitmq
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: capsmhoo-rabbitmq
+    restart: always
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - capsmhoo-net
   # user service
   user-service:
     container_name: user-service
@@ -43,6 +53,16 @@ services:
       dockerfile: ./dockerfiles/team-service.Dockerfile
     ports:
       - "50051:50051"
+    networks:
+      - capsmhoo-net
+  # noti service
+  noti-service:
+    container_name: noti-service
+    build:
+      context: ./ 
+      dockerfile: ./dockerfiles/noti-service.Dockerfile
+    ports:
+      - "50054:50054"
     networks:
       - capsmhoo-net
   # api gateway
