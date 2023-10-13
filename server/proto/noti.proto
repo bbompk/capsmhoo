@@ -1,0 +1,31 @@
+syntax ="proto3";
+
+option go_package = "./proto";
+
+service NotiService {
+    rpc GetAllNotiByUserId(GetAllNotiByUserIdRequest) returns (GetAllNotiByUserIdResponse);
+    rpc ReadNoti(ReadNotiRequest) returns (ReadNotiResponse);
+}
+
+message Noti {
+    string title = 1;
+    string body = 2;
+    string user_id = 3;
+    bool is_read = 4;
+}
+
+message GetAllNotiByUserIdRequest {
+    string user_id = 1;
+}
+
+message GetAllNotiByUserIdResponse {
+    repeated Noti notis = 1;
+}
+
+message ReadNotiRequest {
+    string user_id = 1;
+}
+
+message ReadNotiResponse {
+    bool success = 1;
+}
