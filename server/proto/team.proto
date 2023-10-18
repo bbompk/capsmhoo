@@ -18,6 +18,7 @@ message Team {
     string id = 1;
     string name = 2;
     string profile = 3;
+    string project_id = 4;
 }
 
 message TeamList {

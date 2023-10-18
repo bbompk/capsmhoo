@@ -52,4 +52,15 @@ CREATE TABLE projects (
     description TEXT
 );
 
+CREATE TABLE team_join_requests (
+    id VARCHAR(255) PRIMARY KEY,
+    team_id VARCHAR(255) REFERENCES teams(id),
+    student_id VARCHAR(255) REFERENCES students(id)
+);
 
+CREATE TABLE project_requests (
+    id VARCHAR(255) PRIMARY KEY,
+    project_id VARCHAR(255) REFERENCES projects(project_id),
+    team_id VARCHAR(255) REFERENCES teams(id),
+    message TEXT
+);
