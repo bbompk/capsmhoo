@@ -45,6 +45,9 @@ services:
       - "8080:8080"
     networks:
       - capsmhoo-net
+    depends_on:
+      - postgres
+      - rabbitmq 
   # team service
   team-service:
     container_name: team-service
@@ -55,6 +58,9 @@ services:
       - "50051:50051"
     networks:
       - capsmhoo-net
+    depends_on:
+      - postgres
+      - rabbitmq 
   # noti service
   noti-service:
     container_name: noti-service
@@ -68,6 +74,9 @@ services:
       - "50054:50054"
     networks:
       - capsmhoo-net
+    depends_on:
+      - postgres
+      - rabbitmq 
   # api gateway
   api-gateway:
     container_name: api-gateway
@@ -78,6 +87,10 @@ services:
       - "8082:8082"
     networks:
       - capsmhoo-net
+    depends_on:
+      - user-service
+      - team-service
+      - noti-service
 
 networks:
   capsmhoo-net: {}

@@ -39,7 +39,7 @@ func main() {
 	fmt.Println(notis[0].Body)
 
 	go notiConsumer.StartNotificationConsumer(viper.GetString("rabbitmq.url"), viper.GetString("rabbitmq.noti_queue_name"))
-	noti.StartgRPCServer(repo, viper.GetString("noti-service.grpc-host"), viper.GetString("noti-service.grpc-port"))
+	noti.StartgRPCServer(repo, "", viper.GetString("noti-service.grpc-port"))
 }
 
 // Read Config file

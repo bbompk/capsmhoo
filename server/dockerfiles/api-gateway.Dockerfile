@@ -9,7 +9,7 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -ldflags '-extldflags "-st
 FROM alpine:latest
 WORKDIR /root/
 COPY --from=builder /go/src/capsmhoo/app .
-COPY --from=builder /go/src/capsmhoo/config/config.yaml ./config/
+COPY --from=builder /go/src/capsmhoo/config/config-compose.yaml ./config/config.yaml
 CMD ["./app"]
 
 EXPOSE 8082
