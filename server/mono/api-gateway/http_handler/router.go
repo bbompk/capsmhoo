@@ -38,12 +38,12 @@ func ProvideRouter(
 	r.DELETE("/student/:id", studentHandler.DeleteStudentByID)
 	r.DELETE("/student", studentHandler.DeleteStudentAll)
 
-	r.GET("/professor/:id", professorHandlerHandler.GetProfessorByID)
-	r.GET("/professor", professorHandlerHandler.GetProfessor)
-	r.POST("/professor", professorHandlerHandler.CreateProfessor)
-	r.PUT("/professor/:id", professorHandlerHandler.UpdateProfessorByID)
-	r.DELETE("/professor/:id", professorHandlerHandler.DeleteProfessorByID)
-	r.DELETE("/professor", professorHandlerHandler.DeleteProfessorAll)
+	r.GET("/professor/:id", professorHandler.GetProfessorByID)
+	r.GET("/professor", professorHandler.GetProfessor)
+	r.POST("/professor", professorHandler.CreateProfessor)
+	r.PUT("/professor/:id", professorHandler.UpdateProfessorByID)
+	r.DELETE("/professor/:id", professorHandler.DeleteProfessorByID)
+	r.DELETE("/professor", professorHandler.DeleteProfessorAll)
 
 	// project service
 	// todo: wait for project service
