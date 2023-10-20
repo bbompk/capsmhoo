@@ -36,7 +36,7 @@ func main() {
 
 	r := gin.Default()
 
-	// Initialize Team Handler
+	// Initialize gRPC connections
 	teamgRPCConn := initTeamgRPCConnection()
 	teamgRPCClienter := pb.NewTeamServiceClient(teamgRPCConn)
 	notigRPCConn := initNotigRPCConnection()
@@ -49,6 +49,7 @@ func main() {
 	defer notigRPCConn.Close()
 	defer projectgRPCConn.Close()
 
+	// Dependency Injection
 	teamgRPCClient := gatewaygRPCClient.ProvideTeamClient(&teamgRPCClienter)
 	teamJoinRequestgRPCClient := gatewaygRPCClient.ProvideTeamJoinRequestClient(&teamJoinRequestgRPCClienter)
 	teamHandler := gatewayHTTPHandler.ProvideTeamHandler(teamgRPCClient)
