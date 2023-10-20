@@ -25,21 +25,21 @@ func ProvideRouter(
 
 	// user service
 	r.GET("/user/:id", userHandler.GetUserByID)
-	r.GET("/user", userHandler.GetUser)
+	r.GET("/user", userHandler.GetAllUsers)
 	r.POST("/user", userHandler.CreateUser)
 	r.PUT("/user/:id", userHandler.UpdateUserByID)
 	r.DELETE("/user/:id", userHandler.DeleteUserByID)
 	r.DELETE("/user", userHandler.DeleteAll)
 
 	r.GET("/student/:id", studentHandler.GetStudentByID)
-	r.GET("/student", studentHandler.GetStudent)
+	r.GET("/student", studentHandler.GetAllStudents)
 	r.POST("/student", studentHandler.CreateStudent)
 	r.PUT("/student/:id", studentHandler.UpdateStudentByID)
 	r.DELETE("/student/:id", studentHandler.DeleteStudentByID)
 	r.DELETE("/student", studentHandler.DeleteStudentAll)
 
 	r.GET("/professor/:id", professorHandler.GetProfessorByID)
-	r.GET("/professor", professorHandler.GetProfessor)
+	r.GET("/professor", professorHandler.GetAllProfessors)
 	r.POST("/professor", professorHandler.CreateProfessor)
 	r.PUT("/professor/:id", professorHandler.UpdateProfessorByID)
 	r.DELETE("/professor/:id", professorHandler.DeleteProfessorByID)
