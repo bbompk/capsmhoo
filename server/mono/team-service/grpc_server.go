@@ -10,6 +10,7 @@ import (
 	"google.golang.org/grpc"
 
 	pb "capsmhoo/gen/proto"
+	joinRequestPb "capsmhoo/gen/team-join-request-pb"
 )
 
 type teamServer struct {
@@ -120,8 +121,117 @@ func (s *teamServer) RemoveStudentFromTeam(ctx context.Context, teamAndStudentID
 	return nil, nil
 }
 
+type teamJoinRequestServer struct {
+	joinRequestPb.UnimplementedTeamJoinRequestServiceServer
+	repo TeamJoinRequestRepository
+}
+
+func (s *teamJoinRequestServer) GetAllJoinRequests(ctx context.Context, empty *joinRequestPb.TeamJoinReqeustEmpty) (*joinRequestPb.TeamJoinRequestList, error) {
+	fmt.Println("Get All Join Requests")
+	requests, err := s.repo.GetJoinRequests()
+	if err != nil {
+		return nil, err
+	}
+
+	requestRes := []*joinRequestPb.TeamJoinRequest{}
+	for _, req := range requests {
+		requestRes = append(requestRes, &joinRequestPb.TeamJoinRequest{
+			Id:        req.ID,
+			TeamId:    req.TeamID,
+			StudentId: req.StudentID,
+		})
+	}
+
+	return &joinRequestPb.TeamJoinRequestList{
+		JoinRequests: requestRes,
+	}, nil
+}
+
+func (s *teamJoinRequestServer) GetJoinRequestById(ctx context.Context, reqID *joinRequestPb.TeamJoinRequestId) (*joinRequestPb.TeamJoinRequest, error) {
+	fmt.Println("Get Join Request By ID")
+
+	req, err := s.repo.GetJoinRequestByID(reqID.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	return &joinRequestPb.TeamJoinRequest{
+		Id:        req.ID,
+		TeamId:    req.TeamID,
+		StudentId: req.StudentID,
+	}, nil
+}
+
+func (s *teamJoinRequestServer) CreateJoinRequest(ctx context.Context, teamJoinRequest *joinRequestPb.TeamJoinRequest) (*joinRequestPb.TeamJoinRequest, error) {
+	fmt.Println("Create Join Request")
+
+	createdRequest, err := s.repo.CreateJoinRequest(TeamJoinRequest{
+		ID:        teamJoinRequest.Id,
+		TeamID:    teamJoinRequest.TeamId,
+		StudentID: teamJoinRequest.StudentId,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &joinRequestPb.TeamJoinRequest{
+		Id:        createdRequest.ID,
+		TeamId:    createdRequest.TeamID,
+		StudentId: createdRequest.StudentID,
+	}, nil
+}
+
+func (s *teamJoinRequestServer) UpdateJoinRequest(ctx context.Context, updatedRequest *joinRequestPb.TeamJoinRequest) (*joinRequestPb.TeamJoinRequest, error) {
+	fmt.Println("Update Join Request")
+
+	req, err := s.repo.UpdateJoinRequestByID(updatedRequest.Id, TeamJoinRequest{
+		ID:        updatedRequest.Id,
+		TeamID:    updatedRequest.TeamId,
+		StudentID: updatedRequest.StudentId,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &joinRequestPb.TeamJoinRequest{
+		Id:        req.ID,
+		TeamId:    req.TeamID,
+		StudentId: req.StudentID,
+	}, nil
+}
+
+func (s *teamJoinRequestServer) DeleteJoinRequest(ctx context.Context, reqID *joinRequestPb.TeamJoinRequestId) (*joinRequestPb.TeamJoinRequest, error) {
+	fmt.Println("Delete Join Request")
+
+	req, err := s.repo.DeleteJoinRequestByID(reqID.Id)
+	// _, err := s.repo.DeleteJoinRequestByID(reqID.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	return &joinRequestPb.TeamJoinRequest{
+		Id:        req.ID,
+		TeamId:    req.TeamID,
+		StudentId: req.StudentID,
+	}, nil
+	// return &joinRequestPb.TeamJoinReqeustEmpty{}, nil
+}
+
+// func (s *teamJoinRequestServer) ApproveJoinRequest(ctx context.Context, reqID *pb.TeamJoinRequestId) (*pb.TeamJoinRequest, error) {
+// 	fmt.Println("Approve Join Request")
+// 	// Conversion and logic here...
+// 	//...
+// }
+
+// func (s *teamJoinRequestServer) DeclineJoinRequest(ctx context.Context, reqID *pb.TeamJoinRequestId) (*pb.TeamJoinRequest, error) {
+// 	fmt.Println("Decline Join Request")
+// 	// Conversion and logic here...
+// 	//...
+// }
+
 func StartgRPCServer(
 	repo TeamRepository,
+	repoo TeamJoinRequestRepository,
 	grpc_host string,
 	grpc_port string,
 ) {
@@ -135,6 +245,7 @@ func StartgRPCServer(
 	s := grpc.NewServer()
 
 	pb.RegisterTeamServiceServer(s, &teamServer{repo: repo})
+	joinRequestPb.RegisterTeamJoinRequestServiceServer(s, &teamJoinRequestServer{repo: repoo})
 	log.Printf("Server listening at %v", lis.Addr())
 
 	if err := s.Serve(lis); err != nil {

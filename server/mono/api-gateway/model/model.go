@@ -6,6 +6,12 @@ type Team struct {
 	Profile string `json:"profile"`
 }
 
+type TeamJoinRequest struct {
+	ID        string `json:"id"`
+	TeamID    string `json:"team_id"`
+	StudentID string `json:"student_id"`
+}
+
 type Notification struct {
 	Title  string `json:"title"`
 	Body   string `json:"body"`

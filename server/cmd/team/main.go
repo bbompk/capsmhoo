@@ -26,8 +26,9 @@ func main() {
 
 	// Dependency Injection
 	repo := team.ProvideRepository(db)
+	repoo := team.ProvideJoinRequestRepository(db)
 
-	team.StartgRPCServer(repo, "", viper.GetString("team-service.grpc-port"))
+	team.StartgRPCServer(repo, repoo, "", viper.GetString("team-service.grpc-port"))
 }
 
 // Read Config file

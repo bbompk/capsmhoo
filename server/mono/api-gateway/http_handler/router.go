@@ -7,6 +7,7 @@ import (
 func ProvideRouter(
 	r *gin.Engine,
 	teamHandler ITeamHandler,
+	teamJoinRequestHandler ITeamJoinRequestHandler,
 	notiHandler INotiHandler,
 ) {
 	r.GET("/team", teamHandler.GetAllTeams)
@@ -20,4 +21,10 @@ func ProvideRouter(
 	notiRoute := r.Group("/noti")
 	notiRoute.GET("/:id", notiHandler.GetAllNotiByUserId)
 	notiRoute.POST("/:id", notiHandler.ReadNoti)
+	teamJoinRequestRoute := r.Group("/team-join-request")
+	teamJoinRequestRoute.GET("", teamJoinRequestHandler.GetAllJoinRequests)
+	teamJoinRequestRoute.GET("/:id", teamJoinRequestHandler.GetJoinRequestByID)
+	teamJoinRequestRoute.POST("", teamJoinRequestHandler.CreateJoinRequest)
+	teamJoinRequestRoute.PUT("/:id", teamJoinRequestHandler.UpdateJoinRequest)
+	teamJoinRequestRoute.DELETE("/:id", teamJoinRequestHandler.DeleteJoinRequest)
 }

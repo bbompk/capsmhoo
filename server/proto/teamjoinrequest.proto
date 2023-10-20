@@ -3,16 +3,16 @@ syntax = "proto3";
 option go_package = "./proto";
 
 service TeamJoinRequestService {
-    rpc CreateJoinRequest(TeamJoinRequest) returns (TeamJoinRequest);
+    rpc GetAllJoinRequests(TeamJoinReqeustEmpty) returns (TeamJoinRequestList);
     rpc GetJoinRequestById(TeamJoinRequestId) returns (TeamJoinRequest);
-    rpc GetAllJoinRequests(Empty) returns (TeamJoinRequestList);
+    rpc CreateJoinRequest(TeamJoinRequest) returns (TeamJoinRequest);
     rpc UpdateJoinRequest(TeamJoinRequest) returns (TeamJoinRequest);
     rpc DeleteJoinRequest(TeamJoinRequestId) returns (TeamJoinRequest);
-    rpc ApproveJoinRequest(TeamJoinRequestId) returns (TeamJoinRequest);
-    rpc DeclineJoinRequest(TeamJoinRequestId) returns (TeamJoinRequest);
+    // rpc ApproveJoinRequest(TeamJoinRequestId) returns (TeamJoinRequest);
+    // rpc DeclineJoinRequest(TeamJoinRequestId) returns (TeamJoinRequest);
 }
 
-message Empty {}
+message TeamJoinReqeustEmpty {}
 
 message TeamJoinRequest {
     string id = 1;
