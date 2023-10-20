@@ -44,6 +44,16 @@ CREATE TABLE students (
     team_id VARCHAR(255) REFERENCES teams(id)
 );
 
+-- Create a "project_request" table with a foreign key to the "project" and "team" table
+CREATE TABLE project_requests (
+    id VARCHAR(255) PRIMARY KEY,
+    team_id VARCHAR(255) REFERENCES teams(id),
+    project_id VARCHAR(255) REFERENCES projects(id),
+    message VARCHAR(255),
+    status VATCHAR(255)
+);
+
+
 CREATE TABLE projects (
     project_id VARCHAR(255) PRIMARY KEY,
     team_id VARCHAR(255) REFERENCES teams(id),

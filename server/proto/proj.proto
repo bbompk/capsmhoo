@@ -1,0 +1,46 @@
+syntax="proto3";
+
+package projectpb;
+
+option go_package="./projectpb";
+
+message Project {
+    string project_id = 1;
+    string team_id = 2;
+    string professor_id = 3;
+    string name = 4;
+    string description = 5;
+}
+
+message ProjectList {
+    repeated Project projects = 1;
+}
+
+message ProjectId {
+    string project_id = 1;
+}
+
+message Empty {}
+
+message SuccessResponse {
+    bool success = 1;
+}
+
+message ProjectRequest {
+    string project_request_id = 1;
+    string project_id = 2;
+    string team_id = 3;
+    string message = 4;
+    string status = 5;
+}
+
+service ProjectService {
+    rpc GetProjectById(ProjectId) returns (Project) {}
+    rpc GetAllProjects(Empty) returns (ProjectList) {}
+    rpc CreateProject(Project) returns (Project) {}
+    rpc UpdateProject(Project) returns (Project) {}
+    rpc DeleteProject(ProjectId) returns (Project) {}
+    rpc CreateProjectRequest(ProjectRequest) returns (ProjectRequest) {}
+    rpc AcceptProjectRequest(ProjectRequest) returns (SuccessResponse) {}
+    rpc RejectProjectRequest(ProjectRequest) returns (SuccessResponse) {}
+}

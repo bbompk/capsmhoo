@@ -58,9 +58,6 @@ services:
       - "50051:50051"
     networks:
       - capsmhoo-net
-    depends_on:
-      - postgres
-      - rabbitmq 
   # noti service
   noti-service:
     container_name: noti-service
