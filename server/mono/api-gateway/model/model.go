@@ -5,3 +5,10 @@ type Team struct {
 	Name    string `json:"name"`
 	Profile string `json:"profile"`
 }
+
+type Notification struct {
+	Title  string `json:"title"`
+	Body   string `json:"body"`
+	UserID string `json:"user_id"`
+	IsRead bool   `json:"is_read"`
+}
