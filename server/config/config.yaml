@@ -24,4 +24,7 @@ team-join-request-service:
   port: 8085
   grpc-host: 127.0.0.1
   grpc-port: 50055
-
+project-service:
+  port: 8083
+  grpc-host: 127.0.0.1
+  grpc-port: 50052
