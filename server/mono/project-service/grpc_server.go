@@ -136,7 +136,7 @@ func (s *projectServer) AcceptProjectRequest(ctx context.Context, projectRequest
 		return nil, err
 	}
 
-	err = s.repo.AddTeamToProject(projectRequest.TeamId, projReq.ProjectID)
+	err = s.repo.AddTeamToProject(projReq.TeamID, projReq.ProjectID)
 	if err != nil {
 		return nil, err
 	}

@@ -163,6 +163,7 @@ func (h *ProjectHandler) AcceptProjectRequest(c *gin.Context) {
 			"code":  "500",
 			"error": err.Error(),
 		})
+		return
 	}
 	c.JSON(200, gin.H{
 		"code":    "200",
@@ -178,6 +179,7 @@ func (h *ProjectHandler) RejectProjectRequest(c *gin.Context) {
 			"code":  "500",
 			"error": err.Error(),
 		})
+		return
 	}
 	c.JSON(200, gin.H{
 		"code":    "200",
