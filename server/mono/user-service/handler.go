@@ -2,8 +2,12 @@ package user
 
 import (
 	"capsmhoo/common"
-
 	"github.com/gin-gonic/gin"
+	"net/http"
+	"golang.org/x/crypto/bcrypt"
+	jwt "github.com/golang-jwt/jwt"
+	"time"
+	"os"
 )
 
 // Define Dependencies
@@ -13,12 +17,86 @@ type UserHandler struct {
 
 // Define what this will do
 type UserHttpHandler interface {
+	// SignUpUser(c *gin.Context)
+	SignInUser(c *gin.Context)
 	GetUsers(c *gin.Context)
 	GetUserByID(c *gin.Context)
 	CreateUser(c *gin.Context)
 	UpdateUserByID(c *gin.Context)
 	DeleteUserByID(c *gin.Context)
 	DeleteAll(c *gin.Context)
+}
+
+// func (h* UserHandler) SignUpUser(c *gin.Context) {
+// 	var user User
+// 	if err := c.ShouldBindJSON(&user); err != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+// 		return
+// 	}
+
+// 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+// 	if err != nil {
+// 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while hashing password"})
+// 		return
+// 	}
+// 	user.Password = string(hashedPassword)
+
+// 	// Call the repository to save the user
+// 	createdUser, err := h.repo.CreateUser(user)
+
+// 	if err != nil {
+// 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error creating user"})
+// 		return
+// 	}
+
+// 	c.JSON(http.StatusOK, gin.H{"message": "User created successfully"})
+// }
+
+func (h* UserHandler) SignInUser(c *gin.Context) {
+	var userInput User
+	if err := c.ShouldBindJSON(&userInput); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Retrieve the user by email or username
+	user, err := h.repo.GetUserByEmail(userInput.Email)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error retrieving user"})
+		return
+	}
+
+	// Compare the provided password with the hash stored in the database
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(userInput.Password)); err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
+		return
+	}
+
+	// Create JWT token for the authenticated user
+	token, err := CreateToken(*user)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error creating token"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"token": token})
+}
+
+func CreateToken(user User) (string, error) {
+    token := jwt.New(jwt.SigningMethodHS256)
+
+    claims := token.Claims.(jwt.MapClaims)
+    claims["authorized"] = true
+    claims["user_id"] = user.ID
+    claims["exp"] = time.Now().Add(time.Hour * 1).Unix() // Token expiration 1 hour from now
+
+	jwtSecret := os.Getenv("ACCESS_TOKEN_PRIVATE_KEY") 
+    tokenString, err := token.SignedString([]byte(jwtSecret)) // <- Secret key (keep this safe!)
+    if err != nil {
+        return "", err
+    }
+
+    return tokenString, nil
 }
 
 func (h *UserHandler) GetUser(c *gin.Context) {
@@ -55,6 +133,12 @@ func (h *UserHandler) CreateUser(c *gin.Context) {
 		})
 		return
 	}
+	// hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	// if err != nil {
+	// 	c.JSON(http.StatusInternalServerError, gin.H{"error": "Error while hashing password"})
+	// 	return
+	// }
+	// user.Password = string(hashedPassword)
 	createdUser, err := h.repo.CreateUser(user)
 	if err != nil {
 		c.JSON(200, common.HttpResponse{

@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"log"
 
 	user "capsmhoo/mono/user-service"
 
@@ -13,11 +14,19 @@ import (
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+
+	"github.com/joho/godotenv"
 )
 
 func main() {
 	defer gracefulShutdown()
 
+	if os.Getenv("ENV") != "integration" && os.Getenv("ENV") != "production" {
+		err := godotenv.Load()
+		if err != nil {
+			log.Fatal("Error loading .env file")
+		}
+	}
 	initConfig()
 	db, err := initDatabase()
 

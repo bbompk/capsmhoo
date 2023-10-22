@@ -6,6 +6,12 @@ import (
 
 // Define Http Endpoints Here
 func ProvideRouter(r *gin.Engine, h *UserHandler, hh *StudentHandler, hhh *ProfessorHandler) {
+
+	// login service
+	// r.POST("/register", h.SignUpUser)
+	r.POST("/login", h.SignInUser) // return jwt token
+	// r.GET("/logout", middleware.DeserializeUser(userService), rc.authController.LogoutUser)
+
 	// GET a user by ID
 	r.GET("/user/:id", h.GetUserByID)
 
