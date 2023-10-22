@@ -13,6 +13,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
+	projectpb "capsmhoo/gen/projectpb"
 	pb "capsmhoo/gen/proto"
 	joinRequestPb "capsmhoo/gen/team-join-request-pb"
 	gatewaygRPCClient "capsmhoo/mono/api-gateway/client_grpc"
@@ -34,16 +35,21 @@ func main() {
 	initConfig()
 
 	r := gin.Default()
+
+	// Initialize gRPC connections
 	teamgRPCConn := initTeamgRPCConnection()
 	teamgRPCClienter := pb.NewTeamServiceClient(teamgRPCConn)
 	notigRPCConn := initNotigRPCConnection()
 	notigRPCClienter := pb.NewNotiServiceClient(notigRPCConn)
 	teamJoinRequestgRPCClienter := joinRequestPb.NewTeamJoinRequestServiceClient(teamgRPCConn)
+	projectgRPCConn := initProjectgRPCConnection()
+	projectgRPCClienter := projectpb.NewProjectServiceClient(projectgRPCConn)
 
 	defer teamgRPCConn.Close()
 	defer notigRPCConn.Close()
+	defer projectgRPCConn.Close()
 
-	// dependency injection
+	// Dependency Injection
 	teamgRPCClient := gatewaygRPCClient.ProvideTeamClient(&teamgRPCClienter)
 	teamJoinRequestgRPCClient := gatewaygRPCClient.ProvideTeamJoinRequestClient(&teamJoinRequestgRPCClienter)
 	teamHandler := gatewayHTTPHandler.ProvideTeamHandler(teamgRPCClient)
@@ -56,7 +62,8 @@ func main() {
 	professorHandler := gatewayHTTPHandler.ProvideProfessorHandler(professorClientRest)
 	userClientRest := restClient.ProvideUserClientRest()
 	userHandler := gatewayHTTPHandler.ProvideUserHandler(userClientRest)
-	projectHandler := gatewayHTTPHandler.ProvideProjectHandler()
+	projectgRPCClient := gatewaygRPCClient.ProvideProjectClient(&projectgRPCClienter)
+	projectHandler := gatewayHTTPHandler.ProvideProjectHandler(projectgRPCClient)
 
 	gatewayHTTPHandler.ProvideRouter(r, teamHandler, teamJoinRequestHandler, userHandler, studentHandler, professorHandler, projectHandler, notiHandler)
 
@@ -94,6 +101,17 @@ func initNotigRPCConnection() *grpc.ClientConn {
 		log.Fatalf("did not connect: %v", err)
 	}
 	log.Default().Println("Connected to Noti gRPC Service")
+	return conn
+}
+
+func initProjectgRPCConnection() *grpc.ClientConn {
+	dest := fmt.Sprintf("%s:%s", viper.GetString("project-service.grpc-host"), viper.GetString("project-service.grpc-port"))
+	// Set up a connection to the server.
+	conn, err := grpc.Dial(dest, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	log.Default().Println("Connected to Project gRPC Service")
 	return conn
 }
 

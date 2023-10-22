@@ -60,4 +60,13 @@ func ProvideRouter(
 	teamJoinRequestRoute.DELETE("/:id", teamJoinRequestHandler.DeleteJoinRequest)
 	teamJoinRequestRoute.POST("/approve/:id", teamJoinRequestHandler.ApproveJoinRequest)
 	teamJoinRequestRoute.POST("/decline/:id", teamJoinRequestHandler.DeclineJoinRequest)
+
+	r.GET("/project", projectHandler.GetAllProjects)
+	r.GET("/project/:id", projectHandler.GetProjectByID)
+	r.POST("/project", projectHandler.CreateProject)
+	r.PUT("/project/:id", projectHandler.UpdateProjectByID)
+	r.DELETE("/project/:id", projectHandler.DeleteProjectByID)
+	r.POST("/project-request", projectHandler.CreateProjectRequest)
+	r.POST("/project-request/accept/:id", projectHandler.AcceptProjectRequest)
+	r.POST("/project-request/reject/:id", projectHandler.RejectProjectRequest)
 }

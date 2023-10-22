@@ -58,9 +58,16 @@ services:
       - "50051:50051"
     networks:
       - capsmhoo-net
-    depends_on:
-      - postgres
-      - rabbitmq 
+  # team service
+  project-service:
+    container_name: project-service
+    build:
+      context: ./ 
+      dockerfile: ./dockerfiles/project-service.Dockerfile
+    ports:
+      - "50052:50052"
+    networks:
+      - capsmhoo-net
   # noti service
   noti-service:
     container_name: noti-service
