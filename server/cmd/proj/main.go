@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"os/signal"
 	"syscall"
 
+	"capsmhoo/mono/common/rabbitmq"
 	project "capsmhoo/mono/project-service"
 
 	"github.com/spf13/viper"
@@ -26,8 +28,15 @@ func main() {
 
 	// Dependency Injection
 	repo := project.ProvideRepository(db)
+	student_repo := project.ProvideStudentRepository(db)
 
-	project.StartgRPCServer(repo, "", viper.GetString("project-service.grpc-port"))
+	// Init Publisher
+	publisher, err := rabbitmq.ProvidePublisher(viper.GetString("rabbitmq.url"))
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	project.StartgRPCServer(repo, student_repo, publisher, "", viper.GetString("project-service.grpc-port"))
 }
 
 // Read Config file

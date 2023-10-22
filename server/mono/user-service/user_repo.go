@@ -2,8 +2,9 @@ package user
 
 import (
 	"errors"
-	"golang.org/x/crypto/bcrypt"
+
 	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -33,7 +34,7 @@ type UserRepository interface {
 // 	return &user, nil
 // }
 
-func (r* Repository) SignInUser() {
+func (r *Repository) SignInUser() {
 	// todo
 }
 
@@ -59,7 +60,7 @@ func (r *Repository) GetUserByID(id string) (*User, error) {
 	return &user, nil
 }
 
-func (r* Repository) GetUserByEmail(email string) (*User, error) {
+func (r *Repository) GetUserByEmail(email string) (*User, error) {
 	var user User
 	if err := r.db.Table("users").Where("email = ?", email).First(&user).Error; err != nil {
 		return nil, errors.New("User not found")
@@ -70,7 +71,7 @@ func (r* Repository) GetUserByEmail(email string) (*User, error) {
 func (r *Repository) CreateUser(user User) (*User, error) {
 	// Assign a unique ID to the new user (you may use a UUID generator)
 	id := uuid.New()
-	user.ID = id.String() // Replace with your logic
+	user.ID = "USR-" + id.String() // Replace with your logic
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {

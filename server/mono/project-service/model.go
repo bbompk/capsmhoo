@@ -19,3 +19,17 @@ type ProjectRequest struct {
 	Message          string `json:"message"`
 	Status           string `json:"status"`
 }
+
+type Notification struct {
+	Title  string `json:"title"`
+	Body   string `json:"body"`
+	UserID string `json:"user_id"`
+	IsRead bool   `json:"is_read"`
+}
+
+type Student struct {
+	ID     string  `json:"id"`
+	Name   string  `json:"name"`
+	TeamID *string `json:"team_id,omitempty"`
+	UserID string  `json:"user_id"`
+}

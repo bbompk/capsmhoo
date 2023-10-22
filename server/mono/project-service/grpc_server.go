@@ -8,15 +8,19 @@ import (
 	"log"
 	"net"
 
+	"github.com/spf13/viper"
 	"google.golang.org/grpc"
 
 	pb "capsmhoo/gen/projectpb"
+	"capsmhoo/mono/common/rabbitmq"
 )
 
 type projectServer struct {
 	// Implements the generated ProjectServer interface
 	pb.UnimplementedProjectServiceServer
-	repo ProjectRepository
+	repo         ProjectRepository
+	student_repo StudentRepository
+	publisher    rabbitmq.RabbitMQPublisher
 }
 
 func (s *projectServer) mustEmbedUnimplementedProjectServiceServer() {}
@@ -122,6 +126,20 @@ func (s *projectServer) CreateProjectRequest(ctx context.Context, projectRequest
 		return nil, err
 	}
 
+	proj, err := s.repo.GetProjectByID(projectRequest.ProjectId)
+	if err != nil {
+		return nil, err
+	}
+
+	err = s.publisher.PublishDefaultExchange(ctx, viper.GetString("rabbitmq.noti_queue_name"), Notification{
+		Title:  "New Project Request",
+		Body:   "You have a new project request for " + proj.Name + "\n" + "Message: " + projectRequest.Message + "\n",
+		UserID: proj.ProfessorID,
+	})
+	if err != nil {
+		return nil, err
+	}
+
 	createdProjectRequestRes := &pb.ProjectRequest{
 		ProjectRequestId: createdProjectRequest.ProjectRequestID,
 		ProjectId:        createdProjectRequest.ProjectID,
@@ -151,6 +169,27 @@ func (s *projectServer) AcceptProjectRequest(ctx context.Context, projectRequest
 		return nil, err
 	}
 
+	proj, err := s.repo.GetProjectByID(projReq.ProjectID)
+	if err != nil {
+		return nil, err
+	}
+
+	students, err := s.student_repo.GetAllStudentByTeamID(projReq.TeamID)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, student := range students {
+		err := s.publisher.PublishDefaultExchange(ctx, viper.GetString("rabbitmq.noti_queue_name"), Notification{
+			Title:  "Project Request Accepted",
+			Body:   "Your project request for " + proj.Name + " has been accepted",
+			UserID: student.ID,
+		})
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	return &pb.SuccessResponse{
 		Success: true,
 	}, nil
@@ -162,6 +201,27 @@ func (s *projectServer) RejectProjectRequest(ctx context.Context, projectRequest
 	err := s.repo.RejectProjectRequest(projectRequest.ProjectRequestId)
 	if err != nil {
 		return nil, err
+	}
+
+	proj, err := s.repo.GetProjectByID(projectRequest.ProjectId)
+	if err != nil {
+		return nil, err
+	}
+
+	students, err := s.student_repo.GetAllStudentByTeamID(projectRequest.TeamId)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, student := range students {
+		err := s.publisher.PublishDefaultExchange(ctx, viper.GetString("rabbitmq.noti_queue_name"), Notification{
+			Title:  "Project Request Rejected",
+			Body:   "Your project request for " + proj.Name + " has been rejected",
+			UserID: student.ID,
+		})
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return &pb.SuccessResponse{
@@ -184,6 +244,8 @@ func convertProjectRes(project *Project) *pb.Project {
 
 func StartgRPCServer(
 	repo ProjectRepository,
+	student_repo StudentRepository,
+	publisher rabbitmq.RabbitMQPublisher,
 	grpc_host string,
 	grpc_port string,
 ) {
@@ -196,7 +258,11 @@ func StartgRPCServer(
 
 	s := grpc.NewServer()
 
-	pb.RegisterProjectServiceServer(s, &projectServer{repo: repo})
+	pb.RegisterProjectServiceServer(s, &projectServer{
+		repo:         repo,
+		student_repo: student_repo,
+		publisher:    publisher,
+	})
 	log.Printf("Server listening at %v", lis.Addr())
 
 	if err := s.Serve(lis); err != nil {
