@@ -19,6 +19,7 @@ type UserHandler struct {
 type UserHttpHandler interface {
 	// SignUpUser(c *gin.Context)
 	SignInUser(c *gin.Context)
+	SignOutUser(c *gin.Context)
 	GetUsers(c *gin.Context)
 	GetUserByID(c *gin.Context)
 	CreateUser(c *gin.Context)
@@ -97,6 +98,10 @@ func CreateToken(user User) (string, error) {
     }
 
     return tokenString, nil
+}
+
+func (h* UserHandler) SignOutUser(c *gin.Context) {
+	// todo
 }
 
 func (h *UserHandler) GetUser(c *gin.Context) {
