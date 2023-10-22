@@ -16,10 +16,12 @@ on:
     branches: [ "master", "dev" ]
     paths:
       - "server/**"
+      - ".github/workflows/build-test-server.yml"
   pull_request:
     branches: [ "master", "dev" ]
     paths:
       - "server/**"
+      - ".github/workflows/build-test-server.yml"
 jobs:
 
   build_user:
