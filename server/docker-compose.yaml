@@ -35,6 +35,11 @@ services:
       - "15672:15672"
     networks:
       - capsmhoo-net
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
   # user service
   user-service:
     container_name: user-service
@@ -50,8 +55,10 @@ services:
     networks:
       - capsmhoo-net
     depends_on:
-      - postgres
-      - rabbitmq 
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
   # team service
   team-service:
     container_name: team-service
@@ -62,6 +69,11 @@ services:
       - "50051:50051"
     networks:
       - capsmhoo-net
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
   # team service
   project-service:
     container_name: project-service
@@ -72,6 +84,11 @@ services:
       - "50052:50052"
     networks:
       - capsmhoo-net
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
   # noti service
   noti-service:
     container_name: noti-service
@@ -87,8 +104,10 @@ services:
     networks:
       - capsmhoo-net
     depends_on:
-      - postgres
-      - rabbitmq 
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
   # api gateway
   api-gateway:
     container_name: api-gateway
