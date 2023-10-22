@@ -22,27 +22,81 @@ on:
       - "server/**"
 jobs:
 
-  build:
+  build_user:
+    name: Build User Service
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout
+      uses: actions/checkout@v3
 
     - name: Set up Go
       uses: actions/setup-go@v4
       with:
         go-version: '1.20'
 
-    - name: Build User Service
+    - name: Build
       working-directory: ./server
       run: go build -v cmd/user/main.go
 
-    - name: Build Team Service
+ build_team:
+    name: Build Team Service
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.20'
+
+    - name: Build
       working-directory: ./server
       run: go build -v cmd/team/main.go
 
-    - name: Build Project Service
+ build_project:
+    name: Build Project Service
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.20'
+
+    - name: Build
       working-directory: ./server
       run: go build -v cmd/proj/main.go
+  
+  build_noti:
+    name: Build Noti Service
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.20'
+
+    - name: Build
+      working-directory: ./server
+      run: go build -v cmd/noti/main.go
+
+  build_gateway:
+    name: Build Api Gateway
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.20'
 
     - name: Build API Gateway
       working-directory: ./server
