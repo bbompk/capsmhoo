@@ -30,6 +30,8 @@ type TeamJoinRequestgRPCClient interface {
 	CreateJoinRequest(ctx context.Context, request *model.TeamJoinRequest) (*model.TeamJoinRequest, error)
 	UpdateJoinRequest(ctx context.Context, id string, request *model.TeamJoinRequest) (*model.TeamJoinRequest, error)
 	DeleteJoinRequest(ctx context.Context, id string) (*joinRequestPb.TeamJoinRequest, error)
+	ApproveJoinRequest(ctx context.Context, id string) (*joinRequestPb.TeamJoinRequest, error)
+	DeclineJoinRequest(ctx context.Context, id string) (*joinRequestPb.TeamJoinRequest, error)
 }
 
 func (t *TeamClient) GetAllTeams(ctx context.Context) ([]*model.Team, error) {
@@ -169,6 +171,14 @@ func (t *TeamJoinRequestClient) UpdateJoinRequest(ctx context.Context, id string
 
 func (t *TeamJoinRequestClient) DeleteJoinRequest(ctx context.Context, id string) (*joinRequestPb.TeamJoinRequest, error) {
 	return (*t.client).DeleteJoinRequest(ctx, &joinRequestPb.TeamJoinRequestId{Id: id})
+}
+
+func (t *TeamJoinRequestClient) ApproveJoinRequest(ctx context.Context, id string) (*joinRequestPb.TeamJoinRequest, error) {
+	return (*t.client).ApproveJoinRequest(ctx, &joinRequestPb.TeamJoinRequestId{Id: id})
+}
+
+func (t *TeamJoinRequestClient) DeclineJoinRequest(ctx context.Context, id string) (*joinRequestPb.TeamJoinRequest, error) {
+	return (*t.client).DeclineJoinRequest(ctx, &joinRequestPb.TeamJoinRequestId{Id: id})
 }
 
 func ProvideTeamClient(client *pb.TeamServiceClient) *TeamClient {

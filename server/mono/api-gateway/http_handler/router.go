@@ -27,4 +27,6 @@ func ProvideRouter(
 	teamJoinRequestRoute.POST("", teamJoinRequestHandler.CreateJoinRequest)
 	teamJoinRequestRoute.PUT("/:id", teamJoinRequestHandler.UpdateJoinRequest)
 	teamJoinRequestRoute.DELETE("/:id", teamJoinRequestHandler.DeleteJoinRequest)
+	teamJoinRequestRoute.POST("/approve/:id", teamJoinRequestHandler.ApproveJoinRequest)
+	teamJoinRequestRoute.POST("/decline/:id", teamJoinRequestHandler.DeclineJoinRequest)
 }

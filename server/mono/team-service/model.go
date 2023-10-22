@@ -11,3 +11,10 @@ type TeamJoinRequest struct {
 	TeamID    string `json:"team_id"`
 	StudentID string `json:"student_id"`
 }
+
+type Student struct {
+	ID     string  `json:"id"`
+	Name   string  `json:"name"`
+	TeamID *string `json:"team_id,omitempty"`
+	UserID string  `json:"user_id"`
+}

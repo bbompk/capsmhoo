@@ -31,8 +31,8 @@ type ITeamJoinRequestHandler interface {
 	CreateJoinRequest(c *gin.Context)
 	UpdateJoinRequest(c *gin.Context)
 	DeleteJoinRequest(c *gin.Context)
-	// ApproveJoinRequest(c *gin.Context)
-	// DeclineJoinRequest(c *gin.Context)
+	ApproveJoinRequest(c *gin.Context)
+	DeclineJoinRequest(c *gin.Context)
 }
 
 func (h *TeamHandler) GetAllTeams(c *gin.Context) {
@@ -238,37 +238,37 @@ func (h *TeamJoinRequestHandler) DeleteJoinRequest(c *gin.Context) {
 	})
 }
 
-// func (h *TeamJoinRequestHandler) ApproveJoinRequest(c *gin.Context) {
-// 	id := c.Param("id")
-// 	_, err := h.joinRequestClientgRPC.ApproveJoinRequest(c, id)
-// 	if err != nil {
-// 		c.JSON(200, gin.H{
-// 			"code":  "500",
-// 			"error": err.Error(),
-// 		})
-// 		return
-// 	}
-// 	c.JSON(200, gin.H{
-// 		"code":    "200",
-// 		"message": "Successfully approved",
-// 	})
-// }
+func (h *TeamJoinRequestHandler) ApproveJoinRequest(c *gin.Context) {
+	id := c.Param("id")
+	_, err := h.teamJoinRequestClientgRPC.ApproveJoinRequest(c, id)
+	if err != nil {
+		c.JSON(200, gin.H{
+			"code":  "500",
+			"error": err.Error(),
+		})
+		return
+	}
+	c.JSON(200, gin.H{
+		"code":    "200",
+		"message": "Successfully approved",
+	})
+}
 
-// func (h *TeamJoinRequestHandler) DeclineJoinRequest(c *gin.Context) {
-// 	id := c.Param("id")
-// 	_, err := h.joinRequestClientgRPC.DeclineJoinRequest(c, id)
-// 	if err != nil {
-// 		c.JSON(200, gin.H{
-// 			"code":  "500",
-// 			"error": err.Error(),
-// 		})
-// 		return
-// 	}
-// 	c.JSON(200, gin.H{
-// 		"code":    "200",
-// 		"message": "Successfully declined",
-// 	})
-// }
+func (h *TeamJoinRequestHandler) DeclineJoinRequest(c *gin.Context) {
+	id := c.Param("id")
+	_, err := h.teamJoinRequestClientgRPC.DeclineJoinRequest(c, id)
+	if err != nil {
+		c.JSON(200, gin.H{
+			"code":  "500",
+			"error": err.Error(),
+		})
+		return
+	}
+	c.JSON(200, gin.H{
+		"code":    "200",
+		"message": "Successfully declined",
+	})
+}
 
 func ProvideTeamHandler(teamClientgRPC grpcClient.TeamgRPCClient) *TeamHandler {
 	return &TeamHandler{
