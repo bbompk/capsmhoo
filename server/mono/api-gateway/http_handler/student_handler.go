@@ -1,8 +1,9 @@
 package http_handler
 
 import (
-	"github.com/gin-gonic/gin"
 	restClient "capsmhoo/mono/api-gateway/client_rest"
+
+	"github.com/gin-gonic/gin"
 	// "capsmhoo/mono/api-gateway/model"
 )
 
@@ -19,22 +20,22 @@ type IStudentHandler interface {
 	DeleteStudentAll(c *gin.Context)
 }
 
-func (h *TeamHandler) GetStudentByID(c *gin.Context) {
+func (h *StudentHandler) GetStudentByID(c *gin.Context) {
 }
 
-func (h *TeamHandler) GetAllStudents(c *gin.Context) {
+func (h *StudentHandler) GetAllStudents(c *gin.Context) {
 }
 
-func (h *TeamHandler) CreateStudent(c *gin.Context) {
+func (h *StudentHandler) CreateStudent(c *gin.Context) {
 }
 
-func (h *TeamHandler) UpdateStudentByID(c *gin.Context) {
+func (h *StudentHandler) UpdateStudentByID(c *gin.Context) {
 }
 
-func (h *TeamHandler) DeleteStudentByID(c *gin.Context) {
+func (h *StudentHandler) DeleteStudentByID(c *gin.Context) {
 }
 
-func (h *TeamHandler) DeleteStudentAll(c *gin.Context) {
+func (h *StudentHandler) DeleteStudentAll(c *gin.Context) {
 }
 
 func ProvideStudentHandler(studentClientRest restClient.StudentClientRest) *StudentHandler {

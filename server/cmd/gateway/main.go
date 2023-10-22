@@ -16,6 +16,7 @@ import (
 	pb "capsmhoo/gen/proto"
 	joinRequestPb "capsmhoo/gen/team-join-request-pb"
 	gatewaygRPCClient "capsmhoo/mono/api-gateway/client_grpc"
+	restClient "capsmhoo/mono/api-gateway/client_rest"
 	gatewayHTTPHandler "capsmhoo/mono/api-gateway/http_handler"
 )
 
@@ -49,8 +50,15 @@ func main() {
 	teamJoinRequestHandler := gatewayHTTPHandler.ProvideTeamJoinRequestHandler(teamJoinRequestgRPCClient)
 	notigRPCClient := gatewaygRPCClient.ProvideNotiClient(&notigRPCClienter)
 	notiHandler := gatewayHTTPHandler.ProvideNotiHandler(notigRPCClient)
+	studentClientRest := restClient.ProvideStudentClientRest()
+	studentHandler := gatewayHTTPHandler.ProvideStudentHandler(studentClientRest)
+	professorClientRest := restClient.ProvideProfessorClientRest()
+	professorHandler := gatewayHTTPHandler.ProvideProfessorHandler(professorClientRest)
+	userClientRest := restClient.ProvideUserClientRest()
+	userHandler := gatewayHTTPHandler.ProvideUserHandler(userClientRest)
+	projectHandler := gatewayHTTPHandler.ProvideProjectHandler()
 
-	gatewayHTTPHandler.ProvideRouter(r, teamHandler, teamJoinRequestHandler, notiHandler)
+	gatewayHTTPHandler.ProvideRouter(r, teamHandler, teamJoinRequestHandler, userHandler, studentHandler, professorHandler, projectHandler, notiHandler)
 
 	r.Run(":" + "8082")
 }
