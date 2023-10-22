@@ -39,7 +39,7 @@ func (r *ProfessorRepositoryStruct) GetProfessorByID(id string) (*Professor, err
 func (r *ProfessorRepositoryStruct) CreateProfessor(professor Professor) (*Professor, error) {
 	// Assign a unique ID to the new professor (you may use a UUID generator)
 	id := uuid.New()
-	professor.ID = id.String() // Replace with your logic
+	professor.ID = "PRF-" + id.String() // Replace with your logic
 
 	if err := r.db.Create(&professor).Error; err != nil {
 		return nil, err

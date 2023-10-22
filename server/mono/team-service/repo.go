@@ -37,7 +37,7 @@ func (r *Repository) GetTeamByID(id string) (*Team, error) {
 func (r *Repository) CreateTeam(team Team) (*Team, error) {
 	// Assign a unique ID to the new user (you may use a UUID generator)
 	id := uuid.New()
-	team.ID = id.String() // Replace with your logic
+	team.ID = "TEAM-" + id.String() // Replace with your logic
 
 	if err := r.db.Table("teams").Create(&team).Error; err != nil {
 		return nil, err

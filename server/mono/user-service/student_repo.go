@@ -39,7 +39,7 @@ func (r *StudentRepositoryStruct) GetStudentByID(id string) (*Student, error) {
 func (r *StudentRepositoryStruct) CreateStudent(student Student) (*Student, error) {
 	// Assign a unique ID to the new student (you may use a UUID generator)
 	id := uuid.New()
-	student.ID = id.String() // Replace with your logic
+	student.ID = "STD-" + id.String() // Replace with your logic
 	if err := r.db.Table("students").Create(&student).Error; err != nil {
 		return nil, err
 	}

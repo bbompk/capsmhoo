@@ -65,7 +65,15 @@ func main() {
 	projectgRPCClient := gatewaygRPCClient.ProvideProjectClient(&projectgRPCClienter)
 	projectHandler := gatewayHTTPHandler.ProvideProjectHandler(projectgRPCClient)
 
-	gatewayHTTPHandler.ProvideRouter(r, teamHandler, teamJoinRequestHandler, userHandler, studentHandler, professorHandler, projectHandler, notiHandler)
+	gatewayHTTPHandler.ProvideRouter(r,
+		teamHandler,
+		teamJoinRequestHandler,
+		userHandler,
+		studentHandler,
+		professorHandler,
+		projectHandler,
+		notiHandler,
+	)
 
 	r.Run(":" + "8082")
 }
