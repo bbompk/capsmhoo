@@ -11,6 +11,10 @@ type TeamHandler struct {
 	teamClientgRPC grpcClient.TeamgRPCClient
 }
 
+type TeamJoinRequestHandler struct {
+	teamJoinRequestClientgRPC grpcClient.TeamJoinRequestgRPCClient
+}
+
 type ITeamHandler interface {
 	GetAllTeams(c *gin.Context)
 	GetTeamByID(c *gin.Context)
@@ -19,6 +23,16 @@ type ITeamHandler interface {
 	DeleteTeamByID(c *gin.Context)
 	AddStudentToTeam(c *gin.Context)
 	RemoveStudentFromTeam(c *gin.Context)
+}
+
+type ITeamJoinRequestHandler interface {
+	GetAllJoinRequests(c *gin.Context)
+	GetJoinRequestByID(c *gin.Context)
+	CreateJoinRequest(c *gin.Context)
+	UpdateJoinRequest(c *gin.Context)
+	DeleteJoinRequest(c *gin.Context)
+	ApproveJoinRequest(c *gin.Context)
+	DeclineJoinRequest(c *gin.Context)
 }
 
 func (h *TeamHandler) GetAllTeams(c *gin.Context) {
@@ -129,8 +143,141 @@ func (h *TeamHandler) RemoveStudentFromTeam(c *gin.Context) {
 	})
 }
 
+func (h *TeamJoinRequestHandler) GetAllJoinRequests(c *gin.Context) {
+	requests, err := h.teamJoinRequestClientgRPC.GetAllJoinRequests(c)
+	if err != nil {
+		c.JSON(200, gin.H{
+			"code":  "500",
+			"error": err.Error(),
+		})
+		return
+	}
+	c.JSON(200, gin.H{
+		"code":     "200",
+		"requests": requests,
+	})
+}
+
+func (h *TeamJoinRequestHandler) GetJoinRequestByID(c *gin.Context) {
+	id := c.Param("id")
+	request, err := h.teamJoinRequestClientgRPC.GetJoinRequestByID(c, id)
+	if err != nil {
+		c.JSON(200, gin.H{
+			"code":  "500",
+			"error": err.Error(),
+		})
+		return
+	}
+	c.JSON(200, gin.H{
+		"code":    "200",
+		"request": request,
+	})
+}
+
+func (h *TeamJoinRequestHandler) CreateJoinRequest(c *gin.Context) {
+	var request model.TeamJoinRequest
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.JSON(200, gin.H{
+			"code":  "400",
+			"error": err.Error(),
+		})
+		return
+	}
+	createdRequest, err := h.teamJoinRequestClientgRPC.CreateJoinRequest(c, &request)
+	if err != nil {
+		c.JSON(200, gin.H{
+			"code":  "500",
+			"error": err.Error(),
+		})
+		return
+	}
+	c.JSON(200, gin.H{
+		"code":    "200",
+		"request": createdRequest,
+	})
+}
+
+func (h *TeamJoinRequestHandler) UpdateJoinRequest(c *gin.Context) {
+	id := c.Param("id")
+	var request model.TeamJoinRequest
+	if err := c.ShouldBindJSON(&request); err != nil {
+		c.JSON(200, gin.H{
+			"code":  "400",
+			"error": err.Error(),
+		})
+		return
+	}
+	updatedRequest, err := h.teamJoinRequestClientgRPC.UpdateJoinRequest(c, id, &request)
+	if err != nil {
+		c.JSON(200, gin.H{
+			"code":  "500",
+			"error": err.Error(),
+		})
+		return
+	}
+	c.JSON(200, gin.H{
+		"code":    "200",
+		"request": updatedRequest,
+	})
+}
+
+func (h *TeamJoinRequestHandler) DeleteJoinRequest(c *gin.Context) {
+	id := c.Param("id")
+	_, err := h.teamJoinRequestClientgRPC.DeleteJoinRequest(c, id)
+	if err != nil {
+		c.JSON(200, gin.H{
+			"code":  "500",
+			"error": err.Error(),
+		})
+		return
+	}
+	// If needed, use 'deletedRequest' here. Otherwise, you can ignore it.
+	c.JSON(200, gin.H{
+		"code":    "200",
+		"message": "Successfully deleted",
+	})
+}
+
+func (h *TeamJoinRequestHandler) ApproveJoinRequest(c *gin.Context) {
+	id := c.Param("id")
+	_, err := h.teamJoinRequestClientgRPC.ApproveJoinRequest(c, id)
+	if err != nil {
+		c.JSON(200, gin.H{
+			"code":  "500",
+			"error": err.Error(),
+		})
+		return
+	}
+	c.JSON(200, gin.H{
+		"code":    "200",
+		"message": "Successfully approved",
+	})
+}
+
+func (h *TeamJoinRequestHandler) DeclineJoinRequest(c *gin.Context) {
+	id := c.Param("id")
+	_, err := h.teamJoinRequestClientgRPC.DeclineJoinRequest(c, id)
+	if err != nil {
+		c.JSON(200, gin.H{
+			"code":  "500",
+			"error": err.Error(),
+		})
+		return
+	}
+	c.JSON(200, gin.H{
+		"code":    "200",
+		"message": "Successfully declined",
+	})
+}
+
 func ProvideTeamHandler(teamClientgRPC grpcClient.TeamgRPCClient) *TeamHandler {
 	return &TeamHandler{
 		teamClientgRPC: teamClientgRPC,
+	}
+}
+
+func ProvideTeamJoinRequestHandler(TeamJoinRequestClientgRPC grpcClient.TeamJoinRequestgRPCClient) *TeamJoinRequestHandler {
+	return &TeamJoinRequestHandler{
+		teamJoinRequestClientgRPC: TeamJoinRequestClientgRPC,
 	}
 }

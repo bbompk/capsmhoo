@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+option go_package = "./team-join-request-pb";
+
+service TeamJoinRequestService {
+    rpc GetAllJoinRequests(TeamJoinReqeustEmpty) returns (TeamJoinRequestList);
+    rpc GetJoinRequestById(TeamJoinRequestId) returns (TeamJoinRequest);
+    rpc CreateJoinRequest(TeamJoinRequest) returns (TeamJoinRequest);
+    rpc UpdateJoinRequest(TeamJoinRequest) returns (TeamJoinRequest);
+    rpc DeleteJoinRequest(TeamJoinRequestId) returns (TeamJoinRequest);
+    rpc ApproveJoinRequest(TeamJoinRequestId) returns (TeamJoinRequest);
+    rpc DeclineJoinRequest(TeamJoinRequestId) returns (TeamJoinRequest);
+}
+
+message TeamJoinReqeustEmpty {}
+
+message TeamJoinRequest {
+    string id = 1;
+    string team_id = 2;
+    string student_id = 3;
+}
+
+message TeamJoinRequestList {
+    repeated TeamJoinRequest join_requests = 1;
+}
+
+message TeamJoinRequestId {
+    string id = 1;
+}

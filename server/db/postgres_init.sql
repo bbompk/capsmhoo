@@ -52,4 +52,8 @@ CREATE TABLE projects (
     description TEXT
 );
 
-
+CREATE TABLE team_join_requests (
+    id VARCHAR(255) PRIMARY KEY,
+    team_id VARCHAR(255) REFERENCES teams(id),
+    student_id VARCHAR(255) REFERENCES students(id)
+);

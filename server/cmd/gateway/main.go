@@ -14,6 +14,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 
 	pb "capsmhoo/gen/proto"
+	joinRequestPb "capsmhoo/gen/team-join-request-pb"
 	gatewaygRPCClient "capsmhoo/mono/api-gateway/client_grpc"
 	gatewayHTTPHandler "capsmhoo/mono/api-gateway/http_handler"
 )
@@ -36,17 +37,20 @@ func main() {
 	teamgRPCClienter := pb.NewTeamServiceClient(teamgRPCConn)
 	notigRPCConn := initNotigRPCConnection()
 	notigRPCClienter := pb.NewNotiServiceClient(notigRPCConn)
+	teamJoinRequestgRPCClienter := joinRequestPb.NewTeamJoinRequestServiceClient(teamgRPCConn)
 
 	defer teamgRPCConn.Close()
 	defer notigRPCConn.Close()
 
 	// dependency injection
 	teamgRPCClient := gatewaygRPCClient.ProvideTeamClient(&teamgRPCClienter)
+	teamJoinRequestgRPCClient := gatewaygRPCClient.ProvideTeamJoinRequestClient(&teamJoinRequestgRPCClienter)
 	teamHandler := gatewayHTTPHandler.ProvideTeamHandler(teamgRPCClient)
+	teamJoinRequestHandler := gatewayHTTPHandler.ProvideTeamJoinRequestHandler(teamJoinRequestgRPCClient)
 	notigRPCClient := gatewaygRPCClient.ProvideNotiClient(&notigRPCClienter)
 	notiHandler := gatewayHTTPHandler.ProvideNotiHandler(notigRPCClient)
 
-	gatewayHTTPHandler.ProvideRouter(r, teamHandler, notiHandler)
+	gatewayHTTPHandler.ProvideRouter(r, teamHandler, teamJoinRequestHandler, notiHandler)
 
 	r.Run(":" + "8082")
 }

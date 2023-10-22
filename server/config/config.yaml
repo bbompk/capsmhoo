@@ -20,4 +20,8 @@ noti-service:
   grpc-port: 50054
 api-gateway:
   port: 8082
+team-join-request-service:
+  port: 8085
+  grpc-host: 127.0.0.1
+  grpc-port: 50055
 

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	pb "capsmhoo/gen/proto"
+	joinRequestPb "capsmhoo/gen/team-join-request-pb"
 	"capsmhoo/mono/api-gateway/model"
 )
 
@@ -11,6 +12,9 @@ type TeamClient struct {
 	client *pb.TeamServiceClient
 }
 
+type TeamJoinRequestClient struct {
+	client *joinRequestPb.TeamJoinRequestServiceClient
+}
 type TeamgRPCClient interface {
 	GetAllTeams(ctx context.Context) ([]*model.Team, error)
 	GetTeamByID(ctx context.Context, id string) (*model.Team, error)
@@ -19,6 +23,15 @@ type TeamgRPCClient interface {
 	DeleteTeamByID(ctx context.Context, id string) (*model.Team, error)
 	AddStudentToTeam(ctx context.Context, teamID string, studentID string) error
 	RemoveStudentFromTeam(ctx context.Context, teamID string, studentID string) error
+}
+type TeamJoinRequestgRPCClient interface {
+	GetAllJoinRequests(ctx context.Context) ([]*model.TeamJoinRequest, error)
+	GetJoinRequestByID(ctx context.Context, id string) (*model.TeamJoinRequest, error)
+	CreateJoinRequest(ctx context.Context, request *model.TeamJoinRequest) (*model.TeamJoinRequest, error)
+	UpdateJoinRequest(ctx context.Context, id string, request *model.TeamJoinRequest) (*model.TeamJoinRequest, error)
+	DeleteJoinRequest(ctx context.Context, id string) (*joinRequestPb.TeamJoinRequest, error)
+	ApproveJoinRequest(ctx context.Context, id string) (*joinRequestPb.TeamJoinRequest, error)
+	DeclineJoinRequest(ctx context.Context, id string) (*joinRequestPb.TeamJoinRequest, error)
 }
 
 func (t *TeamClient) GetAllTeams(ctx context.Context) ([]*model.Team, error) {
@@ -96,7 +109,82 @@ func (t *TeamClient) AddStudentToTeam(ctx context.Context, teamID string, studen
 func (t *TeamClient) RemoveStudentFromTeam(ctx context.Context, teamID string, studentID string) error {
 	return nil
 }
+func (t *TeamJoinRequestClient) GetAllJoinRequests(ctx context.Context) ([]*model.TeamJoinRequest, error) {
+	res, err := (*t.client).GetAllJoinRequests(ctx, &joinRequestPb.TeamJoinReqeustEmpty{})
+	if err != nil {
+		return nil, err
+	}
+	var requests []*model.TeamJoinRequest
+	for _, req := range res.JoinRequests {
+		requests = append(requests, &model.TeamJoinRequest{
+			ID:        req.Id,
+			TeamID:    req.TeamId,
+			StudentID: req.StudentId,
+		})
+	}
+	return requests, nil
+}
+
+func (t *TeamJoinRequestClient) GetJoinRequestByID(ctx context.Context, id string) (*model.TeamJoinRequest, error) {
+	res, err := (*t.client).GetJoinRequestById(ctx, &joinRequestPb.TeamJoinRequestId{Id: id})
+	if err != nil {
+		return nil, err
+	}
+	return &model.TeamJoinRequest{
+		ID:        res.Id,
+		TeamID:    res.TeamId,
+		StudentID: res.StudentId,
+	}, nil
+}
+
+func (t *TeamJoinRequestClient) CreateJoinRequest(ctx context.Context, request *model.TeamJoinRequest) (*model.TeamJoinRequest, error) {
+	res, err := (*t.client).CreateJoinRequest(ctx, &joinRequestPb.TeamJoinRequest{
+		Id:        request.ID,
+		TeamId:    request.TeamID,
+		StudentId: request.StudentID,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &model.TeamJoinRequest{
+		ID:        res.Id,
+		TeamID:    res.TeamId,
+		StudentID: res.StudentId,
+	}, nil
+}
+
+func (t *TeamJoinRequestClient) UpdateJoinRequest(ctx context.Context, id string, request *model.TeamJoinRequest) (*model.TeamJoinRequest, error) {
+	res, err := (*t.client).UpdateJoinRequest(ctx, &joinRequestPb.TeamJoinRequest{
+		Id:        id,
+		TeamId:    request.TeamID,
+		StudentId: request.StudentID,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &model.TeamJoinRequest{
+		ID:        res.Id,
+		TeamID:    res.TeamId,
+		StudentID: res.StudentId,
+	}, nil
+}
+
+func (t *TeamJoinRequestClient) DeleteJoinRequest(ctx context.Context, id string) (*joinRequestPb.TeamJoinRequest, error) {
+	return (*t.client).DeleteJoinRequest(ctx, &joinRequestPb.TeamJoinRequestId{Id: id})
+}
+
+func (t *TeamJoinRequestClient) ApproveJoinRequest(ctx context.Context, id string) (*joinRequestPb.TeamJoinRequest, error) {
+	return (*t.client).ApproveJoinRequest(ctx, &joinRequestPb.TeamJoinRequestId{Id: id})
+}
+
+func (t *TeamJoinRequestClient) DeclineJoinRequest(ctx context.Context, id string) (*joinRequestPb.TeamJoinRequest, error) {
+	return (*t.client).DeclineJoinRequest(ctx, &joinRequestPb.TeamJoinRequestId{Id: id})
+}
 
 func ProvideTeamClient(client *pb.TeamServiceClient) *TeamClient {
 	return &TeamClient{client: client}
+}
+
+func ProvideTeamJoinRequestClient(client *joinRequestPb.TeamJoinRequestServiceClient) *TeamJoinRequestClient {
+	return &TeamJoinRequestClient{client: client}
 }
