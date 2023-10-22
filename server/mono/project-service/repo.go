@@ -24,6 +24,7 @@ type ProjectRepository interface {
 	CreateProjectRequest(projectRequest ProjectRequest) (*ProjectRequest, error)
 	UpdateProjectRequestByID(id string, projectRequest ProjectRequest) (*ProjectRequest, error)
 	DeleteProjectRequestByID(id string) (*ProjectRequest, error)
+	DeleteProjectRequestByProjectID(id string) (*ProjectRequest, error)
 	AcceptProjectRequest(id string) error
 	RejectProjectRequest(id string) error
 	AddTeamToProject(teamID string, projectID string) error
@@ -125,6 +126,17 @@ func (r *Repository) DeleteProjectRequestByID(id string) (*ProjectRequest, error
 		return nil, errors.New("ProjectRequest not found")
 	}
 	if err := r.db.Table("project_requests").Where("project_request_id = ?", id).Delete(ProjectRequest{}).Error; err != nil {
+		return nil, errors.New("ProjectRequest not found")
+	}
+	return &projectRequest, nil
+}
+
+func (r *Repository) DeleteProjectRequestByProjectID(id string) (*ProjectRequest, error) {
+	var projectRequest ProjectRequest
+	if err := r.db.Table("project_requests").Where("project_id = ?", id).First(&projectRequest).Error; err != nil {
+		return nil, errors.New("ProjectRequest not found")
+	}
+	if err := r.db.Table("project_requests").Where("project_id = ?", id).Delete(ProjectRequest{}).Error; err != nil {
 		return nil, errors.New("ProjectRequest not found")
 	}
 	return &projectRequest, nil

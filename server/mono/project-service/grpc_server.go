@@ -86,6 +86,11 @@ func (s *projectServer) UpdateProject(ctx context.Context, project *pb.Project) 
 func (s *projectServer) DeleteProject(ctx context.Context, projectId *pb.ProjectId) (*pb.Project, error) {
 	fmt.Println("Delete Project")
 
+	_, err := s.repo.DeleteProjectRequestByProjectID(projectId.ProjectId)
+	if err != nil {
+		return nil, err
+	}
+
 	project, err := s.repo.DeleteProjectByID(projectId.ProjectId)
 	if err != nil {
 		return nil, err
