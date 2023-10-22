@@ -40,7 +40,7 @@ jobs:
       working-directory: ./server
       run: go build -v cmd/user/main.go
 
- build_team:
+  build_team:
     name: Build Team Service
     runs-on: ubuntu-latest
     steps:
@@ -56,7 +56,7 @@ jobs:
       working-directory: ./server
       run: go build -v cmd/team/main.go
 
- build_project:
+  build_project:
     name: Build Project Service
     runs-on: ubuntu-latest
     steps:
