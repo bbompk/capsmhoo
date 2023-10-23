@@ -198,17 +198,22 @@ func (s *projectServer) AcceptProjectRequest(ctx context.Context, projectRequest
 func (s *projectServer) RejectProjectRequest(ctx context.Context, projectRequest *pb.ProjectRequest) (*pb.SuccessResponse, error) {
 	fmt.Println("Reject Project Request")
 
-	err := s.repo.RejectProjectRequest(projectRequest.ProjectRequestId)
+	projReq, err := s.repo.GetProjectRequestByID(projectRequest.ProjectRequestId)
 	if err != nil {
 		return nil, err
 	}
 
-	proj, err := s.repo.GetProjectByID(projectRequest.ProjectId)
+	err = s.repo.RejectProjectRequest(projectRequest.ProjectRequestId)
 	if err != nil {
 		return nil, err
 	}
 
-	students, err := s.student_repo.GetAllStudentByTeamID(projectRequest.TeamId)
+	proj, err := s.repo.GetProjectByID(projReq.ProjectID)
+	if err != nil {
+		return nil, err
+	}
+
+	students, err := s.student_repo.GetAllStudentByTeamID(projReq.TeamID)
 	if err != nil {
 		return nil, err
 	}
