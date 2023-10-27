@@ -12,7 +12,7 @@ import (
 	"google.golang.org/grpc"
 
 	pb "capsmhoo/gen/projectpb"
-	"capsmhoo/mono/common/rabbitmq"
+	"capsmhoo/internal/common/rabbitmq"
 )
 
 type projectServer struct {

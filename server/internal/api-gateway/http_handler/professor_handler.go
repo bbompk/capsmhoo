@@ -1,10 +1,10 @@
 package http_handler
 
 import (
-	restClient "capsmhoo/mono/api-gateway/client_rest"
+	restClient "capsmhoo/internal/api-gateway/client_rest"
 
 	"github.com/gin-gonic/gin"
-	// "capsmhoo/mono/api-gateway/model"
+	// "capsmhoo/internal/api-gateway/model"
 )
 
 type ProfessorHandler struct {

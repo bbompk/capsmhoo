@@ -1,7 +1,8 @@
 package user
 
 import (
-	"capsmhoo/mono/api-gateway/middleware"
+	"capsmhoo/internal/api-gateway/middleware"
+
 	"github.com/gin-gonic/gin"
 )
 

@@ -5,7 +5,7 @@ import (
 
 	pb "capsmhoo/gen/proto"
 	joinRequestPb "capsmhoo/gen/team-join-request-pb"
-	"capsmhoo/mono/api-gateway/model"
+	"capsmhoo/internal/api-gateway/model"
 )
 
 type TeamClient struct {

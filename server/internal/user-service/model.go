@@ -9,7 +9,7 @@ type User struct {
 type Student struct {
 	ID     string  `json:"id"`
 	Name   string  `json:"name"`
-	TeamID *string `json:"team_id,omitempty"`
+	TeamID *string `json:"team_id"`
 	UserID string  `json:"user_id"`
 }
 

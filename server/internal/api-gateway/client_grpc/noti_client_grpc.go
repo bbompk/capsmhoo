@@ -3,7 +3,7 @@ package client_grpc
 import (
 	"context"
 
-	"capsmhoo/mono/api-gateway/model"
+	"capsmhoo/internal/api-gateway/model"
 
 	pb "capsmhoo/gen/proto"
 )

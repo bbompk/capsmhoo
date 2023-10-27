@@ -16,9 +16,9 @@ import (
 	projectpb "capsmhoo/gen/projectpb"
 	pb "capsmhoo/gen/proto"
 	joinRequestPb "capsmhoo/gen/team-join-request-pb"
-	gatewaygRPCClient "capsmhoo/mono/api-gateway/client_grpc"
-	restClient "capsmhoo/mono/api-gateway/client_rest"
-	gatewayHTTPHandler "capsmhoo/mono/api-gateway/http_handler"
+	gatewaygRPCClient "capsmhoo/internal/api-gateway/client_grpc"
+	restClient "capsmhoo/internal/api-gateway/client_rest"
+	gatewayHTTPHandler "capsmhoo/internal/api-gateway/http_handler"
 )
 
 type Team struct {

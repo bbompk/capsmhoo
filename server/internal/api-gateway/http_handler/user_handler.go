@@ -1,9 +1,10 @@
 package http_handler
 
 import (
+	restClient "capsmhoo/internal/api-gateway/client_rest"
+
 	"github.com/gin-gonic/gin"
-	restClient "capsmhoo/mono/api-gateway/client_rest" 
-	// "capsmhoo/mono/api-gateway/model"
+	// "capsmhoo/internal/api-gateway/model"
 	// "net/http"
 )
 
@@ -92,6 +93,3 @@ func ProvideUserHandler(userClientRest restClient.UserClientRest) *UserHandler {
 		userClientRest: userClientRest,
 	}
 }
-
-
-

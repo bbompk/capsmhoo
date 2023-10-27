@@ -6,7 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	team "capsmhoo/mono/team-service"
+	team "capsmhoo/internal/team-service"
 
 	"github.com/spf13/viper"
 	"gorm.io/driver/postgres"

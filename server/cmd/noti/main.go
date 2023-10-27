@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	noti "capsmhoo/mono/noti-service"
+	noti "capsmhoo/internal/noti-service"
 
 	"github.com/joho/godotenv"
 	"github.com/spf13/viper"

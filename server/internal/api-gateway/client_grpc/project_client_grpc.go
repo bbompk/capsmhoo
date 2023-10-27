@@ -4,7 +4,7 @@ import (
 	"context"
 
 	pb "capsmhoo/gen/projectpb"
-	"capsmhoo/mono/api-gateway/model"
+	"capsmhoo/internal/api-gateway/model"
 )
 
 type ProjectClient struct {

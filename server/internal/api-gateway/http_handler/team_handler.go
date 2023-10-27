@@ -1,8 +1,8 @@
 package http_handler
 
 import (
-	grpcClient "capsmhoo/mono/api-gateway/client_grpc"
-	"capsmhoo/mono/api-gateway/model"
+	grpcClient "capsmhoo/internal/api-gateway/client_grpc"
+	"capsmhoo/internal/api-gateway/model"
 
 	"github.com/gin-gonic/gin"
 )

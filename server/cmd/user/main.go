@@ -2,12 +2,12 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"os/signal"
 	"syscall"
-	"log"
 
-	user "capsmhoo/mono/user-service"
+	user "capsmhoo/internal/user-service"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"

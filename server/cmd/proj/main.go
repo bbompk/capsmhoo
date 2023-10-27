@@ -7,8 +7,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"capsmhoo/mono/common/rabbitmq"
-	project "capsmhoo/mono/project-service"
+	"capsmhoo/internal/common/rabbitmq"
+	project "capsmhoo/internal/project-service"
 
 	"github.com/spf13/viper"
 	"gorm.io/driver/postgres"
