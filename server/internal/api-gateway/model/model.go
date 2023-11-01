@@ -45,6 +45,8 @@ type Project struct {
 	ProfessorID string `json:"professor_id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
+	Status      string `json:"status"`
+	Label       string `json:"label"`
 }
 
 type ProjectRequest struct {

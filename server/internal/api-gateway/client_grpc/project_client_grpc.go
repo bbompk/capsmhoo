@@ -37,6 +37,8 @@ func (p *ProjectClient) GetAllProjects(ctx context.Context) ([]*model.Project, e
 			ProfessorID: project.ProfessorId,
 			Name:        project.Name,
 			Description: project.Description,
+			Status:      project.Status,
+			Label:       project.Label,
 		})
 	}
 	return projects, nil
@@ -53,12 +55,14 @@ func (p *ProjectClient) GetProjectByID(ctx context.Context, id string) (*model.P
 		ProfessorID: projectRes.ProfessorId,
 		Name:        projectRes.Name,
 		Description: projectRes.Description,
+		Status:      projectRes.Status,
+		Label:       projectRes.Label,
 	}
 	return project, nil
 }
 
 func (p *ProjectClient) CreateProject(ctx context.Context, project *model.Project) (*model.Project, error) {
-	projectRes, err := (*p.client).CreateProject(ctx, &pb.Project{ProfessorId: project.ProfessorID, Name: project.Name, Description: project.Description})
+	projectRes, err := (*p.client).CreateProject(ctx, &pb.Project{ProfessorId: project.ProfessorID, Name: project.Name, Description: project.Description, Label: project.Label})
 	if err != nil {
 		return nil, err
 	}
@@ -68,12 +72,14 @@ func (p *ProjectClient) CreateProject(ctx context.Context, project *model.Projec
 		ProfessorID: projectRes.ProfessorId,
 		Name:        projectRes.Name,
 		Description: projectRes.Description,
+		Status:      projectRes.Status,
+		Label:       projectRes.Label,
 	}
 	return project, nil
 }
 
 func (p *ProjectClient) UpdateProjectByID(ctx context.Context, id string, project *model.Project) (*model.Project, error) {
-	projectRes, err := (*p.client).UpdateProject(ctx, &pb.Project{ProjectId: id, ProfessorId: project.ProfessorID, TeamId: project.TeamID, Name: project.Name, Description: project.Description})
+	projectRes, err := (*p.client).UpdateProject(ctx, &pb.Project{ProjectId: id, ProfessorId: project.ProfessorID, TeamId: project.TeamID, Name: project.Name, Description: project.Description, Status: project.Status, Label: project.Label})
 	if err != nil {
 		return nil, err
 	}
@@ -83,6 +89,8 @@ func (p *ProjectClient) UpdateProjectByID(ctx context.Context, id string, projec
 		ProfessorID: projectRes.ProfessorId,
 		Name:        projectRes.Name,
 		Description: projectRes.Description,
+		Status:      projectRes.Status,
+		Label:       projectRes.Label,
 	}
 	return project, nil
 }
@@ -98,6 +106,8 @@ func (p *ProjectClient) DeleteProjectByID(ctx context.Context, id string) (*mode
 		ProfessorID: projectRes.ProfessorId,
 		Name:        projectRes.Name,
 		Description: projectRes.Description,
+		Status:      projectRes.Status,
+		Label:       projectRes.Label,
 	}
 	return project, nil
 }

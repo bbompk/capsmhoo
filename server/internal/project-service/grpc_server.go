@@ -58,6 +58,7 @@ func (s *projectServer) CreateProject(ctx context.Context, project *pb.Project) 
 		ProfessorID: project.ProfessorId,
 		Name:        project.Name,
 		Description: project.Description,
+		Label:       project.Label,
 	})
 	if err != nil {
 		return nil, err
@@ -77,6 +78,8 @@ func (s *projectServer) UpdateProject(ctx context.Context, project *pb.Project) 
 		ProfessorID: project.ProfessorId,
 		Name:        project.Name,
 		Description: project.Description,
+		Status:      project.Status,
+		Label:       project.Label,
 	})
 	if err != nil {
 		return nil, err
@@ -90,10 +93,10 @@ func (s *projectServer) UpdateProject(ctx context.Context, project *pb.Project) 
 func (s *projectServer) DeleteProject(ctx context.Context, projectId *pb.ProjectId) (*pb.Project, error) {
 	fmt.Println("Delete Project")
 
-	_, err := s.repo.DeleteProjectRequestByProjectID(projectId.ProjectId)
-	if err != nil {
-		return nil, err
-	}
+	// _, err := s.repo.DeleteProjectRequestByProjectID(projectId.ProjectId)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	project, err := s.repo.DeleteProjectByID(projectId.ProjectId)
 	if err != nil {
@@ -240,6 +243,8 @@ func convertProjectRes(project *Project) *pb.Project {
 		ProfessorId: project.ProfessorID,
 		Name:        project.Name,
 		Description: project.Description,
+		Status:      project.Status,
+		Label:       project.Label,
 	}
 	if project.TeamID.Valid {
 		projectRes.TeamId = project.TeamID.String

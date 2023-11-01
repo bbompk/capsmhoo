@@ -23,10 +23,13 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ProjectServiceClient interface {
 	GetProjectById(ctx context.Context, in *ProjectId, opts ...grpc.CallOption) (*Project, error)
+	GetProjectByTeamId(ctx context.Context, in *TeamId, opts ...grpc.CallOption) (*Project, error)
+	GetProjectByProfessorId(ctx context.Context, in *ProfessorId, opts ...grpc.CallOption) (*ProjectList, error)
 	GetAllProjects(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*ProjectList, error)
 	CreateProject(ctx context.Context, in *Project, opts ...grpc.CallOption) (*Project, error)
 	UpdateProject(ctx context.Context, in *Project, opts ...grpc.CallOption) (*Project, error)
 	DeleteProject(ctx context.Context, in *ProjectId, opts ...grpc.CallOption) (*Project, error)
+	GetProjectRequestsByProjectId(ctx context.Context, in *ProjectId, opts ...grpc.CallOption) (*ProjectRequestList, error)
 	CreateProjectRequest(ctx context.Context, in *ProjectRequest, opts ...grpc.CallOption) (*ProjectRequest, error)
 	AcceptProjectRequest(ctx context.Context, in *ProjectRequest, opts ...grpc.CallOption) (*SuccessResponse, error)
 	RejectProjectRequest(ctx context.Context, in *ProjectRequest, opts ...grpc.CallOption) (*SuccessResponse, error)
@@ -43,6 +46,24 @@ func NewProjectServiceClient(cc grpc.ClientConnInterface) ProjectServiceClient {
 func (c *projectServiceClient) GetProjectById(ctx context.Context, in *ProjectId, opts ...grpc.CallOption) (*Project, error) {
 	out := new(Project)
 	err := c.cc.Invoke(ctx, "/projectpb.ProjectService/GetProjectById", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *projectServiceClient) GetProjectByTeamId(ctx context.Context, in *TeamId, opts ...grpc.CallOption) (*Project, error) {
+	out := new(Project)
+	err := c.cc.Invoke(ctx, "/projectpb.ProjectService/GetProjectByTeamId", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *projectServiceClient) GetProjectByProfessorId(ctx context.Context, in *ProfessorId, opts ...grpc.CallOption) (*ProjectList, error) {
+	out := new(ProjectList)
+	err := c.cc.Invoke(ctx, "/projectpb.ProjectService/GetProjectByProfessorId", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -85,6 +106,15 @@ func (c *projectServiceClient) DeleteProject(ctx context.Context, in *ProjectId,
 	return out, nil
 }
 
+func (c *projectServiceClient) GetProjectRequestsByProjectId(ctx context.Context, in *ProjectId, opts ...grpc.CallOption) (*ProjectRequestList, error) {
+	out := new(ProjectRequestList)
+	err := c.cc.Invoke(ctx, "/projectpb.ProjectService/GetProjectRequestsByProjectId", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *projectServiceClient) CreateProjectRequest(ctx context.Context, in *ProjectRequest, opts ...grpc.CallOption) (*ProjectRequest, error) {
 	out := new(ProjectRequest)
 	err := c.cc.Invoke(ctx, "/projectpb.ProjectService/CreateProjectRequest", in, out, opts...)
@@ -117,10 +147,13 @@ func (c *projectServiceClient) RejectProjectRequest(ctx context.Context, in *Pro
 // for forward compatibility
 type ProjectServiceServer interface {
 	GetProjectById(context.Context, *ProjectId) (*Project, error)
+	GetProjectByTeamId(context.Context, *TeamId) (*Project, error)
+	GetProjectByProfessorId(context.Context, *ProfessorId) (*ProjectList, error)
 	GetAllProjects(context.Context, *Empty) (*ProjectList, error)
 	CreateProject(context.Context, *Project) (*Project, error)
 	UpdateProject(context.Context, *Project) (*Project, error)
 	DeleteProject(context.Context, *ProjectId) (*Project, error)
+	GetProjectRequestsByProjectId(context.Context, *ProjectId) (*ProjectRequestList, error)
 	CreateProjectRequest(context.Context, *ProjectRequest) (*ProjectRequest, error)
 	AcceptProjectRequest(context.Context, *ProjectRequest) (*SuccessResponse, error)
 	RejectProjectRequest(context.Context, *ProjectRequest) (*SuccessResponse, error)
@@ -134,6 +167,12 @@ type UnimplementedProjectServiceServer struct {
 func (UnimplementedProjectServiceServer) GetProjectById(context.Context, *ProjectId) (*Project, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetProjectById not implemented")
 }
+func (UnimplementedProjectServiceServer) GetProjectByTeamId(context.Context, *TeamId) (*Project, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetProjectByTeamId not implemented")
+}
+func (UnimplementedProjectServiceServer) GetProjectByProfessorId(context.Context, *ProfessorId) (*ProjectList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetProjectByProfessorId not implemented")
+}
 func (UnimplementedProjectServiceServer) GetAllProjects(context.Context, *Empty) (*ProjectList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllProjects not implemented")
 }
@@ -145,6 +184,9 @@ func (UnimplementedProjectServiceServer) UpdateProject(context.Context, *Project
 }
 func (UnimplementedProjectServiceServer) DeleteProject(context.Context, *ProjectId) (*Project, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteProject not implemented")
+}
+func (UnimplementedProjectServiceServer) GetProjectRequestsByProjectId(context.Context, *ProjectId) (*ProjectRequestList, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetProjectRequestsByProjectId not implemented")
 }
 func (UnimplementedProjectServiceServer) CreateProjectRequest(context.Context, *ProjectRequest) (*ProjectRequest, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateProjectRequest not implemented")
@@ -182,6 +224,42 @@ func _ProjectService_GetProjectById_Handler(srv interface{}, ctx context.Context
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProjectServiceServer).GetProjectById(ctx, req.(*ProjectId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProjectService_GetProjectByTeamId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(TeamId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProjectServiceServer).GetProjectByTeamId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/projectpb.ProjectService/GetProjectByTeamId",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProjectServiceServer).GetProjectByTeamId(ctx, req.(*TeamId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ProjectService_GetProjectByProfessorId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProfessorId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProjectServiceServer).GetProjectByProfessorId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/projectpb.ProjectService/GetProjectByProfessorId",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProjectServiceServer).GetProjectByProfessorId(ctx, req.(*ProfessorId))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -258,6 +336,24 @@ func _ProjectService_DeleteProject_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ProjectService_GetProjectRequestsByProjectId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ProjectId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProjectServiceServer).GetProjectRequestsByProjectId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/projectpb.ProjectService/GetProjectRequestsByProjectId",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProjectServiceServer).GetProjectRequestsByProjectId(ctx, req.(*ProjectId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _ProjectService_CreateProjectRequest_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ProjectRequest)
 	if err := dec(in); err != nil {
@@ -324,6 +420,14 @@ var ProjectService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _ProjectService_GetProjectById_Handler,
 		},
 		{
+			MethodName: "GetProjectByTeamId",
+			Handler:    _ProjectService_GetProjectByTeamId_Handler,
+		},
+		{
+			MethodName: "GetProjectByProfessorId",
+			Handler:    _ProjectService_GetProjectByProfessorId_Handler,
+		},
+		{
 			MethodName: "GetAllProjects",
 			Handler:    _ProjectService_GetAllProjects_Handler,
 		},
@@ -338,6 +442,10 @@ var ProjectService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteProject",
 			Handler:    _ProjectService_DeleteProject_Handler,
+		},
+		{
+			MethodName: "GetProjectRequestsByProjectId",
+			Handler:    _ProjectService_GetProjectRequestsByProjectId_Handler,
 		},
 		{
 			MethodName: "CreateProjectRequest",

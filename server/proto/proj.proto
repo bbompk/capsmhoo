@@ -10,6 +10,8 @@ message Project {
     string professor_id = 3;
     string name = 4;
     string description = 5;
+    string status = 6;
+    string label = 7;
 }
 
 message ProjectList {
@@ -18,6 +20,14 @@ message ProjectList {
 
 message ProjectId {
     string project_id = 1;
+}
+
+message TeamId {
+    string team_id = 1;
+}
+
+message ProfessorId {
+    string professor_id = 1;
 }
 
 message Empty {}
@@ -34,12 +44,19 @@ message ProjectRequest {
     string status = 5;
 }
 
+message ProjectRequestList {
+    repeated ProjectRequest project_requests = 1;
+}
+
 service ProjectService {
     rpc GetProjectById(ProjectId) returns (Project) {}
+    rpc GetProjectByTeamId(TeamId) returns (Project) {}
+    rpc GetProjectByProfessorId(ProfessorId) returns (ProjectList) {}
     rpc GetAllProjects(Empty) returns (ProjectList) {}
     rpc CreateProject(Project) returns (Project) {}
     rpc UpdateProject(Project) returns (Project) {}
     rpc DeleteProject(ProjectId) returns (Project) {}
+    rpc GetProjectRequestsByProjectId(ProjectId) returns (ProjectRequestList) {}
     rpc CreateProjectRequest(ProjectRequest) returns (ProjectRequest) {}
     rpc AcceptProjectRequest(ProjectRequest) returns (SuccessResponse) {}
     rpc RejectProjectRequest(ProjectRequest) returns (SuccessResponse) {}
