@@ -51,7 +51,9 @@ CREATE TABLE projects (
     team_id VARCHAR(255) REFERENCES teams(id),
     professor_id VARCHAR(255) REFERENCES professors(id),
     name VARCHAR(255),
-    description TEXT
+    description TEXT,
+    status VARCHAR(255),
+    label VARCHAR(255)
 );
 
 -- Create a "project_request" table with a foreign key to the "project" and "team" table

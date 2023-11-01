@@ -15,12 +15,15 @@ type Repository struct {
 type ProjectRepository interface {
 	GetProjects() []Project
 	GetProjectByID(id string) (*Project, error)
+	// GetProjectByTeamID(id string) (*Project, error)
+	// GetProjectByProfessorID(id string) []Project
 	CreateProject(project Project) (*Project, error)
 	UpdateProjectByID(id string, project Project) (*Project, error)
 	DeleteProjectByID(id string) (*Project, error)
 	DeleteAll() error
 	GetProjectRequests() []ProjectRequest
 	GetProjectRequestByID(id string) (*ProjectRequest, error)
+	// GetProjectRequestByProjectID(id string) []ProjectRequest
 	CreateProjectRequest(projectRequest ProjectRequest) (*ProjectRequest, error)
 	UpdateProjectRequestByID(id string, projectRequest ProjectRequest) (*ProjectRequest, error)
 	DeleteProjectRequestByID(id string) (*ProjectRequest, error)
@@ -50,6 +53,9 @@ func (r *Repository) CreateProject(project Project) (*Project, error) {
 	project.ProjectID = id.String() // Replace with your logic
 
 	project.TeamID = sql.NullString{}
+
+	project.Status = "open"
+
 	if err := r.db.Table("projects").Create(&project).Error; err != nil {
 		return nil, err
 	}
@@ -59,7 +65,11 @@ func (r *Repository) CreateProject(project Project) (*Project, error) {
 func (r *Repository) UpdateProjectByID(id string, project Project) (*Project, error) {
 	project.ProjectID = id
 
-	project.TeamID = sql.NullString{String: project.TeamID.String, Valid: true}
+	if project.TeamID.String == "" {
+		project.TeamID = sql.NullString{}
+	} else {
+		project.TeamID = sql.NullString{String: project.TeamID.String, Valid: true}
+	}
 
 	if err := r.db.Table("projects").Where("project_id = ?", id).Updates(&project).Error; err != nil {
 		return nil, errors.New("Project not found")
@@ -160,6 +170,11 @@ func (r *Repository) AddTeamToProject(teamID string, projectID string) error {
 	if err := r.db.Table("projects").Where("project_id = ?", projectID).Update("team_id", teamID).Error; err != nil {
 		return errors.New("Project not found")
 	}
+
+	if err := r.db.Table("projects").Where("project_id = ?", projectID).Update("status", "closed").Error; err != nil {
+		return errors.New("Project not found")
+	}
+
 	return nil
 }
 
