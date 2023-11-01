@@ -1,0 +1,1 @@
+export default "https://v5.reactrouter.com/web/example/auth-workflow"

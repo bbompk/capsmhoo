@@ -34,8 +34,8 @@ func (h *ProjectHandler) GetAllProjects(c *gin.Context) {
 		return
 	}
 	c.JSON(200, gin.H{
-		"code":     "200",
-		"projects": projects,
+		"code": "200",
+		"data": projects,
 	})
 }
 
@@ -50,8 +50,8 @@ func (h *ProjectHandler) GetProjectByID(c *gin.Context) {
 		return
 	}
 	c.JSON(200, gin.H{
-		"code":    "200",
-		"project": project,
+		"code": "200",
+		"data": project,
 	})
 }
 
@@ -73,8 +73,8 @@ func (h *ProjectHandler) CreateProject(c *gin.Context) {
 		return
 	}
 	c.JSON(200, gin.H{
-		"code":    "200",
-		"project": createdProject,
+		"code": "200",
+		"data": createdProject,
 	})
 }
 
@@ -97,8 +97,8 @@ func (h *ProjectHandler) UpdateProjectByID(c *gin.Context) {
 		return
 	}
 	c.JSON(200, gin.H{
-		"code":    "200",
-		"project": updatedProject,
+		"code": "200",
+		"data": updatedProject,
 	})
 }
 
@@ -113,8 +113,8 @@ func (h *ProjectHandler) DeleteProjectByID(c *gin.Context) {
 		return
 	}
 	c.JSON(200, gin.H{
-		"code":    "200",
-		"project": deletedProject,
+		"code": "200",
+		"data": deletedProject,
 	})
 }
 
@@ -150,8 +150,8 @@ func (h *ProjectHandler) CreateProjectRequest(c *gin.Context) {
 		return
 	}
 	c.JSON(200, gin.H{
-		"code":            "200",
-		"project_request": createdProjectRequest,
+		"code": "200",
+		"data": createdProjectRequest,
 	})
 }
 

@@ -26,8 +26,8 @@ func (h *NotiHandler) GetAllNotiByUserId(c *gin.Context) {
 		return
 	}
 	c.JSON(200, gin.H{
-		"code":  "200",
-		"notis": notis,
+		"code": "200",
+		"data": notis,
 	})
 }
 

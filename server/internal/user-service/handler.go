@@ -2,12 +2,13 @@ package user
 
 import (
 	"capsmhoo/common"
-	"github.com/gin-gonic/gin"
 	"net/http"
-	"golang.org/x/crypto/bcrypt"
-	jwt "github.com/golang-jwt/jwt"
-	"time"
 	"os"
+	"time"
+
+	"github.com/gin-gonic/gin"
+	jwt "github.com/golang-jwt/jwt"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // Define Dependencies
@@ -53,7 +54,7 @@ type UserHttpHandler interface {
 // 	c.JSON(http.StatusOK, gin.H{"message": "User created successfully"})
 // }
 
-func (h* UserHandler) SignInUser(c *gin.Context) {
+func (h *UserHandler) SignInUser(c *gin.Context) {
 	var userInput User
 	if err := c.ShouldBindJSON(&userInput); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -84,23 +85,23 @@ func (h* UserHandler) SignInUser(c *gin.Context) {
 }
 
 func CreateToken(user User) (string, error) {
-    token := jwt.New(jwt.SigningMethodHS256)
+	token := jwt.New(jwt.SigningMethodHS256)
 
-    claims := token.Claims.(jwt.MapClaims)
-    claims["authorized"] = true
-    claims["user_id"] = user.ID
-    claims["exp"] = time.Now().Add(time.Hour * 1).Unix() // Token expiration 1 hour from now
+	claims := token.Claims.(jwt.MapClaims)
+	claims["authorized"] = true
+	claims["user_id"] = user.ID
+	claims["exp"] = time.Now().Add(time.Hour * 1).Unix() // Token expiration 1 hour from now
 
-	jwtSecret := os.Getenv("ACCESS_TOKEN_PRIVATE_KEY") 
-    tokenString, err := token.SignedString([]byte(jwtSecret)) // <- Secret key (keep this safe!)
-    if err != nil {
-        return "", err
-    }
+	jwtSecret := os.Getenv("ACCESS_TOKEN_PRIVATE_KEY")
+	tokenString, err := token.SignedString([]byte(jwtSecret)) // <- Secret key (keep this safe!)
+	if err != nil {
+		return "", err
+	}
 
-    return tokenString, nil
+	return tokenString, nil
 }
 
-func (h* UserHandler) SignOutUser(c *gin.Context) {
+func (h *UserHandler) SignOutUser(c *gin.Context) {
 	// todo
 }
 
@@ -198,7 +199,7 @@ func (h *UserHandler) DeleteUserByID(c *gin.Context) {
 	}
 	c.JSON(200, common.HttpResponse{
 		Code: "200",
-		Data: "",
+		Data: User{},
 	})
 }
 func (h *UserHandler) DeleteAll(c *gin.Context) {

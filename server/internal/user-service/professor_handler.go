@@ -189,7 +189,7 @@ func (h *ProfessorHandler) DeleteProfessorByID(c *gin.Context) {
 	}
 	c.JSON(200, common.HttpResponse{
 		Code: "200",
-		Data: "",
+		Data: professor,
 	})
 }
 

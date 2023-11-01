@@ -26,10 +26,10 @@ type User struct {
 }
 
 type Student struct {
-	ID     string  `json:"id"`
-	Name   string  `json:"name"`
-	TeamID *string `json:"team_id,omitempty"`
-	UserID string  `json:"user_id"`
+	ID     string `json:"id"`
+	Name   string `json:"name"`
+	TeamID string `json:"team_id"`
+	UserID string `json:"user_id"`
 }
 
 type Professor struct {
@@ -57,4 +57,60 @@ type ProjectRequest struct {
 
 type SuccessResponse struct {
 	Success bool `json:"success"`
+}
+
+////////////////////////////////////// Bad Coding but i dont care now , i just want it to be done TT //////////////////////////////////////
+
+type StudentRequestBody struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	Name     string `json:"name"`
+}
+
+type ProfessorRequestBody struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	Name     string `json:"name"`
+	Profile  string `json:"profile"`
+}
+
+type UserRequestBody struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type StudentResponseBody struct {
+	Code  string  `json:"code"`
+	Data  Student `json:"data"`
+	Error string  `json:"error"`
+}
+
+type ProfessorResponseBody struct {
+	Code  string    `json:"code"`
+	Data  Professor `json:"data"`
+	Error string    `json:"error"`
+}
+
+type UserResponseBody struct {
+	Code  string `json:"code"`
+	Data  User   `json:"data"`
+	Error string `json:"error"`
+}
+
+type UserListResponseBody struct {
+	Code  string `json:"code"`
+	Data  []User `json:"data"`
+	Error string `json:"error"`
+}
+
+type StudentListResponseBody struct {
+	Code  string    `json:"code"`
+	Data  []Student `json:"data"`
+	Error string    `json:"error"`
+}
+
+type ProfessorListResponseBody struct {
+	Code  string      `json:"code"`
+	Data  []Professor `json:"data"`
+	Error string      `json:"error"`
 }

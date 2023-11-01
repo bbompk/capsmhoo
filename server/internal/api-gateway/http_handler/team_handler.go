@@ -45,8 +45,8 @@ func (h *TeamHandler) GetAllTeams(c *gin.Context) {
 		return
 	}
 	c.JSON(200, gin.H{
-		"code":  "200",
-		"teams": teams,
+		"code": "200",
+		"data": teams,
 	})
 }
 
@@ -62,7 +62,7 @@ func (h *TeamHandler) GetTeamByID(c *gin.Context) {
 	}
 	c.JSON(200, gin.H{
 		"code": "200",
-		"team": team,
+		"data": team,
 	})
 }
 
@@ -85,7 +85,7 @@ func (h *TeamHandler) CreateTeam(c *gin.Context) {
 	}
 	c.JSON(200, gin.H{
 		"code": "200",
-		"team": createdTeam,
+		"data": createdTeam,
 	})
 }
 
@@ -109,7 +109,7 @@ func (h *TeamHandler) UpdateTeamByID(c *gin.Context) {
 	}
 	c.JSON(200, gin.H{
 		"code": "200",
-		"team": updatedTeam,
+		"data": updatedTeam,
 	})
 }
 
@@ -125,7 +125,7 @@ func (h *TeamHandler) DeleteTeamByID(c *gin.Context) {
 	}
 	c.JSON(200, gin.H{
 		"code": "200",
-		"team": deletedTeam,
+		"data": deletedTeam,
 	})
 }
 
@@ -153,8 +153,8 @@ func (h *TeamJoinRequestHandler) GetAllJoinRequests(c *gin.Context) {
 		return
 	}
 	c.JSON(200, gin.H{
-		"code":     "200",
-		"requests": requests,
+		"code": "200",
+		"data": requests,
 	})
 }
 
@@ -169,8 +169,8 @@ func (h *TeamJoinRequestHandler) GetJoinRequestByID(c *gin.Context) {
 		return
 	}
 	c.JSON(200, gin.H{
-		"code":    "200",
-		"request": request,
+		"code": "200",
+		"data": request,
 	})
 }
 
@@ -192,8 +192,8 @@ func (h *TeamJoinRequestHandler) CreateJoinRequest(c *gin.Context) {
 		return
 	}
 	c.JSON(200, gin.H{
-		"code":    "200",
-		"request": createdRequest,
+		"code": "200",
+		"data": createdRequest,
 	})
 }
 
@@ -216,8 +216,8 @@ func (h *TeamJoinRequestHandler) UpdateJoinRequest(c *gin.Context) {
 		return
 	}
 	c.JSON(200, gin.H{
-		"code":    "200",
-		"request": updatedRequest,
+		"code": "200",
+		"data": updatedRequest,
 	})
 }
 

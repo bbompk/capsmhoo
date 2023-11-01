@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -56,11 +57,11 @@ func main() {
 	teamJoinRequestHandler := gatewayHTTPHandler.ProvideTeamJoinRequestHandler(teamJoinRequestgRPCClient)
 	notigRPCClient := gatewaygRPCClient.ProvideNotiClient(&notigRPCClienter)
 	notiHandler := gatewayHTTPHandler.ProvideNotiHandler(notigRPCClient)
-	studentClientRest := restClient.ProvideStudentClientRest()
+	studentClientRest := restClient.ProvideStudentClientRest(&http.Client{})
 	studentHandler := gatewayHTTPHandler.ProvideStudentHandler(studentClientRest)
-	professorClientRest := restClient.ProvideProfessorClientRest()
+	professorClientRest := restClient.ProvideProfessorClientRest(&http.Client{})
 	professorHandler := gatewayHTTPHandler.ProvideProfessorHandler(professorClientRest)
-	userClientRest := restClient.ProvideUserClientRest()
+	userClientRest := restClient.ProvideUserClientRest(&http.Client{})
 	userHandler := gatewayHTTPHandler.ProvideUserHandler(userClientRest)
 	projectgRPCClient := gatewaygRPCClient.ProvideProjectClient(&projectgRPCClienter)
 	projectHandler := gatewayHTTPHandler.ProvideProjectHandler(projectgRPCClient)

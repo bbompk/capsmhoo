@@ -29,7 +29,6 @@ func ProvideRouter(
 	r.POST("/user", userHandler.CreateUser)
 	r.PUT("/user/:id", userHandler.UpdateUserByID)
 	r.DELETE("/user/:id", userHandler.DeleteUserByID)
-	r.DELETE("/user", userHandler.DeleteAll)
 
 	r.GET("/student/:id", studentHandler.GetStudentByID)
 	r.GET("/student", studentHandler.GetAllStudents)
