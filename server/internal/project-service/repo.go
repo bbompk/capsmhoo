@@ -23,7 +23,7 @@ type ProjectRepository interface {
 	DeleteAll() error
 	GetProjectRequests() []ProjectRequest
 	GetProjectRequestByID(id string) (*ProjectRequest, error)
-	// GetProjectRequestByProjectID(id string) []ProjectRequest
+	GetProjectRequestsByProjectId(projectId string) ([]ProjectRequest, error)
 	CreateProjectRequest(projectRequest ProjectRequest) (*ProjectRequest, error)
 	UpdateProjectRequestByID(id string, projectRequest ProjectRequest) (*ProjectRequest, error)
 	DeleteProjectRequestByID(id string) (*ProjectRequest, error)
@@ -109,6 +109,14 @@ func (r *Repository) GetProjectRequestByID(id string) (*ProjectRequest, error) {
 		return nil, errors.New("ProjectRequest not found")
 	}
 	return &projectRequest, nil
+}
+
+func (r *Repository) GetProjectRequestsByProjectId(projectId string) ([]ProjectRequest, error) {
+	var projectRequests []ProjectRequest
+	if err := r.db.Table("project_requests").Where("project_id = ?", projectId).Find(&projectRequests).Error; err != nil {
+		return nil, errors.New("ProjectRequest not found")
+	}
+	return projectRequests, nil
 }
 
 func (r *Repository) CreateProjectRequest(projectRequest ProjectRequest) (*ProjectRequest, error) {

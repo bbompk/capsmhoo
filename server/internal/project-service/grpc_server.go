@@ -116,6 +116,31 @@ func (s *projectServer) DeleteProject(ctx context.Context, projectId *pb.Project
 // 	return nil, nil
 // }
 
+func (s *projectServer) GetProjectRequestsByProjectId(ctx context.Context, projectId *pb.ProjectId) (*pb.ProjectRequestList, error) {
+	fmt.Println("Get Project Request By Project ID")
+
+	projectRequests, err := s.repo.GetProjectRequestsByProjectId(projectId.ProjectId)
+	if err != nil {
+		return nil, err
+	}
+
+	projectRequestRes := []*pb.ProjectRequest{}
+
+	for _, projectRequest := range projectRequests {
+		projectRequestRes = append(projectRequestRes, &pb.ProjectRequest{
+			ProjectRequestId: projectRequest.ProjectRequestID,
+			ProjectId:        projectRequest.ProjectID,
+			TeamId:           projectRequest.TeamID,
+			Message:          projectRequest.Message,
+			Status:           projectRequest.Status,
+		})
+	}
+
+	return &pb.ProjectRequestList{
+		ProjectRequests: projectRequestRes,
+	}, nil
+}
+
 func (s *projectServer) CreateProjectRequest(ctx context.Context, projectRequest *pb.ProjectRequest) (*pb.ProjectRequest, error) {
 	fmt.Println("Create Project Request")
 
