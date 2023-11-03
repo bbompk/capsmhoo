@@ -5,6 +5,7 @@ option go_package = "./team-join-request-pb";
 service TeamJoinRequestService {
     rpc GetAllJoinRequests(TeamJoinReqeustEmpty) returns (TeamJoinRequestList);
     rpc GetJoinRequestById(TeamJoinRequestId) returns (TeamJoinRequest);
+    rpc GetJoinRequestByTeamId(TeamJoinRequestId) returns (TeamJoinRequestList);
     rpc CreateJoinRequest(TeamJoinRequest) returns (TeamJoinRequest);
     rpc UpdateJoinRequest(TeamJoinRequest) returns (TeamJoinRequest);
     rpc DeleteJoinRequest(TeamJoinRequestId) returns (TeamJoinRequest);

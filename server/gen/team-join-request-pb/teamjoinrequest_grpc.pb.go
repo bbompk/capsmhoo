@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type TeamJoinRequestServiceClient interface {
 	GetAllJoinRequests(ctx context.Context, in *TeamJoinReqeustEmpty, opts ...grpc.CallOption) (*TeamJoinRequestList, error)
 	GetJoinRequestById(ctx context.Context, in *TeamJoinRequestId, opts ...grpc.CallOption) (*TeamJoinRequest, error)
+	GetJoinRequestsByTeamId(ctx context.Context, in *TeamJoinRequestId, opts ...grpc.CallOption) (*TeamJoinRequestList, error)
 	CreateJoinRequest(ctx context.Context, in *TeamJoinRequest, opts ...grpc.CallOption) (*TeamJoinRequest, error)
 	UpdateJoinRequest(ctx context.Context, in *TeamJoinRequest, opts ...grpc.CallOption) (*TeamJoinRequest, error)
 	DeleteJoinRequest(ctx context.Context, in *TeamJoinRequestId, opts ...grpc.CallOption) (*TeamJoinRequest, error)
@@ -51,6 +52,15 @@ func (c *teamJoinRequestServiceClient) GetAllJoinRequests(ctx context.Context, i
 func (c *teamJoinRequestServiceClient) GetJoinRequestById(ctx context.Context, in *TeamJoinRequestId, opts ...grpc.CallOption) (*TeamJoinRequest, error) {
 	out := new(TeamJoinRequest)
 	err := c.cc.Invoke(ctx, "/TeamJoinRequestService/GetJoinRequestById", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *teamJoinRequestServiceClient) GetJoinRequestsByTeamId(ctx context.Context, in *TeamJoinRequestId, opts ...grpc.CallOption) (*TeamJoinRequestList, error) {
+	out := new(TeamJoinRequestList)
+	err := c.cc.Invoke(ctx, "/TeamJoinRequestService/GetJoinRequestsByTeamId", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
