@@ -10,7 +10,7 @@ import (
 type TeamJoinRequestRepository interface {
 	GetJoinRequests() ([]TeamJoinRequest, error)
 	GetJoinRequestByID(id string) (*TeamJoinRequest, error)
-	GetJoinRequestsByTeamID(teamID string) ([]TeamJoinRequest, error)
+	GetJoinRequestByTeamID(teamID string) ([]TeamJoinRequest, error)
 	CreateJoinRequest(request TeamJoinRequest) (*TeamJoinRequest, error)
 	UpdateJoinRequestByID(id string, request TeamJoinRequest) (*TeamJoinRequest, error)
 	DeleteJoinRequestByID(id string) (*TeamJoinRequest, error)
@@ -36,7 +36,7 @@ func (r *JoinRequestRepository) GetJoinRequestByID(id string) (*TeamJoinRequest,
 	return &request, nil
 }
 
-func (r *JoinRequestRepository) GetJoinRequestsByTeamID(teamID string) ([]TeamJoinRequest, error) {
+func (r *JoinRequestRepository) GetJoinRequestByTeamID(teamID string) ([]TeamJoinRequest, error) {
 	var requests []TeamJoinRequest
 	if err := r.db.Table("team_join_requests").Where("team_id = ?", teamID).Find(&requests).Error; err != nil {
 		return nil, errors.New("Join request not found.")

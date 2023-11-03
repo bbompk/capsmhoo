@@ -163,10 +163,10 @@ func (s *teamJoinRequestServer) GetJoinRequestById(ctx context.Context, reqID *j
 	}, nil
 }
 
-func (s *teamJoinRequestServer) GetJoinRequestsByTeamId(ctx context.Context, teamID *joinRequestPb.) (*joinRequestPb.TeamJoinRequestList, error) {
+func (s *teamJoinRequestServer) GetJoinRequestByTeamId(ctx context.Context, teamID *joinRequestPb.TeamJoinRequestTeamId) (*joinRequestPb.TeamJoinRequestList, error) {
 	fmt.Println("Get Join Requests By Team ID")
-
-	requests, err := s.repo.GetJoinRequestsByTeamID(teamID.Id)
+	fmt.Println(teamID.Id)
+	requests, err := s.repo.GetJoinRequestByTeamID(teamID.Id)
 	if err != nil {
 		return nil, err
 	}
