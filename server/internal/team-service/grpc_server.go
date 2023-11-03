@@ -165,8 +165,8 @@ func (s *teamJoinRequestServer) GetJoinRequestById(ctx context.Context, reqID *j
 
 func (s *teamJoinRequestServer) GetJoinRequestByTeamId(ctx context.Context, teamID *joinRequestPb.TeamJoinRequestTeamId) (*joinRequestPb.TeamJoinRequestList, error) {
 	fmt.Println("Get Join Requests By Team ID")
-	fmt.Println(teamID.Id)
-	requests, err := s.repo.GetJoinRequestByTeamID(teamID.Id)
+
+	requests, err := s.repo.GetJoinRequestByTeamID(teamID.TeamId)
 	if err != nil {
 		return nil, err
 	}
