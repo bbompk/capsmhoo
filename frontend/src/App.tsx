@@ -7,6 +7,8 @@ import CreateTeam from './pages/form/createTeam';
 import ProjectList from './pages/proj/ProjectList';
 import TeamList from './pages/team/TeamList';
 import Login from './pages/login/Login';
+import { AuthProvider } from './components/auth/AuthProvider';
+import MockLogin from './components/auth/MockLogin';
 
 function App() {
 
@@ -22,7 +24,8 @@ function App() {
           <Route path='/create-team' element={<CreateTeam />} />
           <Route path='/view-project' element={<ProjectList/>} />
           <Route path='/view-team' element={<TeamList/>} />
-          
+          <Route path='/private' element={<AuthProvider><h1>Private</h1></AuthProvider>} />
+          <Route path='/mock-login' element={<MockLogin />} />
           </Routes>
 
       </Router>

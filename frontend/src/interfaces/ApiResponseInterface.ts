@@ -1,3 +1,5 @@
+import { UserInterface } from "./UserInterface";
+
 export interface ApiResponse<T = any> {
     code: string;
     data?: T;
@@ -14,4 +16,12 @@ export class ApiErrorResponse extends Error {
         this.code = code;
         this.message = message;
     }
+}
+
+export interface ApiLoginResponse extends ApiResponse{
+    code: string;
+    message?: string;
+    data?: UserInterface;
+    token?: string;
+    errors?: string;
 }
