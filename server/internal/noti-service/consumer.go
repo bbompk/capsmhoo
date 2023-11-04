@@ -61,7 +61,7 @@ func (c *Consumer) StartNotificationConsumer(rabbitMQURL string, queueName strin
 	for msg := range msgs {
 		log.Printf("Received a noti to create: %s", msg.Body)
 
-		var noti CreateNotificationMessage
+		var noti Notification
 		err := json.Unmarshal(msg.Body, &noti)
 		if err != nil {
 			log.Fatalf("Failed to unmarshal message: %v", err)
@@ -71,7 +71,7 @@ func (c *Consumer) StartNotificationConsumer(rabbitMQURL string, queueName strin
 		_, err = c.repo.CreateNoti(Notification{
 			Title:  noti.Title,
 			Body:   noti.Body,
-			UserID: noti.ReceiverID,
+			UserID: noti.UserID,
 			IsRead: false,
 		})
 		if err != nil {
