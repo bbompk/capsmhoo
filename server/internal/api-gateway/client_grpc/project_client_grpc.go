@@ -19,6 +19,7 @@ type ProjectgRPCClient interface {
 	DeleteProjectByID(ctx context.Context, id string) (*model.Project, error)
 	// AddStudentToProject(ctx context.Context, projectID string, studentID string) error
 	// RemoveStudentFromProject(ctx context.Context, projectID string, studentID string) error
+	GetProjectRequestByProjectID(ctx context.Context, projectID string) ([]*model.ProjectRequest, error)
 	CreateProjectRequest(ctx context.Context, projectRequest *model.ProjectRequest) (*model.ProjectRequest, error)
 	AcceptProjectRequest(ctx context.Context, id string) (*model.SuccessResponse, error)
 	RejectProjectRequest(ctx context.Context, id string) (*model.SuccessResponse, error)
@@ -119,6 +120,24 @@ func (p *ProjectClient) DeleteProjectByID(ctx context.Context, id string) (*mode
 // func (t *TeamClient) RemoveStudentFromTeam(ctx context.Context, teamID string, studentID string) error {
 // 	return nil
 // }
+
+func (p *ProjectClient) GetProjectRequestByProjectID(ctx context.Context, projectID string) ([]*model.ProjectRequest, error) {
+	res, err := (*p.client).GetProjectRequestsByProjectId(ctx, &pb.ProjectId{ProjectId: projectID})
+	if err != nil {
+		return nil, err
+	}
+	var projectRequests []*model.ProjectRequest
+	for _, projectRequest := range res.ProjectRequests {
+		projectRequests = append(projectRequests, &model.ProjectRequest{
+			ProjectRequestID: projectRequest.ProjectRequestId,
+			ProjectID:        projectRequest.ProjectId,
+			TeamID:           projectRequest.TeamId,
+			Message:          projectRequest.Message,
+			Status:           projectRequest.Status,
+		})
+	}
+	return projectRequests, nil
+}
 
 func (p *ProjectClient) CreateProjectRequest(ctx context.Context, projectRequest *model.ProjectRequest) (*model.ProjectRequest, error) {
 	projectRequestRes, err := (*p.client).CreateProjectRequest(ctx, &pb.ProjectRequest{ProjectId: projectRequest.ProjectID, TeamId: projectRequest.TeamID, Message: projectRequest.Message, Status: projectRequest.Status})

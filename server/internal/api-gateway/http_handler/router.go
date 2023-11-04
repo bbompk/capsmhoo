@@ -14,15 +14,6 @@ func ProvideRouter(
 	projectHandler IProjectHandler,
 	notiHandler INotiHandler,
 ) {
-	// team service
-	r.GET("/team", teamHandler.GetAllTeams)
-	r.GET("/team/:id", teamHandler.GetTeamByID)
-	r.POST("/team", teamHandler.CreateTeam)
-	r.PUT("/team/:id", teamHandler.UpdateTeamByID)
-	r.DELETE("/team/:id", teamHandler.DeleteTeamByID)
-	r.POST("/team/add-student/:id", teamHandler.AddStudentToTeam)
-	r.POST("/team/remove-student/:id", teamHandler.RemoveStudentFromTeam)
-
 	// user service
 	r.GET("/user/:id", userHandler.GetUserByID)
 	r.GET("/user", userHandler.GetAllUsers)
@@ -44,27 +35,37 @@ func ProvideRouter(
 	r.DELETE("/professor/:id", professorHandler.DeleteProfessorByID)
 	r.DELETE("/professor", professorHandler.DeleteProfessorAll)
 
-	// project service
-	// todo: wait for project service
-
 	// noti service
 	notiRoute := r.Group("/noti")
 	notiRoute.GET("/:id", notiHandler.GetAllNotiByUserId)
 	notiRoute.POST("/:id", notiHandler.ReadNoti)
+
+	// team service
+	r.GET("/team", teamHandler.GetAllTeams)
+	r.GET("/team/:id", teamHandler.GetTeamByID)
+	r.POST("/team", teamHandler.CreateTeam)
+	r.PUT("/team/:id", teamHandler.UpdateTeamByID)
+	r.DELETE("/team/:id", teamHandler.DeleteTeamByID)
+	r.POST("/team/add-student/:id", teamHandler.AddStudentToTeam)
+	r.POST("/team/remove-student/:id", teamHandler.RemoveStudentFromTeam)
+
 	teamJoinRequestRoute := r.Group("/team-join-request")
 	teamJoinRequestRoute.GET("", teamJoinRequestHandler.GetAllJoinRequests)
 	teamJoinRequestRoute.GET("/:id", teamJoinRequestHandler.GetJoinRequestByID)
+	teamJoinRequestRoute.GET("/teamid/:id", teamJoinRequestHandler.GetJoinRequestByTeamID)
 	teamJoinRequestRoute.POST("", teamJoinRequestHandler.CreateJoinRequest)
 	teamJoinRequestRoute.PUT("/:id", teamJoinRequestHandler.UpdateJoinRequest)
 	teamJoinRequestRoute.DELETE("/:id", teamJoinRequestHandler.DeleteJoinRequest)
 	teamJoinRequestRoute.POST("/approve/:id", teamJoinRequestHandler.ApproveJoinRequest)
 	teamJoinRequestRoute.POST("/decline/:id", teamJoinRequestHandler.DeclineJoinRequest)
 
+	// project service
 	r.GET("/project", projectHandler.GetAllProjects)
 	r.GET("/project/:id", projectHandler.GetProjectByID)
 	r.POST("/project", projectHandler.CreateProject)
 	r.PUT("/project/:id", projectHandler.UpdateProjectByID)
 	r.DELETE("/project/:id", projectHandler.DeleteProjectByID)
+	r.GET("/project-request/projectid/:id", projectHandler.GetProjectRequestByProjectID)
 	r.POST("/project-request", projectHandler.CreateProjectRequest)
 	r.POST("/project-request/accept/:id", projectHandler.AcceptProjectRequest)
 	r.POST("/project-request/reject/:id", projectHandler.RejectProjectRequest)

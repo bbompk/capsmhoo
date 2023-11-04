@@ -19,6 +19,7 @@ type IProjectHandler interface {
 	DeleteProjectByID(c *gin.Context)
 	// AddStudentToProject(c *gin.Context)
 	// RemoveStudentFromProject(c *gin.Context)
+	GetProjectRequestByProjectID(c *gin.Context)
 	CreateProjectRequest(c *gin.Context)
 	AcceptProjectRequest(c *gin.Context)
 	RejectProjectRequest(c *gin.Context)
@@ -131,6 +132,21 @@ func (h *ProjectHandler) DeleteProjectByID(c *gin.Context) {
 // 		"message": "RemoveStudentFromTeam",
 // 	})
 // }
+
+func (h *ProjectHandler) GetProjectRequestByProjectID(c *gin.Context) {
+	id := c.Param("id")
+	projectRequests, err := h.projectClientgRPC.GetProjectRequestByProjectID(c, id)
+	if err != nil {
+		c.JSON(200, gin.H{
+			"code":  "500",
+			"error": err.Error(),
+		})
+	}
+	c.JSON(200, gin.H{
+		"code": "200",
+		"data": projectRequests,
+	})
+}
 
 func (h *ProjectHandler) CreateProjectRequest(c *gin.Context) {
 	var projectRequest model.ProjectRequest

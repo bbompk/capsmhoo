@@ -27,6 +27,7 @@ type TeamgRPCClient interface {
 type TeamJoinRequestgRPCClient interface {
 	GetAllJoinRequests(ctx context.Context) ([]*model.TeamJoinRequest, error)
 	GetJoinRequestByID(ctx context.Context, id string) (*model.TeamJoinRequest, error)
+	GetJoinRequestByTeamID(ctx context.Context, teamID string) ([]*model.TeamJoinRequest, error)
 	CreateJoinRequest(ctx context.Context, request *model.TeamJoinRequest) (*model.TeamJoinRequest, error)
 	UpdateJoinRequest(ctx context.Context, id string, request *model.TeamJoinRequest) (*model.TeamJoinRequest, error)
 	DeleteJoinRequest(ctx context.Context, id string) (*joinRequestPb.TeamJoinRequest, error)
@@ -135,6 +136,22 @@ func (t *TeamJoinRequestClient) GetJoinRequestByID(ctx context.Context, id strin
 		TeamID:    res.TeamId,
 		StudentID: res.StudentId,
 	}, nil
+}
+
+func (t *TeamJoinRequestClient) GetJoinRequestByTeamID(ctx context.Context, teamID string) ([]*model.TeamJoinRequest, error) {
+	res, err := (*t.client).GetJoinRequestByTeamId(ctx, &joinRequestPb.TeamJoinRequestTeamId{TeamId: teamID})
+	if err != nil {
+		return nil, err
+	}
+	var requests []*model.TeamJoinRequest
+	for _, req := range res.JoinRequests {
+		requests = append(requests, &model.TeamJoinRequest{
+			ID:        req.Id,
+			TeamID:    req.TeamId,
+			StudentID: req.StudentId,
+		})
+	}
+	return requests, nil
 }
 
 func (t *TeamJoinRequestClient) CreateJoinRequest(ctx context.Context, request *model.TeamJoinRequest) (*model.TeamJoinRequest, error) {
