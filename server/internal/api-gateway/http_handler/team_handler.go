@@ -177,17 +177,16 @@ func (h *TeamJoinRequestHandler) GetJoinRequestByID(c *gin.Context) {
 
 func (h *TeamJoinRequestHandler) GetJoinRequestByTeamID(c *gin.Context) {
 	id := c.Param("id")
-	request, err := h.teamJoinRequestClientgRPC.GetJoinRequestByTeamID(c, id)
+	requests, err := h.teamJoinRequestClientgRPC.GetJoinRequestByTeamID(c, id)
 	if err != nil {
 		c.JSON(200, gin.H{
 			"code":  "500",
 			"error": err.Error(),
 		})
-		return
 	}
 	c.JSON(200, gin.H{
 		"code": "200",
-		"data": request,
+		"data": requests,
 	})
 }
 
