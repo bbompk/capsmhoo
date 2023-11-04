@@ -17,6 +17,7 @@ type ProfessorRepository interface {
 	// GetProfessor() Professor
 	GetProfessors() []Professor
 	GetProfessorByID(id string) (*Professor, error)
+	GetProfessorByUserID(id string) (*Professor, error)
 	CreateProfessor(professor Professor) (*Professor, error)
 	UpdateProfessorByID(id string, professor Professor) (*Professor, error)
 	DeleteProfessorByID(id string) error
@@ -31,6 +32,13 @@ func (r *ProfessorRepositoryStruct) GetProfessors() []Professor {
 func (r *ProfessorRepositoryStruct) GetProfessorByID(id string) (*Professor, error) {
 	var professor Professor
 	if err := r.db.Where("id = ?", id).First(&professor).Error; err != nil {
+		return nil, errors.New("Professor not found")
+	}
+	return &professor, nil
+}
+func (r *ProfessorRepositoryStruct) GetProfessorByUserID(id string) (*Professor, error) {
+	var professor Professor
+	if err := r.db.Where("user_id = ?", id).First(&professor).Error; err != nil {
 		return nil, errors.New("Professor not found")
 	}
 	return &professor, nil

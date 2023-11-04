@@ -80,8 +80,7 @@ func (h *UserHandler) SignInUser(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error creating token"})
 		return
 	}
-
-	c.JSON(http.StatusOK, gin.H{"token": token})
+	c.JSON(http.StatusOK, gin.H{"token": token, "user": user})
 }
 
 func CreateToken(user User) (string, error) {

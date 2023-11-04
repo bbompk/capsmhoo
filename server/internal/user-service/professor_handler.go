@@ -16,6 +16,7 @@ type ProfessorHandler struct {
 type ProfessorHttpHandler interface {
 	GetProfessors(c *gin.Context)
 	GetProfessorByID(c *gin.Context)
+	GetProfessorByUserID(c *gin.Context)
 	CreateProfessor(c *gin.Context)
 	UpdateProfessorByID(c *gin.Context)
 	DeleteProfessorByID(c *gin.Context)
@@ -32,6 +33,22 @@ func (h *ProfessorHandler) GetProfessor(c *gin.Context) {
 func (h *ProfessorHandler) GetProfessorByID(c *gin.Context) {
 	id := c.Param("id")
 	professor, err := h.repo.GetProfessorByID(id)
+	if err != nil {
+		c.JSON(200, common.HttpResponse{
+			Code: "400",
+			// Data: {},
+			Error: err.Error(),
+		})
+		return
+	}
+	c.JSON(200, common.HttpResponse{
+		Code: "200",
+		Data: professor,
+	})
+}
+func (h *ProfessorHandler) GetProfessorByUserID(c *gin.Context) {
+	id := c.Param("user_id")
+	professor, err := h.repo.GetProfessorByUserID(id)
 	if err != nil {
 		c.JSON(200, common.HttpResponse{
 			Code: "400",
@@ -65,6 +82,7 @@ func (h *ProfessorHandler) CreateProfessor(c *gin.Context) {
 	}
 	user.Email = params.Email
 	user.Password = params.Password
+	user.Role = "Professor"
 	professor.Name = params.Name
 	professor.Profile = params.Profile
 	createdUser, err := h.userrepo.CreateUser(user)

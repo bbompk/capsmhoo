@@ -16,6 +16,8 @@ type StudentHandler struct {
 type StudentHttpHandler interface {
 	GetStudents(c *gin.Context)
 	GetStudentByID(c *gin.Context)
+	GetStudentByUserID(c *gin.Context)
+	GetStudentByTeamID(c *gin.Context)
 	CreateStudent(c *gin.Context)
 	UpdateStudentByID(c *gin.Context)
 	DeleteStudentByID(c *gin.Context)
@@ -32,6 +34,38 @@ func (h *StudentHandler) GetStudent(c *gin.Context) {
 func (h *StudentHandler) GetStudentByID(c *gin.Context) {
 	id := c.Param("id")
 	student, err := h.repo.GetStudentByID(id)
+	if err != nil {
+		c.JSON(200, common.HttpResponse{
+			Code: "400",
+			// Data: {},
+			Error: err.Error(),
+		})
+		return
+	}
+	c.JSON(200, common.HttpResponse{
+		Code: "200",
+		Data: student,
+	})
+}
+func (h *StudentHandler) GetStudentByUserID(c *gin.Context) {
+	id := c.Param("user_id")
+	student, err := h.repo.GetStudentByUserID(id)
+	if err != nil {
+		c.JSON(200, common.HttpResponse{
+			Code: "400",
+			// Data: {},
+			Error: err.Error(),
+		})
+		return
+	}
+	c.JSON(200, common.HttpResponse{
+		Code: "200",
+		Data: student,
+	})
+}
+func (h *StudentHandler) GetStudentByTeamID(c *gin.Context) {
+	id := c.Param("team_id")
+	student, err := h.repo.GetStudentByTeamID(id)
 	if err != nil {
 		c.JSON(200, common.HttpResponse{
 			Code: "400",
@@ -64,6 +98,7 @@ func (h *StudentHandler) CreateStudent(c *gin.Context) {
 	}
 	user.Email = params.Email
 	user.Password = params.Password
+	user.Role = "Student"
 	student.Name = params.Name
 	createdUser, err := h.userrepo.CreateUser(user)
 	if err != nil {
@@ -96,10 +131,10 @@ func (h *StudentHandler) UpdateStudentByID(c *gin.Context) {
 	id := c.Param("id")
 
 	type Params struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
-		Name     string `json:"name"`
-		// TeamID   string `json:"team_id"`
+		Email    string  `json:"email"`
+		Password string  `json:"password"`
+		Name     string  `json:"name"`
+		TeamID   *string `json:"team_id"`
 	}
 	var params Params
 	var student Student
@@ -120,6 +155,9 @@ func (h *StudentHandler) UpdateStudentByID(c *gin.Context) {
 	}
 	if params.Name != "" {
 		student.Name = params.Name
+	}
+	if params.TeamID != nil {
+		student.TeamID = params.TeamID
 	}
 	// if params.TeamID != "" {
 	//     student.TeamID = params.TeamID

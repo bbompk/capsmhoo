@@ -17,6 +17,8 @@ type StudentRepository interface {
 	// GetStudent() Student
 	GetStudents() []Student
 	GetStudentByID(id string) (*Student, error)
+	GetStudentByUserID(id string) (*Student, error)
+	GetStudentByTeamID(id string) ([]Student, error)
 	CreateStudent(student Student) (*Student, error)
 	UpdateStudentByID(id string, student Student) (*Student, error)
 	DeleteStudentByID(id string) error
@@ -35,7 +37,20 @@ func (r *StudentRepositoryStruct) GetStudentByID(id string) (*Student, error) {
 	}
 	return &student, nil
 }
-
+func (r *StudentRepositoryStruct) GetStudentByUserID(id string) (*Student, error) {
+	var student Student
+	if err := r.db.Table("students").Where("user_id = ?", id).First(&student).Error; err != nil {
+		return nil, errors.New("Student not found")
+	}
+	return &student, nil
+}
+func (r *StudentRepositoryStruct) GetStudentByTeamID(id string) ([]Student, error) {
+	var students []Student
+	if err := r.db.Table("students").Where("team_id = ?", id).Find(&students).Error; err != nil {
+		return nil, errors.New("Student not found")
+	}
+	return students, nil
+}
 func (r *StudentRepositoryStruct) CreateStudent(student Student) (*Student, error) {
 	// Assign a unique ID to the new student (you may use a UUID generator)
 	id := uuid.New()
