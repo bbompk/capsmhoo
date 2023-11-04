@@ -14,6 +14,8 @@ func ProvideRouter(
 	projectHandler IProjectHandler,
 	notiHandler INotiHandler,
 ) {
+	r.POST("/auth/login", userHandler.Login)
+
 	// user service
 	r.GET("/user/:id", userHandler.GetUserByID)
 	r.GET("/user", userHandler.GetAllUsers)
@@ -21,6 +23,9 @@ func ProvideRouter(
 	r.PUT("/user/:id", userHandler.UpdateUserByID)
 	r.DELETE("/user/:id", userHandler.DeleteUserByID)
 
+	// student service
+	r.GET("/student/userId/:id", studentHandler.GetStudentByUserID)
+	r.GET("/student/teamId/:id", studentHandler.GetAllStudentsByTeamID)
 	r.GET("/student/:id", studentHandler.GetStudentByID)
 	r.GET("/student", studentHandler.GetAllStudents)
 	r.POST("/student", studentHandler.CreateStudent)
@@ -28,6 +33,8 @@ func ProvideRouter(
 	r.DELETE("/student/:id", studentHandler.DeleteStudentByID)
 	r.DELETE("/student", studentHandler.DeleteStudentAll)
 
+	// professor service
+	r.GET("/professor/userId/:id", professorHandler.GetProfessorByUserID)
 	r.GET("/professor/:id", professorHandler.GetProfessorByID)
 	r.GET("/professor", professorHandler.GetAllProfessors)
 	r.POST("/professor", professorHandler.CreateProfessor)

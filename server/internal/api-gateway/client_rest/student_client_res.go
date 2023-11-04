@@ -21,6 +21,8 @@ type StudentClientRest interface {
 	CreateStudent(student model.StudentRequestBody) (model.Student, error)
 	UpdateStudentByID(id string, student model.StudentRequestBody) (model.Student, error)
 	DeleteStudentByID(id string) (model.Student, error)
+	GetAllStudentsByTeamID(id string) ([]model.Student, error)
+	GetStudentByUserID(id string) (model.Student, error)
 }
 
 func (s *StudentClient) GetAllStudents() ([]model.Student, error) {
@@ -140,6 +142,50 @@ func (s *StudentClient) DeleteStudentByID(id string) (model.Student, error) {
 		return model.Student{}, err
 	}
 	response, err := s.client.Do(req)
+	if err != nil {
+		return model.Student{}, err
+	}
+	defer response.Body.Close()
+
+	// read response
+	var resp model.StudentResponseBody
+	err = json.NewDecoder(response.Body).Decode(&resp)
+	if err != nil {
+		return model.Student{}, err
+	}
+	if resp.Code != "200" {
+		return model.Student{}, errors.New(resp.Error)
+	}
+	return resp.Data, nil
+}
+
+func (s *StudentClient) GetAllStudentsByTeamID(id string) ([]model.Student, error) {
+	path := viper.GetString("user-service.host") + ":" + viper.GetString("user-service.port") + "/student/teamId/" + id
+
+	// send request
+	response, err := s.client.Get(path)
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close()
+
+	// read response
+	var resp model.StudentListResponseBody
+	err = json.NewDecoder(response.Body).Decode(&resp)
+	if err != nil {
+		return nil, err
+	}
+	if resp.Code != "200" {
+		return nil, errors.New(resp.Error)
+	}
+	return resp.Data, nil
+}
+
+func (s *StudentClient) GetStudentByUserID(id string) (model.Student, error) {
+	path := viper.GetString("user-service.host") + ":" + viper.GetString("user-service.port") + "/student/userId/" + id
+
+	// send request
+	response, err := s.client.Get(path)
 	if err != nil {
 		return model.Student{}, err
 	}

@@ -21,6 +21,8 @@ type IStudentHandler interface {
 	UpdateStudentByID(c *gin.Context)
 	DeleteStudentByID(c *gin.Context)
 	DeleteStudentAll(c *gin.Context)
+	GetAllStudentsByTeamID(c *gin.Context)
+	GetStudentByUserID(c *gin.Context)
 }
 
 func (h *StudentHandler) GetStudentByID(c *gin.Context) {
@@ -100,6 +102,32 @@ func (h *StudentHandler) DeleteStudentByID(c *gin.Context) {
 		return
 	}
 	c.JSON(200, gin.H{
+		"code": "200",
+		"data": student,
+	})
+}
+
+func (h *StudentHandler) GetAllStudentsByTeamID(c *gin.Context) {
+	id := c.Param("id")
+	students, err := h.studentClientRest.GetAllStudentsByTeamID(id) // Method on your rest client
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": "200",
+		"data": students,
+	})
+}
+
+func (h *StudentHandler) GetStudentByUserID(c *gin.Context) {
+	id := c.Param("id")
+	student, err := h.studentClientRest.GetStudentByUserID(id) // Method on your rest client
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
 		"code": "200",
 		"data": student,
 	})

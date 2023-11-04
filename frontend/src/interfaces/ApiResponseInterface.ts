@@ -18,10 +18,14 @@ export class ApiErrorResponse extends Error {
     }
 }
 
+export interface LoginResponseData {
+    token: string;
+    user: UserInterface;
+} 
+
 export interface ApiLoginResponse extends ApiResponse{
     code: string;
     message?: string;
-    data?: UserInterface;
-    token?: string;
+    data?: LoginResponseData;
     errors?: string;
 }

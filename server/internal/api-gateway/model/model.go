@@ -22,6 +22,7 @@ type Notification struct {
 type User struct {
 	ID       string `json:"id"`
 	Email    string `json:"email"`
+	Role     string `json:"role"`
 	Password string `json:"password"`
 }
 
@@ -115,4 +116,10 @@ type ProfessorListResponseBody struct {
 	Code  string      `json:"code"`
 	Data  []Professor `json:"data"`
 	Error string      `json:"error"`
+}
+
+type LoginResponseBody struct {
+	Error string `json:"error"`
+	Token string `json:"token"`
+	User  User   `json:"user"`
 }

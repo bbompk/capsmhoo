@@ -9,6 +9,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
@@ -30,6 +31,8 @@ type Team struct {
 
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		log.Println("Handling CORS :D")
+
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
 		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
@@ -82,6 +85,7 @@ func main() {
 	projectgRPCClient := gatewaygRPCClient.ProvideProjectClient(&projectgRPCClienter)
 	projectHandler := gatewayHTTPHandler.ProvideProjectHandler(projectgRPCClient)
 
+	r.Use(cors.Default())
 	gatewayHTTPHandler.ProvideRouter(r,
 		teamHandler,
 		teamJoinRequestHandler,
@@ -92,8 +96,7 @@ func main() {
 		notiHandler,
 	)
 
-	r.Use(CORSMiddleware())
-	r.Run(":" + "8082")
+	r.Run(":" + viper.GetString("api-gateway.port"))
 }
 
 // Read Config file

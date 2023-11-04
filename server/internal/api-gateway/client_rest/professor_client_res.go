@@ -21,6 +21,7 @@ type ProfessorClientRest interface {
 	CreateProfessor(professor model.ProfessorRequestBody) (model.Professor, error)
 	UpdateProfessorByID(id string, professor model.ProfessorRequestBody) (model.Professor, error)
 	DeleteProfessorByID(id string) (model.Professor, error)
+	GetProfessorByUserID(id string) (model.Professor, error)
 }
 
 func (s *ProfessorClient) GetAllProfessors() ([]model.Professor, error) {
@@ -140,6 +141,28 @@ func (s *ProfessorClient) DeleteProfessorByID(id string) (model.Professor, error
 		return model.Professor{}, err
 	}
 	response, err := s.client.Do(req)
+	if err != nil {
+		return model.Professor{}, err
+	}
+	defer response.Body.Close()
+
+	// read response
+	var resp model.ProfessorResponseBody
+	err = json.NewDecoder(response.Body).Decode(&resp)
+	if err != nil {
+		return model.Professor{}, err
+	}
+	if resp.Code != "200" {
+		return model.Professor{}, errors.New(resp.Error)
+	}
+	return resp.Data, nil
+}
+
+func (s *ProfessorClient) GetProfessorByUserID(id string) (model.Professor, error) {
+	path := viper.GetString("user-service.host") + ":" + viper.GetString("user-service.port") + "/professor/userId/" + id
+
+	// send request
+	response, err := s.client.Get(path)
 	if err != nil {
 		return model.Professor{}, err
 	}

@@ -21,6 +21,7 @@ type IUserHandler interface {
 	UpdateUserByID(c *gin.Context)
 	DeleteUserByID(c *gin.Context)
 	DeleteUserAll(c *gin.Context)
+	Login(c *gin.Context)
 }
 
 func (h *UserHandler) GetUserByID(c *gin.Context) {
@@ -106,6 +107,30 @@ func (h *UserHandler) DeleteUserByID(c *gin.Context) {
 }
 
 func (h *UserHandler) DeleteUserAll(c *gin.Context) {
+}
+
+func (h *UserHandler) Login(c *gin.Context) {
+	var params model.UserRequestBody
+	if err := c.ShouldBindJSON(&params); err != nil {
+		c.JSON(200, gin.H{
+			"code":  "400",
+			"error": err.Error(),
+		})
+		return
+	}
+	resp, err := h.userClientRest.Login(params)
+	if err != nil {
+		c.JSON(200, gin.H{
+			"code":  "500",
+			"error": err.Error(),
+		})
+		return
+	}
+	resp.User.Password = ""
+	c.JSON(200, gin.H{
+		"code": "200",
+		"data": resp,
+	})
 }
 
 func ProvideUserHandler(userClientRest restClient.UserClientRest) *UserHandler {

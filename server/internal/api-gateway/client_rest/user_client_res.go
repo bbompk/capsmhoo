@@ -21,6 +21,7 @@ type UserClientRest interface {
 	CreateUser(user model.UserRequestBody) (model.User, error)
 	UpdateUserByID(id string, user model.UserRequestBody) (model.User, error)
 	DeleteUserByID(id string) (model.User, error)
+	Login(user model.UserRequestBody) (model.LoginResponseBody, error)
 }
 
 func (s *UserClient) GetAllUsers() ([]model.User, error) {
@@ -155,6 +156,36 @@ func (s *UserClient) DeleteUserByID(id string) (model.User, error) {
 		return model.User{}, errors.New(resp.Error)
 	}
 	return resp.Data, nil
+}
+
+func (s *UserClient) Login(user model.UserRequestBody) (model.LoginResponseBody, error) {
+	path := viper.GetString("user-service.host") + ":" + viper.GetString("user-service.port") + "/login"
+
+	// prepare request body
+	byteData, err := json.Marshal(user)
+	if err != nil {
+		return model.LoginResponseBody{}, err
+	}
+	bodyReader := bytes.NewReader(byteData)
+
+	// send request
+	response, err := s.client.Post(path, "application/json", bodyReader)
+	if err != nil {
+		return model.LoginResponseBody{}, err
+	}
+	defer response.Body.Close()
+
+	// read response
+	var resp model.LoginResponseBody
+	err = json.NewDecoder(response.Body).Decode(&resp)
+	if err != nil {
+		return model.LoginResponseBody{}, err
+	}
+	if resp.Error != "" {
+		return model.LoginResponseBody{}, errors.New(resp.Error)
+	}
+
+	return resp, nil
 }
 
 func ProvideUserClientRest(client *http.Client) *UserClient {

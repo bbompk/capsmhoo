@@ -21,6 +21,7 @@ type IProfessorHandler interface {
 	UpdateProfessorByID(c *gin.Context)
 	DeleteProfessorByID(c *gin.Context)
 	DeleteProfessorAll(c *gin.Context)
+	GetProfessorByUserID(c *gin.Context)
 }
 
 func (h *ProfessorHandler) GetProfessorByID(c *gin.Context) {
@@ -100,6 +101,19 @@ func (h *ProfessorHandler) DeleteProfessorByID(c *gin.Context) {
 		return
 	}
 	c.JSON(200, gin.H{
+		"code": "200",
+		"data": professor,
+	})
+}
+
+func (h *ProfessorHandler) GetProfessorByUserID(c *gin.Context) {
+	id := c.Param("id")
+	professor, err := h.professorClientRest.GetProfessorByUserID(id) // Method on your rest client
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
 		"code": "200",
 		"data": professor,
 	})
