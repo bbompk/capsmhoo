@@ -1,9 +1,11 @@
-import { Fragment, useState } from 'react'
+import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { NavLink } from 'react-router-dom';
 import Notification  from '../noti/Notification'
- 
+import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2'
+
 const navigation = [
   { name: 'Home', component: '/', current: false },
   { name: 'Login', component: '/login', current: false },
@@ -18,6 +20,24 @@ function classNames(...classes: string[]) {
 }
 
 export default function Example() {
+  const navigate = useNavigate();
+
+  const logout = () => {
+    localStorage.removeItem('accessToken')
+    localStorage.removeItem('token_expires')
+    localStorage.removeItem('userId')
+    localStorage.removeItem('role')
+    localStorage.removeItem('studentId')
+    localStorage.removeItem('professorId')
+    console.log("logout")
+    Swal.fire({
+      icon: 'success',
+      title: 'Logout Success',
+      text: 'You have successfully logged out',
+    })
+    navigate("/login");
+  }
+
   return (
     <Disclosure as="nav" className="bg-gray-800">
       {({ open }) => (
@@ -102,12 +122,12 @@ export default function Example() {
                       </Menu.Item>
                       <Menu.Item>
                         {({ active }) => (
-                          <a
-                            href="#"
+                          <button
+                            onClick={() => logout()}
                             className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                           >
                             Sign out
-                          </a>
+                          </button>
                         )}
                       </Menu.Item>
                     </Menu.Items>

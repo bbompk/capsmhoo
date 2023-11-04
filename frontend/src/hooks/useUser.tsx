@@ -8,11 +8,11 @@ export const useUser = () => {
 }
 
 export const useStudent = () => {
-    const studentId = localStorage.getItem('studentId');
+    const studentId = localStorage.getItem('studentId') ?? "";
     return studentId;
 }
 
 export const useProfessor = () => {
-    const professorId = localStorage.getItem('professorId');
+    const professorId = localStorage.getItem('professorId') ?? "";
     return professorId;
 }
