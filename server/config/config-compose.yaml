@@ -16,7 +16,7 @@ team-service:
   grpc-host: team-service
   grpc-port: 50051
 noti-service:
-  grpc-host: user-service
+  grpc-host: noti-service
   grpc-port: 50054
 project-service:
   port: 8083
