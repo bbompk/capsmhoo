@@ -5,7 +5,8 @@ import appConfig from "../configs/config";
 import { isResponseOk } from "../utils/ApiUtil";
 
 export const getAllNotificationsByRoleId = async (id: string) => {
-    const path = `${appConfig.BACKEND_BASE_URL}/notification/${id}`;
+    const path = `${appConfig.BACKEND_BASE_URL}/noti/${id}`;
+    console.log(path)
     const axios_res = await axios.get(path);
     const res = axios_res.data as ApiResponse<NotificationInterface[]>;
     if(!isResponseOk(res)) {
@@ -15,7 +16,7 @@ export const getAllNotificationsByRoleId = async (id: string) => {
 }
 
 export const readAllNotificationsByRoleId = async (id: string) => {
-    const path = `${appConfig.BACKEND_BASE_URL}/notification/${id}`;
+    const path = `${appConfig.BACKEND_BASE_URL}/noti/${id}`;
     const axios_res = await axios.post(path);
     const res = axios_res.data as ApiResponse<null>;
     if(!isResponseOk(res)) {

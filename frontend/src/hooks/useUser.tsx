@@ -1,7 +1,18 @@
-import { UserInterface } from "../interfaces/UserInterface";
+
 
 // Not Ready To Use
-export const userUser = () => {
-    const user = JSON.parse(localStorage.getItem('user') ?? '{}') as UserInterface;
-    return user;
+export const useUser = () => {
+    const userId = localStorage.getItem("userId")
+    const role = localStorage.getItem("role")
+    return { userId, role }
+}
+
+export const useStudent = () => {
+    const studentId = localStorage.getItem('studentId');
+    return studentId;
+}
+
+export const useProfessor = () => {
+    const professorId = localStorage.getItem('professorId');
+    return professorId;
 }
