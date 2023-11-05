@@ -8,6 +8,7 @@ import ProjectList from './pages/proj/ProjectList';
 import TeamList from './pages/team/TeamList';
 import Register from './pages/register/Register';
 import Login from './pages/login/Login';
+import Profile from './pages/profile/Profile';
 import { AuthProvider } from './components/auth/AuthProvider';
 import MockLogin from './components/auth/MockLogin';
 
@@ -22,6 +23,8 @@ function App() {
           <Route path='/' element={<Home />} />
           <Route path='/register' element={<Register/>} />
           <Route path='/login' element={<Login />} />
+          {/* <Route path='/profile' element={<AuthProvider><Profile/></AuthProvider>} /> */}
+          <Route path='/profile' element={<Profile/>} />
           <Route path='/create-project' element={<CreateProject />} />
           <Route path='/create-team' element={<CreateTeam />} />
           <Route path='/view-project' element={<ProjectList/>} />
