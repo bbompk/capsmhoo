@@ -24,6 +24,16 @@ export const getProfessorById = async (id: string) => {
     return res;
 }
 
+export const getProfessorByUserId = async (id: string) => {
+    const path = `${appConfig.BACKEND_BASE_URL}/professor/userId/${id}`;
+    const axios_res = await axios.get(path);
+    const res = axios_res.data as ApiResponse<ProfessorInterface>;
+    if(!isResponseOk(res)) {
+        throw new ApiErrorResponse(res.code, res.error ?? "Unknown error");
+    }
+    return res;
+}
+
 export const createProfessor = async (name: string, email: string, password: string, profile: string) => {
     const path = `${appConfig.BACKEND_BASE_URL}/professor`;
     const payload = {

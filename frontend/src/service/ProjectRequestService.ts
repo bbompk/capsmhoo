@@ -5,7 +5,7 @@ import appConfig from "../configs/config";
 import { isResponseOk } from "../utils/ApiUtil";
 
 export const getAllProjectRequests = async () => {
-    const path = `${appConfig.BACKEND_BASE_URL}/projectRequest`;
+    const path = `${appConfig.BACKEND_BASE_URL}/project-request`;
     const axios_res = await axios.get(path);
     const res = axios_res.data as ApiResponse<ProjectRequestInterface[]>;
     if(!isResponseOk(res)) {
@@ -15,7 +15,7 @@ export const getAllProjectRequests = async () => {
 }
 
 export const getProjectRequestById = async (id: string) => {
-    const path = `${appConfig.BACKEND_BASE_URL}/projectRequest/${id}`;
+    const path = `${appConfig.BACKEND_BASE_URL}/project-request/${id}`;
     const axios_res = await axios.get(path);
     const res = axios_res.data as ApiResponse<ProjectRequestInterface>;
     if(!isResponseOk(res)) {
@@ -24,8 +24,18 @@ export const getProjectRequestById = async (id: string) => {
     return res;
 }
 
+export const getAllProjectRequestByProjectId = async (id: string) => {
+    const path = `${appConfig.BACKEND_BASE_URL}/project-request/projectId/${id}`;
+    const axios_res = await axios.get(path);
+    const res = axios_res.data as ApiResponse<ProjectRequestInterface[]>;
+    if(!isResponseOk(res)) {
+        throw new ApiErrorResponse(res.code, res.error ?? "Unknown error");
+    }
+    return res;
+}
+
 export const createProjectRequest = async (projectRequest: ProjectRequestInterface) => {
-    const path = `${appConfig.BACKEND_BASE_URL}/projectRequest`;
+    const path = `${appConfig.BACKEND_BASE_URL}/project-request`;
     const axios_res = await axios.post(path, projectRequest);
     const res = axios_res.data as ApiResponse<ProjectRequestInterface>;
     if(!isResponseOk(res)) {
@@ -35,7 +45,7 @@ export const createProjectRequest = async (projectRequest: ProjectRequestInterfa
 }
 
 export const updateProjectRequestById = async (id: string, projectRequest: ProjectRequestInterface) => {
-    const path = `${appConfig.BACKEND_BASE_URL}/projectRequest/${id}`;
+    const path = `${appConfig.BACKEND_BASE_URL}/project-request/${id}`;
     const axios_res = await axios.put(path, projectRequest);
     const res = axios_res.data as ApiResponse<ProjectRequestInterface>;
     if(!isResponseOk(res)) {
@@ -45,7 +55,7 @@ export const updateProjectRequestById = async (id: string, projectRequest: Proje
 }
 
 export const deleteProjectRequestById = async (id: string) => {
-    const path = `${appConfig.BACKEND_BASE_URL}/projectRequest/${id}`;
+    const path = `${appConfig.BACKEND_BASE_URL}/project-request/${id}`;
     const axios_res = await axios.delete(path);
     const res = axios_res.data as ApiResponse<ProjectRequestInterface>;
     if(!isResponseOk(res)) {

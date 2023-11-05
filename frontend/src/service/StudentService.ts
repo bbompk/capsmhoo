@@ -24,6 +24,28 @@ export const getStudentById = async (id: string) => {
     return res;
 }
 
+export const getStudentByUserId = async (id: string) => {
+    const path = `${appConfig.BACKEND_BASE_URL}/student/userId/${id}`;
+    const axios_res = await axios.get(path);
+    const res = axios_res.data as ApiResponse<StudentInterface>;
+    if(!isResponseOk(res)) {
+        throw new ApiErrorResponse(res.code, res.error ?? "Unknown error");
+    }
+    return res;
+}
+
+export const getAllStudentByTeamId = async (id: string) => {
+    const path = `${appConfig.BACKEND_BASE_URL}/student/teamId/${id}`;
+    const axios_res = await axios.get(path);
+    const res = axios_res.data as ApiResponse<StudentInterface[]>;
+    if(!isResponseOk(res)) {
+        throw new ApiErrorResponse(res.code, res.error ?? "Unknown error");
+    }
+    return res;
+}
+
+
+
 export const createStudent = async (name: string, email: string, password: string) => {
     const path = `${appConfig.BACKEND_BASE_URL}/student`;
     const payload = {
