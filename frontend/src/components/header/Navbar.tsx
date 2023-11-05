@@ -8,6 +8,7 @@ import Swal from 'sweetalert2'
 
 const navigation = [
   { name: 'Home', component: '/', current: false },
+  { name: 'Register', component: '/register', current: false },
   { name: 'Login', component: '/login', current: false },
   { name: 'Create Project', component: '/create-project', current: false },
   { name: 'Create Team', component: '/create-team', current: false },
