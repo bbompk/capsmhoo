@@ -25,7 +25,7 @@ type ProfessorClientRest interface {
 }
 
 func (s *ProfessorClient) GetAllProfessors() ([]model.Professor, error) {
-	path := viper.GetString("user-service.host") + ":" + viper.GetString("user-service.port") + "/professor"
+	path := "http://" + viper.GetString("user-service.host") + ":" + viper.GetString("user-service.port") + "/professor"
 
 	// send request
 	response, err := s.client.Get(path)
@@ -47,7 +47,7 @@ func (s *ProfessorClient) GetAllProfessors() ([]model.Professor, error) {
 }
 
 func (s *ProfessorClient) GetProfessorByID(id string) (model.Professor, error) {
-	path := viper.GetString("user-service.host") + ":" + viper.GetString("user-service.port") + "/professor/" + id
+	path := "http://" + viper.GetString("user-service.host") + ":" + viper.GetString("user-service.port") + "/professor/" + id
 
 	// send request
 	response, err := s.client.Get(path)
@@ -69,7 +69,7 @@ func (s *ProfessorClient) GetProfessorByID(id string) (model.Professor, error) {
 }
 
 func (s *ProfessorClient) CreateProfessor(professor model.ProfessorRequestBody) (model.Professor, error) {
-	path := viper.GetString("user-service.host") + ":" + viper.GetString("user-service.port") + "/professor"
+	path := "http://" + viper.GetString("user-service.host") + ":" + viper.GetString("user-service.port") + "/professor"
 
 	// prepare request body
 	byteData, err := json.Marshal(professor)
@@ -99,7 +99,7 @@ func (s *ProfessorClient) CreateProfessor(professor model.ProfessorRequestBody) 
 }
 
 func (s *ProfessorClient) UpdateProfessorByID(id string, professor model.ProfessorRequestBody) (model.Professor, error) {
-	path := viper.GetString("user-service.host") + ":" + viper.GetString("user-service.port") + "/professor/" + id
+	path := "http://" + viper.GetString("user-service.host") + ":" + viper.GetString("user-service.port") + "/professor/" + id
 
 	// prepare request body
 	byteData, err := json.Marshal(professor)
@@ -133,7 +133,7 @@ func (s *ProfessorClient) UpdateProfessorByID(id string, professor model.Profess
 }
 
 func (s *ProfessorClient) DeleteProfessorByID(id string) (model.Professor, error) {
-	path := viper.GetString("user-service.host") + ":" + viper.GetString("user-service.port") + "/professor/" + id
+	path := "http://" + viper.GetString("user-service.host") + ":" + viper.GetString("user-service.port") + "/professor/" + id
 
 	// send request
 	req, err := http.NewRequest(http.MethodDelete, path, nil)
@@ -159,7 +159,7 @@ func (s *ProfessorClient) DeleteProfessorByID(id string) (model.Professor, error
 }
 
 func (s *ProfessorClient) GetProfessorByUserID(id string) (model.Professor, error) {
-	path := viper.GetString("user-service.host") + ":" + viper.GetString("user-service.port") + "/professor/userId/" + id
+	path := "http://" + viper.GetString("user-service.host") + ":" + viper.GetString("user-service.port") + "/professor/userId/" + id
 
 	// send request
 	response, err := s.client.Get(path)

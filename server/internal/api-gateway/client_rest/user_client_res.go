@@ -25,7 +25,7 @@ type UserClientRest interface {
 }
 
 func (s *UserClient) GetAllUsers() ([]model.User, error) {
-	path := viper.GetString("user-service.host") + ":" + viper.GetString("user-service.port") + "/user"
+	path := "http://" + viper.GetString("user-service.host") + ":" + viper.GetString("user-service.port") + "/user"
 
 	// send request
 	response, err := s.client.Get(path)
@@ -47,7 +47,7 @@ func (s *UserClient) GetAllUsers() ([]model.User, error) {
 }
 
 func (s *UserClient) GetUserByID(id string) (model.User, error) {
-	path := viper.GetString("user-service.host") + ":" + viper.GetString("user-service.port") + "/user/" + id
+	path := "http://" + viper.GetString("user-service.host") + ":" + viper.GetString("user-service.port") + "/user/" + id
 
 	// send request
 	response, err := s.client.Get(path)
@@ -69,7 +69,7 @@ func (s *UserClient) GetUserByID(id string) (model.User, error) {
 }
 
 func (s *UserClient) CreateUser(user model.UserRequestBody) (model.User, error) {
-	path := viper.GetString("user-service.host") + ":" + viper.GetString("user-service.port") + "/user"
+	path := "http://" + viper.GetString("user-service.host") + ":" + viper.GetString("user-service.port") + "/user"
 
 	// prepare request body
 	byteData, err := json.Marshal(user)
@@ -99,7 +99,7 @@ func (s *UserClient) CreateUser(user model.UserRequestBody) (model.User, error) 
 }
 
 func (s *UserClient) UpdateUserByID(id string, user model.UserRequestBody) (model.User, error) {
-	path := viper.GetString("user-service.host") + ":" + viper.GetString("user-service.port") + "/user/" + id
+	path := "http://" + viper.GetString("user-service.host") + ":" + viper.GetString("user-service.port") + "/user/" + id
 
 	// prepare request body
 	byteData, err := json.Marshal(user)
@@ -133,7 +133,7 @@ func (s *UserClient) UpdateUserByID(id string, user model.UserRequestBody) (mode
 }
 
 func (s *UserClient) DeleteUserByID(id string) (model.User, error) {
-	path := viper.GetString("user-service.host") + ":" + viper.GetString("user-service.port") + "/user/" + id
+	path := "http://" + viper.GetString("user-service.host") + ":" + viper.GetString("user-service.port") + "/user/" + id
 
 	// send request
 	req, err := http.NewRequest(http.MethodDelete, path, nil)
@@ -159,7 +159,7 @@ func (s *UserClient) DeleteUserByID(id string) (model.User, error) {
 }
 
 func (s *UserClient) Login(user model.UserRequestBody) (model.LoginResponseBody, error) {
-	path := viper.GetString("user-service.host") + ":" + viper.GetString("user-service.port") + "/login"
+	path := "http://" + viper.GetString("user-service.host") + ":" + viper.GetString("user-service.port") + "/login"
 
 	// prepare request body
 	byteData, err := json.Marshal(user)
