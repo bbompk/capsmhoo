@@ -6,6 +6,7 @@ import CreateProject from './pages/form/createProject';
 import CreateTeam from './pages/form/createTeam';
 import ProjectList from './pages/proj/ProjectList';
 import TeamList from './pages/team/TeamList';
+import Register from './pages/register/Register';
 import Login from './pages/login/Login';
 import { AuthProvider } from './components/auth/AuthProvider';
 import MockLogin from './components/auth/MockLogin';
@@ -19,6 +20,7 @@ function App() {
 
           <Routes>
           <Route path='/' element={<Home />} />
+          <Route path='/register' element={<Register/>} />
           <Route path='/login' element={<Login />} />
           <Route path='/create-project' element={<CreateProject />} />
           <Route path='/create-team' element={<CreateTeam />} />

@@ -8,7 +8,7 @@ export interface UserInterface {
 export interface StudentInterface {
     id: string;
     name: string;
-    team_id: string;
+    team_id: string | null;
     user_id: string;
 }
 
