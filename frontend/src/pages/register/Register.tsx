@@ -2,7 +2,6 @@ import { useState } from 'react';
 import Swal from 'sweetalert2'
 import { useNavigate } from 'react-router-dom';
 
-import { UserInterface, StudentInterface, ProfessorInterface } from "../../interfaces/UserInterface";
 import { createStudent } from "../../service/StudentService";
 import { createProfessor } from "../../service/ProfessorService";
 
@@ -32,19 +31,10 @@ enum UserType {
       e.preventDefault();
   
       try {
-        // Create the user first
-        const userResponse = await createUser({ email, password, role: userType });
-        if (!userResponse.ok) throw new Error('Failed to create user.');
-  
-        // Extract the user_id from the response
-        const user = await userResponse.json();
-        const userId = user.id; // Make sure this matches the actual key in your JSON response
-  
-        // Depending on the user type, create a student or professor profile
         if (userType === UserType.Student) {
-          await createStudent({ name, user_id: userId });
+          await createStudent(name, email, password);
         } else {
-          await createProfessor({ name, profile, user_id: userId });
+          await createProfessor(name, email, password, profile);
         }
       } catch (error) {
         console.error(error);
@@ -75,25 +65,28 @@ enum UserType {
                     Register your account
                 </h2>
             </div>
-            <div className="user-type-toggle">
-            <button onClick={() => setUserType(UserType.Student)}>Student</button>
-            <button onClick={() => setUserType(UserType.Professor)}>Professor</button>
+            <div className="flex min-h-full flex-1 flex-row justify-center px-6 py-12 lg:px-8 space-x-8 user-type-toggle">
+                <button onClick={() => setUserType(UserType.Student)}>Student</button>
+                <button onClick={() => setUserType(UserType.Professor)}>Professor</button>
             </div>
-            
-            {/* Registration Form */}
-            <form onSubmit={handleSubmit}>
-            {/* Shared fields between Student and Professor */}
-            <input type="text" value={name} onChange={(e) => setName(e.target.value)} required placeholder="Name" />
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="Email" />
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required placeholder="Password" />
-            
-            {/* Professor-specific field */}
-            {userType === UserType.Professor && (
-                <input type="text" value={profile} onChange={(e) => setProfile(e.target.value)} required placeholder="Profile" />
-            )}
-            
-            <button type="submit">Register as {userType}</button>
-            </form>
+            <div className="flex min-h-full flex-1 flex-col justify-center">
+                <form onSubmit={handleSubmit} className="flex min-h-full flex-1 flex-col justify-center">
+                    {/* Shared fields between Student and Professor */}
+                    <input type="text" value={name} onChange={(e) => setName(e.target.value)} required placeholder="Name"/>
+                    <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required placeholder="Email" />
+                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required placeholder="Password" />
+                        {/* Professor-specific field */}
+                        {userType === UserType.Professor && (
+                        <input type="text" value={profile} onChange={(e) => setProfile(e.target.value)} required placeholder="Profile" />
+                    )}
+                    <button type="submit"
+                        className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    >
+                        Register as {userType}
+                    </button>
+                    {/* <button type="submit">Register as {userType}</button> */}
+                </form>
+            </div>
         </div>
       </>
     );
