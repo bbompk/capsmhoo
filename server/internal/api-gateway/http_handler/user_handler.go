@@ -28,19 +28,27 @@ func (h *UserHandler) GetUserByID(c *gin.Context) {
 	id := c.Param("id")
 	user, err := h.userClientRest.GetUserByID(id) // Method on your rest client
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"code":  "500",
+			"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data": user})
+	c.JSON(http.StatusOK, gin.H{
+		"code": "200",
+		"data": user})
 }
 
 func (h *UserHandler) GetAllUsers(c *gin.Context) {
 	users, err := h.userClientRest.GetAllUsers() // Method on your rest client
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"code":  "500",
+			"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data": users})
+	c.JSON(http.StatusOK, gin.H{
+		"code": "200",
+		"data": users})
 }
 
 func (h *UserHandler) CreateUser(c *gin.Context) {

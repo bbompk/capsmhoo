@@ -29,19 +29,27 @@ func (h *StudentHandler) GetStudentByID(c *gin.Context) {
 	id := c.Param("id")
 	student, err := h.studentClientRest.GetStudentByID(id) // Method on your rest client
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"code":  "500",
+			"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data": student})
+	c.JSON(http.StatusOK, gin.H{
+		"code": "200",
+		"data": student})
 }
 
 func (h *StudentHandler) GetAllStudents(c *gin.Context) {
 	students, err := h.studentClientRest.GetAllStudents() // Method on your rest client
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"code":  "500",
+			"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data": students})
+	c.JSON(http.StatusOK, gin.H{
+		"code": "200",
+		"data": students})
 }
 
 func (h *StudentHandler) CreateStudent(c *gin.Context) {
@@ -111,7 +119,9 @@ func (h *StudentHandler) GetAllStudentsByTeamID(c *gin.Context) {
 	id := c.Param("id")
 	students, err := h.studentClientRest.GetAllStudentsByTeamID(id) // Method on your rest client
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"code":  "500",
+			"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
@@ -124,7 +134,9 @@ func (h *StudentHandler) GetStudentByUserID(c *gin.Context) {
 	id := c.Param("id")
 	student, err := h.studentClientRest.GetStudentByUserID(id) // Method on your rest client
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"code":  "500",
+			"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
