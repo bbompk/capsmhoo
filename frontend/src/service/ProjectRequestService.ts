@@ -2,11 +2,12 @@ import axios from "axios";
 import { ProjectRequestInterface } from "../interfaces/ProjectInterface";
 import { ApiResponse, ApiErrorResponse } from "../interfaces/ApiResponseInterface";
 import appConfig from "../configs/config";
-import { isResponseOk } from "../utils/ApiUtil";
+import { getEmptyHeaderWithBearerToken, isResponseOk } from "../utils/ApiUtil";
 
 export const getAllProjectRequests = async () => {
+    const headers = getEmptyHeaderWithBearerToken();
     const path = `${appConfig.BACKEND_BASE_URL}/project-request`;
-    const axios_res = await axios.get(path);
+    const axios_res = await axios.get(path, { headers });
     const res = axios_res.data as ApiResponse<ProjectRequestInterface[]>;
     if(!isResponseOk(res)) {
         throw new ApiErrorResponse(res.code, res.error ?? "Unknown error");
@@ -15,8 +16,9 @@ export const getAllProjectRequests = async () => {
 }
 
 export const getProjectRequestById = async (id: string) => {
+    const headers = getEmptyHeaderWithBearerToken();
     const path = `${appConfig.BACKEND_BASE_URL}/project-request/${id}`;
-    const axios_res = await axios.get(path);
+    const axios_res = await axios.get(path, { headers });
     const res = axios_res.data as ApiResponse<ProjectRequestInterface>;
     if(!isResponseOk(res)) {
         throw new ApiErrorResponse(res.code, res.error ?? "Unknown error");
@@ -25,8 +27,9 @@ export const getProjectRequestById = async (id: string) => {
 }
 
 export const getAllProjectRequestByProjectId = async (id: string) => {
+    const headers = getEmptyHeaderWithBearerToken();
     const path = `${appConfig.BACKEND_BASE_URL}/project-request/projectId/${id}`;
-    const axios_res = await axios.get(path);
+    const axios_res = await axios.get(path, { headers });
     const res = axios_res.data as ApiResponse<ProjectRequestInterface[]>;
     if(!isResponseOk(res)) {
         throw new ApiErrorResponse(res.code, res.error ?? "Unknown error");
@@ -35,8 +38,9 @@ export const getAllProjectRequestByProjectId = async (id: string) => {
 }
 
 export const createProjectRequest = async (projectRequest: ProjectRequestInterface) => {
+    const headers = getEmptyHeaderWithBearerToken();
     const path = `${appConfig.BACKEND_BASE_URL}/project-request`;
-    const axios_res = await axios.post(path, projectRequest);
+    const axios_res = await axios.post(path, projectRequest, { headers });
     const res = axios_res.data as ApiResponse<ProjectRequestInterface>;
     if(!isResponseOk(res)) {
         throw new ApiErrorResponse(res.code, res.error ?? "Unknown error");
@@ -45,8 +49,9 @@ export const createProjectRequest = async (projectRequest: ProjectRequestInterfa
 }
 
 export const updateProjectRequestById = async (id: string, projectRequest: ProjectRequestInterface) => {
+    const headers = getEmptyHeaderWithBearerToken();
     const path = `${appConfig.BACKEND_BASE_URL}/project-request/${id}`;
-    const axios_res = await axios.put(path, projectRequest);
+    const axios_res = await axios.put(path, projectRequest, { headers });
     const res = axios_res.data as ApiResponse<ProjectRequestInterface>;
     if(!isResponseOk(res)) {
         throw new ApiErrorResponse(res.code, res.error ?? "Unknown error");
@@ -55,8 +60,9 @@ export const updateProjectRequestById = async (id: string, projectRequest: Proje
 }
 
 export const deleteProjectRequestById = async (id: string) => {
+    const headers = getEmptyHeaderWithBearerToken();
     const path = `${appConfig.BACKEND_BASE_URL}/project-request/${id}`;
-    const axios_res = await axios.delete(path);
+    const axios_res = await axios.delete(path, { headers });
     const res = axios_res.data as ApiResponse<ProjectRequestInterface>;
     if(!isResponseOk(res)) {
         throw new ApiErrorResponse(res.code, res.error ?? "Unknown error");

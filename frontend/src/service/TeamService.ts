@@ -2,11 +2,12 @@ import axios from "axios";
 import { TeamInterface } from "../interfaces/TeamInterface";
 import { ApiResponse, ApiErrorResponse } from "../interfaces/ApiResponseInterface";
 import appConfig from "../configs/config";
-import { isResponseOk } from "../utils/ApiUtil";
+import { getEmptyHeaderWithBearerToken, isResponseOk } from "../utils/ApiUtil";
 
 export const getAllTeams = async () => {
+    const headers = getEmptyHeaderWithBearerToken();
     const path = `${appConfig.BACKEND_BASE_URL}/team`;
-    const axios_res = await axios.get(path);
+    const axios_res = await axios.get(path, { headers });
     const res = axios_res.data as ApiResponse<TeamInterface[]>;
     if(!isResponseOk(res)) {
         throw new ApiErrorResponse(res.code, res.error ?? "Unknown error");
@@ -15,8 +16,9 @@ export const getAllTeams = async () => {
 }
 
 export const getTeamById = async (id: string) => {
+    const headers = getEmptyHeaderWithBearerToken();
     const path = `${appConfig.BACKEND_BASE_URL}/team/${id}`;
-    const axios_res = await axios.get(path);
+    const axios_res = await axios.get(path, { headers });
     const res = axios_res.data as ApiResponse<TeamInterface>;
     if(!isResponseOk(res)) {
         throw new ApiErrorResponse(res.code, res.error ?? "Unknown error");
@@ -25,8 +27,9 @@ export const getTeamById = async (id: string) => {
 }
 
 export const createTeam = async (team: TeamInterface) => {
+    const headers = getEmptyHeaderWithBearerToken();
     const path = `${appConfig.BACKEND_BASE_URL}/team`;
-    const axios_res = await axios.post(path, team);
+    const axios_res = await axios.post(path, team, { headers });
     const res = axios_res.data as ApiResponse<TeamInterface>;
     if(!isResponseOk(res)) {
         throw new ApiErrorResponse(res.code, res.error ?? "Unknown error");
@@ -35,8 +38,9 @@ export const createTeam = async (team: TeamInterface) => {
 }
 
 export const updateTeamById = async (id: string, team: TeamInterface) => {
+    const headers = getEmptyHeaderWithBearerToken();
     const path = `${appConfig.BACKEND_BASE_URL}/team/${id}`;
-    const axios_res = await axios.put(path, team);
+    const axios_res = await axios.put(path, team, { headers });
     const res = axios_res.data as ApiResponse<TeamInterface>;
     if(!isResponseOk(res)) {
         throw new ApiErrorResponse(res.code, res.error ?? "Unknown error");
@@ -45,8 +49,9 @@ export const updateTeamById = async (id: string, team: TeamInterface) => {
 }
 
 export const deleteTeamById = async (id: string) => {
+    const headers = getEmptyHeaderWithBearerToken();
     const path = `${appConfig.BACKEND_BASE_URL}/team/${id}`;
-    const axios_res = await axios.delete(path);
+    const axios_res = await axios.delete(path, { headers });
     const res = axios_res.data as ApiResponse<TeamInterface>;
     if(!isResponseOk(res)) {
         throw new ApiErrorResponse(res.code, res.error ?? "Unknown error");
