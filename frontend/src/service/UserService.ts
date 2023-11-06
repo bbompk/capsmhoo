@@ -25,7 +25,7 @@ export const getUserById = async (id: string) => {
     }
     return res;
 }
-
+  
 export const createUser = async (user: UserInterface) => {
     const path = `${appConfig.BACKEND_BASE_URL}/user`;
     const axios_res = await axios.post(path, user);
@@ -35,8 +35,7 @@ export const createUser = async (user: UserInterface) => {
     }
     return res;
 }
-
-export const updateUserById = async (id: string, user: UserInterface) => {
+export const updateUserById = async (id: string, user: Partial<UserInterface>) => {
     const headers = getEmptyHeaderWithBearerToken();
     const path = `${appConfig.BACKEND_BASE_URL}/user/${id}`;
     const axios_res = await axios.put(path, user, { headers });

@@ -62,7 +62,7 @@ export const createProfessor = async (name: string, email: string, password: str
 //     return res;
 // }
 
-export const updateProfessorById = async (id: string, professor: ProfessorInterface) => {
+export const updateProfessorById = async (id: string, professor: Partial<ProfessorInterface>) => {
     const headers = getEmptyHeaderWithBearerToken();
     const path = `${appConfig.BACKEND_BASE_URL}/professor/${id}`;
     const axios_res = await axios.put(path, professor, { headers });
