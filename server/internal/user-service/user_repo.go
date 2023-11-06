@@ -89,6 +89,13 @@ func (r *Repository) CreateUser(user User) (*User, error) {
 
 func (r *Repository) UpdateUserByID(id string, user User) (*User, error) {
 	user.ID = id
+	if user.Password != "" {
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+		if err != nil {
+			return nil, err
+		}
+		user.Password = string(hashedPassword)
+	}
 	if err := r.db.Table("users").Where("id = ?", id).Updates(&user).Error; err != nil {
 		return nil, errors.New("User not found")
 	}
