@@ -3,9 +3,9 @@ import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 
 import { useUser } from '../../hooks/useUser';
-import { getUserById } from '../../service/UserService';
-import { getStudentByUserId } from '../../service/StudentService';
-import { getProfessorByUserId } from '../../service/ProfessorService';
+import { getUserById, updateUserById } from '../../service/UserService';
+import { getStudentByUserId, updateStudentById } from '../../service/StudentService';
+import { getProfessorByUserId, updateProfessorById } from '../../service/ProfessorService';
 
 const Profile = () => {
     const { userId, role } = useUser();
@@ -17,6 +17,7 @@ const Profile = () => {
         profile: '',
     });
     const [initialData, setInitialData] = useState({
+        roleId: '',
         email: '',
         name: '',
         profile: '',
@@ -51,6 +52,7 @@ const Profile = () => {
                         name: student?.data?.name ?? '',
                     }));
                     setInitialData({
+                        roleId: student?.data?.id ?? '',
                         email: user.data.email ?? '',
                         name: student?.data?.name ?? '',
                         profile: '',
@@ -66,6 +68,7 @@ const Profile = () => {
                         profile: professor?.data?.profile ?? '',
                     }));
                     setInitialData({
+                        roleId: professor?.data?.id ?? '',
                         email: user.data.email ?? '',
                         name: professor?.data?.name ?? '',
                         profile: professor?.data?.profile ?? '',
@@ -96,42 +99,61 @@ const Profile = () => {
         try {
             
             if (role === 'Student' && profileData.name !== initialData.name) {
-
+                await updateStudentById(initialData.roleId, {name: profileData.name});
+                setInitialData(prevData => ({
+                    ...prevData,
+                    name: profileData.name,
+                }));
             }
             
             if (role === 'Professor' && (profileData.profile !== initialData.profile || profileData.name !== initialData.name)) {
-
+                await updateProfessorById(initialData.roleId, {name: profileData.name, profile: profileData.profile});
+                setInitialData(prevData => ({
+                    ...prevData,
+                    name: profileData.name,
+                    profile: profileData.profile,
+                }));
             }
             
-            if (profileData.email !== initialData.email || profileData.password) {
-                // update email & password
-
-                if (profileData.password) {
-                    // force logout
-                    localStorage.removeItem('accessToken')
-                    localStorage.removeItem('token_expires')
-                    localStorage.removeItem('userId')
-                    localStorage.removeItem('role')
-                    localStorage.removeItem('studentId')
-                    localStorage.removeItem('professorId')
-                    console.log("logout")
-                    Swal.fire({
-                      icon: 'success',
-                      title: 'Your profile has been updated',
-                      text: 'Please re-login',
-                    })
-                    navigate("/login");
-                    return;
-                }
+            if (userId && profileData.email !== initialData.email) {
+                await updateUserById(userId, {email: profileData.email});
+                setInitialData(prevData => ({
+                    ...prevData,
+                    email: profileData.email,
+                }));
             }
-            if (role === 'Student') {
-                // await updateStudentById(userId, profileData);
-            } else if (role === 'Professor') {
-                // await updateProfessorById(userId, profileData);
+            
+            if (userId && profileData.password) {
+                await updateUserById(userId, {password: profileData.password});
+                // force logout
+                localStorage.removeItem('accessToken')
+                localStorage.removeItem('token_expires')
+                localStorage.removeItem('userId')
+                localStorage.removeItem('role')
+                localStorage.removeItem('studentId')
+                localStorage.removeItem('professorId')
+                console.log("logout")
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Your password has been updated',
+                    text: 'Please re-login with new password',
+                })
+                navigate("/login");
+                return;
+                
             }
-            Swal.fire('Success', 'Your profile has been updated.', 'success');
+            Swal.fire({
+                icon: 'success',
+                title: 'Your profile has been updated',
+            })
+            // Swal.fire('Success', 'Your profile has been updated.', 'success');
         } catch (error) {
-            Swal.fire('Error', 'There was a problem updating your profile.', 'error');
+            Swal.fire({
+                icon: 'error',
+                title: 'There was a problem updating your profile.',
+                text: 'Please try again later.',
+            })
+            // Swal.fire('Error', 'There was a problem updating your profile.', 'error');
         }
     };
     
@@ -139,7 +161,7 @@ const Profile = () => {
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 profile-page-container">
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
             <h2 className="mt-10 text-center text-3xl font-extrabold text-gray-900">
-                Edit Profile
+                Edit Profile {initialData.roleId} {userId}
             </h2>
             <form className="mt-8 space-y-6" onSubmit={handleSubmit}> {/* Updated this line */}
                 <div>
