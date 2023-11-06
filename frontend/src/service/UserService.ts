@@ -14,15 +14,10 @@ export const getAllUsers = async () => {
     return res;
 }
 
-export const getUserById = async (_id: string) => {
-    const id = _id.replace(/"/g, '');
+export const getUserById = async (id: string) => {
     const path = `${appConfig.BACKEND_BASE_URL}/user/${id}`;
     const axios_res = await axios.get(path);
-    // const res = axios_res.data as ApiResponse<UserInterface>;
-    const res: ApiResponse<UserInterface> = {
-        code: axios_res.status.toString(),
-        data: axios_res.data.data,
-    };
+    const res = axios_res.data as ApiResponse<UserInterface>;
     if(!isResponseOk(res)) {
         throw new ApiErrorResponse(res.code, res.error ?? "Unknown error");
     }
@@ -38,8 +33,7 @@ export const createUser = async (user: UserInterface) => {
     }
     return res;
 }
-export const updateUserById = async (_id: string, user: Partial<UserInterface>) => {
-    const id = _id.replace(/"/g, '');
+export const updateUserById = async (id: string, user: Partial<UserInterface>) => {
     const path = `${appConfig.BACKEND_BASE_URL}/user/${id}`;
     const axios_res = await axios.put(path, user);
     const res = axios_res.data as ApiResponse<UserInterface>;

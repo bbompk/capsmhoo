@@ -24,15 +24,10 @@ export const getStudentById = async (id: string) => {
     return res;
 }
 
-export const getStudentByUserId = async (_id: string) => {
-    const id = _id.replace(/"/g, '');
+export const getStudentByUserId = async (id: string) => {
     const path = `${appConfig.BACKEND_BASE_URL}/student/userId/${id}`;
     const axios_res = await axios.get(path);
-    // const res = axios_res.data as ApiResponse<StudentInterface>;
-    const res: ApiResponse<StudentInterface> = {
-        code: axios_res.status.toString(),
-        data: axios_res.data.data,
-    };
+    const res = axios_res.data as ApiResponse<StudentInterface>;
     if(!isResponseOk(res)) {
         throw new ApiErrorResponse(res.code, res.error ?? "Unknown error");
     }
