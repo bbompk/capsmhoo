@@ -75,7 +75,7 @@ export const createStudent = async (name: string, email: string, password: strin
 //     return res;
 // }
 
-export const updateStudentById = async (id: string, student: StudentInterface) => {
+export const updateStudentById = async (id: string, student: Partial<StudentInterface>) => {
     const path = `${appConfig.BACKEND_BASE_URL}/student/${id}`;
     const axios_res = await axios.put(path, student);
     const res = axios_res.data as ApiResponse<StudentInterface>;

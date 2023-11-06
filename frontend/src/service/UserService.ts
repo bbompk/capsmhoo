@@ -38,8 +38,8 @@ export const createUser = async (user: UserInterface) => {
     }
     return res;
 }
-
-export const updateUserById = async (id: string, user: UserInterface) => {
+export const updateUserById = async (_id: string, user: Partial<UserInterface>) => {
+    const id = _id.replace(/"/g, '');
     const path = `${appConfig.BACKEND_BASE_URL}/user/${id}`;
     const axios_res = await axios.put(path, user);
     const res = axios_res.data as ApiResponse<UserInterface>;
