@@ -39,6 +39,20 @@ func (r *Repository) GetProjects() []Project {
 	return projects
 }
 
+func (r *Repository) GetProjectByTeamID(id string) (*Project, error) {
+	var project Project
+	if err := r.db.Table("projects").Where("team_id = ?", id).First(&project).Error; err != nil {
+		return nil, errors.New("Project not found on this team")
+	}
+	return &project, nil
+}
+
+func (r *Repository) GetProjectByProfessorID(id string) []Project {
+	var projects []Project
+	r.db.Table("projects").Where("professor_id = ?", id).Find(&projects)
+	return projects
+}
+
 func (r *Repository) GetProjectByID(id string) (*Project, error) {
 	var project Project
 	if err := r.db.Table("projects").Where("project_id = ?", id).First(&project).Error; err != nil {
