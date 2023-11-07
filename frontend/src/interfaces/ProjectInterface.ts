@@ -1,9 +1,11 @@
 export interface ProjectInterface {
-    project_id: string;
+    id?: string;
     name: string;
     description: string;
     professor_id: string;
-    team_id: string;
+    team_id?: string;
+    status: string;
+    label: string;
 }
 
 export interface ProjectRequestInterface {

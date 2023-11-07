@@ -10,7 +10,7 @@ const navigation = [
   { name: 'Home', component: '/', current: false },
   { name: 'Register', component: '/register', current: false },
   { name: 'Login', component: '/login', current: false },
-  { name: 'Create Project', component: '/create-project', current: false },
+  // { name: 'Create Project', component: '/create-project', current: false },
   { name: 'Create Team', component: '/create-team', current: false },
   { name: 'Project', component: '/view-project', current: false },
   { name: 'Team', component: '/view-team', current: false }

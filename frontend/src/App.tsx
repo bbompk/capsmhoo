@@ -22,9 +22,9 @@ function App() {
           <Route path='/' element={<Home />} />
           <Route path='/register' element={<Register/>} />
           <Route path='/login' element={<Login />} />
-          <Route path='/create-project' element={<CreateProject />} />
+          {/* <Route path='/create-project' element={<CreateProject />} /> */}
           <Route path='/create-team' element={<CreateTeam />} />
-          <Route path='/view-project' element={<ProjectList/>} />
+          <Route path='/view-project' element={<AuthProvider><ProjectList/></AuthProvider>} />
           <Route path='/view-team' element={<TeamList/>} />
           <Route path='/private' element={<AuthProvider><h1>Private</h1></AuthProvider>} />
           <Route path='/mock-login' element={<MockLogin />} />
