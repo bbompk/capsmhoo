@@ -1,8 +1,6 @@
 package user
 
 import (
-	"capsmhoo/internal/api-gateway/middleware"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,7 +16,7 @@ func ProvideRouter(r *gin.Engine, h *UserHandler, hh *StudentHandler, hhh *Profe
 	r.GET("/user", h.GetUser)
 	r.POST("/user", h.CreateUser)
 	// r.PUT("/user/:id", h.UpdateUserByID)
-	r.PUT("/user/:id", middleware.JwtAuthentication, h.UpdateUserByID)
+	r.PUT("/user/:id", h.UpdateUserByID)
 	r.DELETE("/user/:id", h.DeleteUserByID)
 	r.DELETE("/user", h.DeleteAll)
 

@@ -2,11 +2,12 @@ import axios from "axios";
 import { ProfessorInterface } from "../interfaces/UserInterface";
 import { ApiResponse, ApiErrorResponse } from "../interfaces/ApiResponseInterface";
 import appConfig from "../configs/config";
-import { isResponseOk } from "../utils/ApiUtil";
+import { getEmptyHeaderWithBearerToken, isResponseOk } from "../utils/ApiUtil";
 
 export const getAllProfessors = async () => {
+    const headers = getEmptyHeaderWithBearerToken();
     const path = `${appConfig.BACKEND_BASE_URL}/professor`;
-    const axios_res = await axios.get(path);
+    const axios_res = await axios.get(path, { headers });
     const res = axios_res.data as ApiResponse<ProfessorInterface[]>;
     if(!isResponseOk(res)) {
         throw new ApiErrorResponse(res.code, res.error ?? "Unknown error");
@@ -15,8 +16,9 @@ export const getAllProfessors = async () => {
 }
 
 export const getProfessorById = async (id: string) => {
+    const headers = getEmptyHeaderWithBearerToken();
     const path = `${appConfig.BACKEND_BASE_URL}/professor/${id}`;
-    const axios_res = await axios.get(path);
+    const axios_res = await axios.get(path, { headers });
     const res = axios_res.data as ApiResponse<ProfessorInterface>;
     if(!isResponseOk(res)) {
         throw new ApiErrorResponse(res.code, res.error ?? "Unknown error");
@@ -25,8 +27,9 @@ export const getProfessorById = async (id: string) => {
 }
 
 export const getProfessorByUserId = async (id: string) => {
+    const headers = getEmptyHeaderWithBearerToken();
     const path = `${appConfig.BACKEND_BASE_URL}/professor/userId/${id}`;
-    const axios_res = await axios.get(path);
+    const axios_res = await axios.get(path, { headers });
     const res = axios_res.data as ApiResponse<ProfessorInterface>;
     if(!isResponseOk(res)) {
         throw new ApiErrorResponse(res.code, res.error ?? "Unknown error");
@@ -59,9 +62,10 @@ export const createProfessor = async (name: string, email: string, password: str
 //     return res;
 // }
 
-export const updateProfessorById = async (id: string, professor: ProfessorInterface) => {
+export const updateProfessorById = async (id: string, professor: Partial<ProfessorInterface>) => {
+    const headers = getEmptyHeaderWithBearerToken();
     const path = `${appConfig.BACKEND_BASE_URL}/professor/${id}`;
-    const axios_res = await axios.put(path, professor);
+    const axios_res = await axios.put(path, professor, { headers });
     const res = axios_res.data as ApiResponse<ProfessorInterface>;
     if(!isResponseOk(res)) {
         throw new ApiErrorResponse(res.code, res.error ?? "Unknown error");
@@ -70,8 +74,9 @@ export const updateProfessorById = async (id: string, professor: ProfessorInterf
 }
 
 export const deleteProfessorById = async (id: string) => {
+    const headers = getEmptyHeaderWithBearerToken();
     const path = `${appConfig.BACKEND_BASE_URL}/professor/${id}`;
-    const axios_res = await axios.delete(path);
+    const axios_res = await axios.delete(path, { headers });
     const res = axios_res.data as ApiResponse<ProfessorInterface>;
     if(!isResponseOk(res)) {
         throw new ApiErrorResponse(res.code, res.error ?? "Unknown error");

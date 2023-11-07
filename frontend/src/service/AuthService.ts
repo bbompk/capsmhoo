@@ -19,7 +19,7 @@ export const login = async (email: string, password: string) => {
         localStorage.setItem("accessToken", res.data.token)
         localStorage.setItem("token_expires", addHoursToDate(new Date(), 1).toString())
 
-        localStorage.setItem("userId", JSON.stringify(res.data.user.id))
+        localStorage.setItem("userId", res.data.user.id)
         localStorage.setItem("role", res.data.user.role)
     }
 

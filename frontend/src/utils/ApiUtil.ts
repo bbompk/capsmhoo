@@ -19,3 +19,7 @@ export const isResponseOk = (response: ApiResponse): boolean => {
         return false;
     }
 }
+
+export const getEmptyHeaderWithBearerToken = (): any => {
+    return localStorage.getItem("accessToken") != undefined ?  { 'Authorization' : `Bearer ${localStorage.getItem("accessToken")}`} : {}
+}

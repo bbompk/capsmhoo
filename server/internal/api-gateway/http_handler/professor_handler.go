@@ -28,19 +28,27 @@ func (h *ProfessorHandler) GetProfessorByID(c *gin.Context) {
 	id := c.Param("id")
 	professor, err := h.professorClientRest.GetProfessorByID(id) // Method on your rest client
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"code":  "500",
+			"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data": professor})
+	c.JSON(http.StatusOK, gin.H{
+		"code": "200",
+		"data": professor})
 }
 
 func (h *ProfessorHandler) GetAllProfessors(c *gin.Context) {
 	professors, err := h.professorClientRest.GetAllProfessors() // Method on your rest client
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"code":  "500",
+			"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data": professors})
+	c.JSON(http.StatusOK, gin.H{
+		"code": "200",
+		"data": professors})
 }
 
 func (h *ProfessorHandler) CreateProfessor(c *gin.Context) {
@@ -110,7 +118,9 @@ func (h *ProfessorHandler) GetProfessorByUserID(c *gin.Context) {
 	id := c.Param("id")
 	professor, err := h.professorClientRest.GetProfessorByUserID(id) // Method on your rest client
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"code":  "500",
+			"error": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
