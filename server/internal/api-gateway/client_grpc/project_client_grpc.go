@@ -14,6 +14,8 @@ type ProjectClient struct {
 type ProjectgRPCClient interface {
 	GetAllProjects(ctx context.Context) ([]*model.Project, error)
 	GetProjectByID(ctx context.Context, id string) (*model.Project, error)
+	GetProjectByTeamID(ctx context.Context, teamId string) (*model.Project, error)
+	GetProjectByProfessorID(ctx context.Context, professorId string) ([]*model.Project, error)
 	CreateProject(ctx context.Context, project *model.Project) (*model.Project, error)
 	UpdateProjectByID(ctx context.Context, id string, project *model.Project) (*model.Project, error)
 	DeleteProjectByID(ctx context.Context, id string) (*model.Project, error)
@@ -60,6 +62,46 @@ func (p *ProjectClient) GetProjectByID(ctx context.Context, id string) (*model.P
 		Label:       projectRes.Label,
 	}
 	return project, nil
+}
+
+func (p *ProjectClient) GetProjectByTeamID(ctx context.Context, teamId string) (*model.Project, error) {
+	projectRes, err := (*p.client).GetProjectByTeamId(ctx, &pb.TeamId{TeamId: teamId})
+	if err != nil {
+		return nil, err
+	}
+	project := &model.Project{
+		ID:          projectRes.ProjectId,
+		TeamID:      projectRes.TeamId,
+		ProfessorID: projectRes.ProfessorId,
+		Name:        projectRes.Name,
+		Description: projectRes.Description,
+		Status:      projectRes.Status,
+		Label:       projectRes.Label,
+	}
+	return project, nil
+}
+
+func (p *ProjectClient) GetProjectByProfessorID(ctx context.Context, professorId string) ([]*model.Project, error) {
+	res, err := (*p.client).GetProjectByProfessorId(ctx, &pb.ProfessorId{ProfessorId: professorId})
+	if err != nil {
+		return nil, err
+	}
+	var projects []*model.Project
+	for _, project := range res.Projects {
+		projects = append(projects, &model.Project{
+			ID:          project.ProjectId,
+			TeamID:      project.TeamId,
+			ProfessorID: project.ProfessorId,
+			Name:        project.Name,
+			Description: project.Description,
+			Status:      project.Status,
+			Label:       project.Label,
+		})
+	}
+	if projects == nil {
+		return []*model.Project{}, nil
+	}
+	return projects, nil
 }
 
 func (p *ProjectClient) CreateProject(ctx context.Context, project *model.Project) (*model.Project, error) {
