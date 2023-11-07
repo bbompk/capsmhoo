@@ -16,7 +16,7 @@ type ProjectRepository interface {
 	GetProjects() []Project
 	GetProjectByID(id string) (*Project, error)
 	GetProjectByTeamID(id string) (*Project, error)
-	GetProjectsByProfessorID(id string) []Project
+	GetProjectByProfessorID(id string) ([]Project, error)
 	CreateProject(project Project) (*Project, error)
 	UpdateProjectByID(id string, project Project) (*Project, error)
 	DeleteProjectByID(id string) (*Project, error)
@@ -47,10 +47,10 @@ func (r *Repository) GetProjectByTeamID(id string) (*Project, error) {
 	return &project, nil
 }
 
-func (r *Repository) GetProjectsByProfessorID(id string) []Project {
+func (r *Repository) GetProjectByProfessorID(id string) ([]Project, error) {
 	var projects []Project
 	r.db.Table("projects").Where("professor_id = ?", id).Find(&projects)
-	return projects
+	return projects, nil
 }
 
 func (r *Repository) GetProjectByID(id string) (*Project, error) {
