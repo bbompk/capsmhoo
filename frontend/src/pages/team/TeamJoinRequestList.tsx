@@ -1,37 +1,35 @@
 import { useState, useEffect } from "react";
-import { getAllTeams } from "../../service/TeamService";
-import { TeamInterface } from "../../interfaces/TeamInterface";
+import { TeamJoinRequestInterface } from "../../interfaces/TeamInterface";
+import { getAllTeamJoinRequests } from "../../service/TeamJoinRequestService";
 
-const TeamList = () => {
-  console.log(getAllTeams);
-  const [data, setData] = useState<TeamInterface[]>();
+const TeamJoinRequestList = () => {
+  console.log(getAllTeamJoinRequests);
+  const [data, setData] = useState<TeamJoinRequestInterface[]>();
   const fetchData = async () => {
-    await fetch("http://localhost:8082/team")
-      .then(async (res) => {
-        const response = await res.json();
-        setData(response.data)
-      })
+    await fetch("http://localhost:8082/team").then(async (res) => {
+      const response = await res.json();
+      setData(response.data);
+    });
   };
 
   useEffect(() => {
     fetchData();
   }, []);
 
+  console.log(data);
 
-  console.log(data)
-  
   return (
     <div>
       <div className="min-h-screen">
-        <h1 className=" text-center text-3xl p-4">List of Team</h1>
+        <h1 className=" text-center text-3xl p-4">List of Team Joining Request</h1>
 
         <div className="container my-12 mx-auto px-4 md:px-12">
           <div className="flex flex-wrap -mx-1 lg:-mx-4">
             {Array.isArray(data)
-              ? data.map((team) => (
+              ? data.map((teamReq) => (
                   <div className="my-1 px-1 w-full md:w-1/2 lg:my-4 lg:px-4 lg:w-1/3">
                     <article className="overflow-hidden rounded-lg shadow-lg">
-                      <a href={`/team-detail/${team.id}`}>
+                      <a href={`/detail/${teamReq.id}`}>
                         <img
                           alt="Placeholder"
                           className="block h-72 w-full"
@@ -64,4 +62,4 @@ const TeamList = () => {
   );
 };
 
-export default TeamList;
+export default TeamJoinRequestList;
