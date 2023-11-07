@@ -11,6 +11,7 @@ import Login from './pages/login/Login';
 import Profile from './pages/profile/Profile';
 import { AuthProvider } from './components/auth/AuthProvider';
 import MockLogin from './components/auth/MockLogin';
+import MyTeam from './pages/my-team/myTeam';
 
 function App() {
 
@@ -29,6 +30,7 @@ function App() {
           <Route path='/create-team' element={<CreateTeam />} />
           <Route path='/view-project' element={<ProjectList/>} />
           <Route path='/view-team' element={<TeamList/>} />
+          <Route path='/my-team' element={<MyTeam/>} />
           <Route path='/private' element={<AuthProvider><h1>Private</h1></AuthProvider>} />
           <Route path='/mock-login' element={<MockLogin />} />
           </Routes>
