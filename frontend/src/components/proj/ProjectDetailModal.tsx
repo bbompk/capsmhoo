@@ -211,7 +211,7 @@ const ProjectDetailModal = ({projectId, isModalVisible, setOpenModal}: {projectI
                     <div className="flex flex-wrap -mx-1 lg:-mx-4">
                     {pendingProjectRequests && (pendingProjectRequests.length)>0 
                     ? pendingProjectRequests.map((projectRequest) => (
-                        <div className="my-1 px-1 w-full">
+                        <div key={projectRequest.project_request_id} className="my-1 px-1 w-full">
                         <article className="overflow-hidden rounded-lg shadow-lg">
                             <header className="flex items-center justify-between leading-tight gap-x-2 p-2 md:p-4">
                             <h1 className="text-lg">
