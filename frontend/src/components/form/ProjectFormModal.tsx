@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { Dropdown, Modal, Space, Button } from "antd"
 import { DownOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import Swal from 'sweetalert2'
 
-import { getProjectById, createProject, updateProjectById } from '../../service/ProjectService';
+import { getProjectById, createProject, updateProjectById, deleteProjectById } from '../../service/ProjectService';
 
 const items: MenuProps['items'] = [
     {
@@ -33,19 +33,19 @@ export const ProjectFormModal = ({isModalVisible, formMode, setOpenModal, projec
     useEffect(() => {
         if(formMode == 'edit' && isModalVisible){
             getProjectById(projectId)
-            .then((res) => {
-                if(res.data){
-                    setProjectName(res.data.name)
-                    setProjectDescription(res.data.description)
-                    setProjectLabel(res.data.label)
-                }
-            })
-            .catch((err) => {
-                console.log(err);
-                Swal.fire("Error","Cannot get project", 'error')
-                setOpenModal(false);
-                resetForm();
-            })
+                .then((res) => {
+                    if(res.data){
+                        setProjectName(res.data.name)
+                        setProjectDescription(res.data.description)
+                        setProjectLabel(res.data.label)
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                    Swal.fire("Error","Cannot get project", 'error')
+                    setOpenModal(false);
+                    resetForm();
+                })
         }
     }, [formMode, projectId, isModalVisible])
 
@@ -66,7 +66,6 @@ export const ProjectFormModal = ({isModalVisible, formMode, setOpenModal, projec
     };
 
     const handleOk = async () => {
-        console.log(projectName, projectDescription, projectLabel, professorId);
         try{
             if(formMode == 'create'){
                 if(!projectName || !projectDescription || !projectLabel || !professorId){
@@ -90,6 +89,20 @@ export const ProjectFormModal = ({isModalVisible, formMode, setOpenModal, projec
         }
     }
 
+    const handleDelete = async () => {
+        try{
+            const projectRes = await deleteProjectById(projectId)
+            if(!projectRes.data)return;
+            Swal.fire("Success","Project deleted", 'success')
+        }catch(err){
+            console.log(err);
+            Swal.fire("Error","Cannot delete project", 'error')
+        }finally{
+            setOpenModal(false);
+            resetForm();
+        }
+    }
+
     const handleCancel = () => {
         console.log('cancel');
         setOpenModal(false)
@@ -97,7 +110,22 @@ export const ProjectFormModal = ({isModalVisible, formMode, setOpenModal, projec
     }
 
     return (
-    <Modal title={formMode=='create'? 'Create New Project' : 'Edit Your Project'} open={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+    <Modal 
+        title={
+            formMode=='create'
+            ? <h1>Create New Project</h1> 
+            : <div className='flex justify-between mr-10'><h1>Edit Your Project</h1>
+                <button className='flex justify-center items-center px-4 py-1 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500'
+                onClick={handleDelete}
+                >
+                    Delete
+                </button>
+            </div>
+        } 
+        open={isModalVisible} 
+        onOk={handleOk} 
+        onCancel={handleCancel}
+        >
         <div className="space-y-12">
             <div className="border-b border-gray-900/10 pb-12">
                 <div className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">

@@ -9,7 +9,7 @@ export interface ProjectInterface {
 }
 
 export interface ProjectRequestInterface {
-    project_request_id: string;
+    project_request_id?: string;
     project_id: string;
     team_id: string;
     message: string;

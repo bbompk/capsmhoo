@@ -7,55 +7,7 @@ import { getAllProjects } from "../../service/ProjectService";
 import ProjectDetailModal from "../../components/proj/ProjectDetailModal";
 
 const ProjectList = () => {
-    const [projectData, setProjectData] = useState<ProjectInterface[]|null>(
-      [
-        {
-          id: '1',
-          team_id: '1',
-          professor_id: '1',
-          name: 'Project 1',
-          description: 'Project 1 description',
-          status: 'open',
-          label: 'Project 1 label',
-        },
-        {
-          id: '2',
-          team_id: '2',
-          professor_id: '2',
-          name: 'Project 2',
-          description: 'Project 2 description',
-          status: 'open',
-          label: 'Project 2 label',
-        },
-        {
-          id: '3',
-          team_id: '3',
-          professor_id: '3',
-          name: 'Project 3',
-          description: 'Project 3 description',
-          status: 'open',
-          label: 'Project 3 label',
-        },
-        {
-          id: '4',
-          team_id: '4',
-          professor_id: '4',
-          name: 'Project 4',
-          description: 'Project 4 description',
-          status: 'open',
-          label: 'Project 4 label',
-        },
-        {
-          id: '5',
-          team_id: '5',
-          professor_id: '5',
-          name: 'Project 5',
-          description: 'Project 5 description',
-          status: 'open',
-          label: 'Project 5 label',
-        },
-      ]
-    );
+    const [projectData, setProjectData] = useState<ProjectInterface[]>([]);
     const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
     const [formMode, setFormMode] = useState<FormMode>('create');
     const [projectId, setProjectId] = useState<string>('');
@@ -69,14 +21,15 @@ const ProjectList = () => {
 
     useEffect(() => {
       if(isProjectModalOpen) return;
+      if(isProjectDetailModalOpen) return;
       fetchAllProjects();
-    }, [isProjectModalOpen]);
+    }, [isProjectModalOpen, isProjectDetailModalOpen]);
 
     const fetchAllProjects = () => {
       try{
         getAllProjects().then((res) => {
           console.log(res);
-          if(res.data === undefined)return;
+          if(!res.data)return;
           setProjectData(res.data);
         });
       } catch(err){
@@ -105,6 +58,8 @@ const ProjectList = () => {
       setIsProjectDetailModalOpen(true);
     }
 
+    const openProjectData = projectData?.filter((project) => project.status === 'open');
+
     return (
       <div>
       <div className="min-h-screen">
@@ -117,7 +72,7 @@ const ProjectList = () => {
             </button>
           }
         <div className="flex flex-wrap -mx-1 lg:-mx-4">
-          {projectData && projectData.map((project) => (
+          {openProjectData && openProjectData.map((project) => (
             <div className="my-1 px-1 w-full md:w-1/2 lg:w-1/3 cursor-pointer" onClick={()=>{showProjectDetailModal(project.id!)}}>
               <article className="overflow-hidden rounded-lg shadow-lg">
                 <header className="flex items-center justify-between leading-tight p-2 md:p-4">
