@@ -137,7 +137,7 @@ func (r *Repository) CreateProjectRequest(projectRequest ProjectRequest) (*Proje
 	// Assign a unique ID to the new projectRequest (you may use a UUID generator)
 	id := uuid.New()
 	projectRequest.ProjectRequestID = id.String() // Replace with your logic
-	projectRequest.Status = "open"
+	projectRequest.Status = "pending"
 
 	if err := r.db.Table("project_requests").Create(&projectRequest).Error; err != nil {
 		return nil, err
