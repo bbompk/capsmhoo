@@ -28,7 +28,7 @@ export const ProjectFormModal = ({isModalVisible, formMode, setOpenModal, projec
     const [projectDescription, setProjectDescription] = useState<string>('');
     const [projectLabel, setProjectLabel] = useState<string>('Label');
 
-    const professorId = localStorage.getItem("professorId")
+    const professorId = sessionStorage.getItem("professorId")
 
     useEffect(() => {
         if(formMode == 'edit' && isModalVisible){

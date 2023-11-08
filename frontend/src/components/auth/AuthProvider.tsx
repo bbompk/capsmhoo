@@ -20,7 +20,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     setLoading(true)
     let interval: string | number | NodeJS.Timeout | undefined;
-    const accessToken = localStorage.getItem('accessToken')
+    const accessToken = sessionStorage.getItem('accessToken')
     if(accessToken == null){
         navigate("/login");
         clearInterval(interval);
@@ -31,7 +31,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     interval = setInterval(() => {
-        const expiredAt = new Date(localStorage.getItem("token_expires") ?? addHoursToDate(new Date(), -1))
+        const expiredAt = new Date(sessionStorage.getItem("token_expires") ?? addHoursToDate(new Date(), -1))
         const now = new Date();
         if (now > expiredAt) {
             ForceLogout();
@@ -40,8 +40,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     
     function ForceLogout() {
         clearInterval(interval);
-        localStorage.removeItem('accessToken')
-        localStorage.removeItem('token_expires')
+        sessionStorage.removeItem('accessToken')
+        sessionStorage.removeItem('token_expires')
         navigate("/login");
 
         Swal.fire("Error","Please log in", 'error')

@@ -29,12 +29,12 @@ export default function Example() {
   }
 
   const logout = () => {
-    localStorage.removeItem('accessToken')
-    localStorage.removeItem('token_expires')
-    localStorage.removeItem('userId')
-    localStorage.removeItem('role')
-    localStorage.removeItem('studentId')
-    localStorage.removeItem('professorId')
+    sessionStorage.removeItem('accessToken')
+    sessionStorage.removeItem('token_expires')
+    sessionStorage.removeItem('userId')
+    sessionStorage.removeItem('role')
+    sessionStorage.removeItem('studentId')
+    sessionStorage.removeItem('professorId')
     console.log("logout")
     Swal.fire({
       icon: 'success',

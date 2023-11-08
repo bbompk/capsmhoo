@@ -16,8 +16,8 @@ const ProjectDetailModal = ({projectId, isModalVisible, setOpenModal}: {projectI
     const [projectTeamId, setProjectTeamId] = useState<string>('');
     const [teamId, setTeamId ] = useState<string>('');
 
-    const role = localStorage.getItem("role")
-    const userId = localStorage.getItem("userId")
+    const role = sessionStorage.getItem("role")
+    const userId = sessionStorage.getItem("userId")
 
     const fetchProjectData = useCallback(async () => {
         const projectRes = await getProjectById(projectId)
