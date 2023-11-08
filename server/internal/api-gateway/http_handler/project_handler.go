@@ -14,6 +14,8 @@ type ProjectHandler struct {
 type IProjectHandler interface {
 	GetAllProjects(c *gin.Context)
 	GetProjectByID(c *gin.Context)
+	GetProjectByTeamID(c *gin.Context)
+	GetProjectByProfessorID(c *gin.Context)
 	CreateProject(c *gin.Context)
 	UpdateProjectByID(c *gin.Context)
 	DeleteProjectByID(c *gin.Context)
@@ -53,6 +55,38 @@ func (h *ProjectHandler) GetProjectByID(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"code": "200",
 		"data": project,
+	})
+}
+
+func (h *ProjectHandler) GetProjectByTeamID(c *gin.Context) {
+	id := c.Param("id")
+	project, err := h.projectClientgRPC.GetProjectByTeamID(c, id)
+	if err != nil {
+		c.JSON(200, gin.H{
+			"code":  "200",
+			"data": nil,
+		})
+		return
+	}
+	c.JSON(200, gin.H{
+		"code": "200",
+		"data": project,
+	})
+}
+
+func (h *ProjectHandler) GetProjectByProfessorID(c *gin.Context) {
+	id := c.Param("id")
+	projects, err := h.projectClientgRPC.GetProjectByProfessorID(c, id)
+	if err != nil {
+		c.JSON(200, gin.H{
+			"code":  "500",
+			"error": err.Error(),
+		})
+		return
+	}
+	c.JSON(200, gin.H{
+		"code": "200",
+		"data": projects,
 	})
 }
 

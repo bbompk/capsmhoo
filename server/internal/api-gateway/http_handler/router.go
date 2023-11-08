@@ -69,6 +69,8 @@ func ProvideRouter(
 	// project service
 	r.GET("/project", projectHandler.GetAllProjects)
 	r.GET("/project/:id", projectHandler.GetProjectByID)
+	r.GET("/project/teamId/:id", projectHandler.GetProjectByTeamID)
+	r.GET("/project/professorId/:id", projectHandler.GetProjectByProfessorID)
 	r.POST("/project", projectHandler.CreateProject)
 	r.PUT("/project/:id", projectHandler.UpdateProjectByID)
 	r.DELETE("/project/:id", projectHandler.DeleteProjectByID)

@@ -51,6 +51,36 @@ func (s *projectServer) GetProjectById(ctx context.Context, projectId *pb.Projec
 	return projectRes, nil
 }
 
+func (s *projectServer) GetProjectByTeamId(ctx context.Context, teamId *pb.TeamId) (*pb.Project, error) {
+	fmt.Println("Get Project By TeamID")
+	project, err := s.repo.GetProjectByTeamID(teamId.TeamId)
+	if err != nil {
+		return nil, err
+	}
+
+	projectRes := convertProjectRes(project)
+
+	return projectRes, nil
+}
+
+func (s *projectServer) GetProjectByProfessorId(ctx context.Context, professorId *pb.ProfessorId) (*pb.ProjectList, error) {
+	fmt.Println("Get All Projects By ProfessorID")
+	projects, err := s.repo.GetProjectByProfessorID(professorId.ProfessorId)
+	if err != nil {
+		return nil, err
+	}
+
+	projectRes := []*pb.Project{}
+
+	for _, project := range projects {
+		projectRes = append(projectRes, convertProjectRes(&project))
+	}
+
+	return &pb.ProjectList{
+		Projects: projectRes,
+	}, nil
+}
+
 func (s *projectServer) CreateProject(ctx context.Context, project *pb.Project) (*pb.Project, error) {
 	fmt.Println("Create Project")
 
