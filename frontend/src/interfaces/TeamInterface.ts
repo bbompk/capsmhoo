@@ -4,6 +4,13 @@ export interface TeamInterface {
     profile: string;
 }
 
+export interface TeamCreateInterface {
+    id: string;
+    name: string;
+    profile: string;
+    creator_id: string;
+}
+
 export interface TeamJoinRequestInterface {
     id: string;
     team_id: string;

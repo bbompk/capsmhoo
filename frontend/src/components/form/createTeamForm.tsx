@@ -1,36 +1,72 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+
+import { useUser } from "../../hooks/useUser";
 import { createTeam } from "../../service/TeamService";
-import { TeamInterface } from "../../interfaces/TeamInterface";
+import { TeamCreateInterface } from "../../interfaces/TeamInterface";
+import { getStudentByUserId } from "../../service/StudentService";
 
 export default function CreateTeamForm() {
   const [name, setName] = useState("");
   const [profile, setProfile] = useState("");
 
+  const { userId, role } = useUser();
   const navigate = useNavigate();
 
   const resetForm = () => {
     setName("");
     setProfile("");
   };
-  
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    const team : TeamInterface = {
+    e.preventDefault();
+
+    if (!userId) {
+      Swal.fire({
+        icon: "error",
+        title: "Creating Team Failed",
+        text: "Please log in to create a team.",
+      });
+      navigate("/login");
+      return;
+    } else if (role !== "Student") {
+      Swal.fire({
+        icon: "error",
+        title: "Creating Team Failed",
+        text: "Only student role can create team.",
+      });
+      navigate("/");
+      return;
+    }
+
+    const student = await getStudentByUserId(userId);
+    if (!student.data) {
+      throw new Error("Failed to fetch student data");
+    }
+
+    const teamCreate: TeamCreateInterface = {
+      id: "",
       name: name,
       profile: profile,
-      id: ""
-    }
-    
-    e.preventDefault();
+      creator_id: student.data.id,
+    };
+
     try {
-        await createTeam(team);
+      const createdTeam = await createTeam(teamCreate);
+      const team_id = createdTeam.data?.id;
+      navigate(`/team-detail/${team_id}`);
     } catch (error) {
       console.error(error);
+      Swal.fire({
+        icon: "error",
+        title: "Creating Team Failed",
+        text: "Please try again",
+      });
       resetForm();
       return;
     }
-    navigate("/view-team");
-  }
+  };
 
   return (
     <form onSubmit={handleSubmit}>
@@ -94,4 +130,3 @@ export default function CreateTeamForm() {
     </form>
   );
 }
-
