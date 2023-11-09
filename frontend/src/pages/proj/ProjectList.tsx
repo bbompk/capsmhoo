@@ -5,6 +5,7 @@ import { FormMode, ProjectFormModal } from "../../components/form/ProjectFormMod
 import { ProjectInterface } from "../../interfaces/ProjectInterface";
 import { getAllProjects, getProjectByProfessorId } from "../../service/ProjectService";
 import ProjectDetailModal from "../../components/proj/ProjectDetailModal";
+import { Tag } from "antd";
 
 const ProjectList = () => {
     const [projectData, setProjectData] = useState<ProjectInterface[]>([]);
@@ -84,7 +85,7 @@ const ProjectList = () => {
           {projectData && projectData.map((project) => (
             <div key={project.id} className="my-1 px-1 w-full md:w-1/2 lg:w-1/3 cursor-pointer" onClick={()=>{showProjectDetailModal(project.id!)}}>
               <article className="overflow-hidden rounded-lg shadow-lg">
-                <header className="flex items-center justify-between leading-tight p-2 md:p-4">
+                <div className="flex items-center justify-start leading-tight pt-3 px-3">
                   <h1 className="text-lg">
                     <a
                       className="no-underline hover:underline text-black"
@@ -93,21 +94,21 @@ const ProjectList = () => {
                       {project.name}
                     </a>
                   </h1>
-                  <p className="text-grey-darker text-sm">
+                  <Tag className="text-grey-darker text-sm ml-2" bordered={false} color={project.status==='open'?'success':'error'}>
                     {project.status}
-                  </p>
+                  </Tag>
                   {
                     role === "Professor" &&
-                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={(e)=>{e.stopPropagation();showProjectEditModal(project.id!);}}>
+                    <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-auto" onClick={(e)=>{e.stopPropagation();showProjectEditModal(project.id!);}}>
                       Edit
                     </button>
                   }  
-                </header>
+                </div>
 
-                <div className="flex items-center justify-between leading-none p-2 md:p-4">
-                  <p className="ml-2 text-sm">
+                <div className="flex items-center justify-between pl-4">
+                  <Tag bordered={false} color="processing">
                     {project.label}
-                  </p>
+                  </Tag>
                 </div>
 
                 <footer className="flex items-center justify-between leading-none p-2 md:p-4">

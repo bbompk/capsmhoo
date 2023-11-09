@@ -1,14 +1,16 @@
 import { useState, useEffect, useCallback } from "react"
 import Swal from 'sweetalert2'
-import { Modal } from "antd";
+import { Modal, Tag } from "antd";
 
 import { getProjectById } from "../../service/ProjectService";
-import { ProjectRequestInterface } from "../../interfaces/ProjectInterface";
+import { ProjectRequestInterface, ProjectRequestWithTeamInfoInterface } from "../../interfaces/ProjectInterface";
 import { createProjectRequest, getAllProjectRequestByProjectId, acceptProjectRequestById, rejectProjectRequestById } from "../../service/ProjectRequestService";
 import { getStudentByUserId } from "../../service/StudentService";
+import { getTeamById } from "../../service/TeamService";
 
 const ProjectDetailModal = ({projectId, isModalVisible, setOpenModal}: {projectId:string, isModalVisible:boolean, setOpenModal:React.Dispatch<React.SetStateAction<boolean>>}) => {
     const [projectRequestData, setProjectRequestData] = useState<ProjectRequestInterface[]|null>([]);
+    const [projectRequestWithTeamInfoData, setProjectRequestWithTeamInfoData] = useState<ProjectRequestWithTeamInfoInterface[]|null>([]);
     const [projectName, setProjectName] = useState<string>('');
     const [projectDescription, setProjectDescription] = useState<string>('');
     const [projectLabel, setProjectLabel] = useState<string>('Label');
@@ -20,6 +22,8 @@ const ProjectDetailModal = ({projectId, isModalVisible, setOpenModal}: {projectI
     const userId = sessionStorage.getItem("userId")
 
     const fetchProjectData = useCallback(async () => {
+        resetProjectModal();
+        // get project info
         const projectRes = await getProjectById(projectId)
         console.log(projectRes.data)
         if(!projectRes.data) return;
@@ -29,10 +33,23 @@ const ProjectDetailModal = ({projectId, isModalVisible, setOpenModal}: {projectI
         setProjectStatus(projectRes.data.status);
         setProjectTeamId(projectRes.data.team_id || '');
 
+        // get project requests for the project
         const projectRequestRes = await getAllProjectRequestByProjectId(projectId)
         if(projectRequestRes.code !== '200') return;
         setProjectRequestData(projectRequestRes.data||[]);
-        console.log(projectRequestRes.data)
+
+        // get team info for each project request
+        if(!projectRequestRes.data)return;
+        // if(projectStatus==='closed') return;
+        let projectRequestWithTeamInfo:ProjectRequestWithTeamInfoInterface[] = [];
+        await projectRequestRes.data.reduce(async (memo, projectRequest) => {
+            await memo;
+            if(!projectRequest.team_id) return;
+            const teamRes = await getTeamById(projectRequest.team_id);
+            if(!teamRes.data) return;
+            projectRequestWithTeamInfo.push({...projectRequest, team_name: teamRes.data.name, team_profile: teamRes.data.profile});
+        }, Promise.resolve());
+        setProjectRequestWithTeamInfoData(projectRequestWithTeamInfo)
     }, [projectId])
 
     useEffect(() => {
@@ -59,6 +76,15 @@ const ProjectDetailModal = ({projectId, isModalVisible, setOpenModal}: {projectI
         }
     }, [fetchProjectData, isModalVisible])
 
+    const resetProjectModal = () => {
+        setProjectName('');
+        setProjectDescription('');
+        setProjectLabel('');
+        setProjectStatus('');
+        setProjectTeamId('');
+        setProjectRequestData([]);
+        setProjectRequestWithTeamInfoData([]);
+    }
 
     const handleClose = () => {
         setOpenModal(false);
@@ -119,7 +145,7 @@ const ProjectDetailModal = ({projectId, isModalVisible, setOpenModal}: {projectI
         try {
             const projectRequestRes = await rejectProjectRequestById(projectRequestId)
 
-            if(!projectRequestRes.data){
+            if(projectRequestRes.code!=='200'){
                 Swal.fire("Error","Cannot reject project request", 'error')
                 return;
             }
@@ -133,40 +159,48 @@ const ProjectDetailModal = ({projectId, isModalVisible, setOpenModal}: {projectI
     }
 
     const projectRequestStatus = projectRequestData?.find((projectRequest) => projectRequest.team_id === teamId)?.status
-    const pendingProjectRequests = projectRequestData?.filter((projectRequest) => projectRequest.status === 'pending')
+    const pendingProjectRequests = projectRequestWithTeamInfoData?.filter((projectRequest) => projectRequest.status === 'pending')
+    const teamOfProject = projectRequestWithTeamInfoData?.find((projectRequest) => projectRequest.status === 'accepted') || {team_name: '', team_id: '', team_profile: '', status: ''};
 
     return (
-        <Modal title="Project Details" open={isModalVisible} footer={null} onCancel={handleClose}>
-            <div className="space-y-12">
+        <Modal 
+        title={
+            <div className="flex justify-between items-center">
+                <h1 className="font-bold text-2xl">Project Details</h1>
+                <Tag className="text-grey-darker text-sm ml-2 mr-8" bordered={false} color={projectStatus==='open'?'success':'error'}>
+                    {projectStatus}
+                </Tag>
+            </div>
+        } 
+        open={isModalVisible} footer={null} onCancel={handleClose}
+        >
             <div className="pb-4">
                 <div className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-6">
                 <div className="sm:col-span-4">
-                    <label htmlFor="name" className="block text-sm font-medium leading-6 text-gray-900">
+                    <label htmlFor="name" className="block text-base font-bold leading-6 text-gray-900">
                         Project Name
                     </label>
-                    <div className="mt-2">
+                    <div className="text-base mt-2">
                         {projectName}
                     </div>
                 </div>
-                {projectStatus}
 
                 <div className="col-span-full">
-                    <label htmlFor="description" className="block text-sm font-medium leading-6 text-gray-900">
+                    <label htmlFor="description" className="block text-base font-bold leading-6 text-gray-900">
                         Description
                     </label>
-                    <div className="mt-2">
+                    <div className="text-base mt-2">
                         {projectDescription}
                     </div>
                 </div>
 
                 <div className="col-span-full">
-                    <label htmlFor="label" className="block text-sm font-medium leading-6 text-gray-900">
+                    <label htmlFor="label" className="block text-base font-bold leading-6 text-gray-900">
                         Label
                     </label>
-                    <div className="mt-2">
+                    <div className="text-base mt-2">
                         {projectLabel}
                     </div>
-                </div>
                 </div>
             </div>
             {
@@ -190,33 +224,49 @@ const ProjectDetailModal = ({projectId, isModalVisible, setOpenModal}: {projectI
             }
             {
                 projectStatus === 'closed' &&
-                <div className="border-b border-gray-900/10 pb-4">
-                    <h1 className="text-lg">Team Id</h1>
-                    <div className="flex flex-wrap -mx-1 lg:-mx-4">
-                        <div className="my-1 px-1 w-full">
-                            <header className="flex items-center justify-between leading-tight gap-x-2 p-2 md:p-4 ">
-                            <h1 className="text-lg">
-                                {projectTeamId}
-                            </h1>
+                <div className="border-b border-gray-900/10">
+                    <div key={teamOfProject.team_id} className="my-1 px-1 w-full">
+                        <h1 className="text-lg font-bold">Team</h1>
+                        <article className="overflow-hidden rounded-lg shadow-lg md:py-3">
+                            <header className="flex items-center justify-between leading-tight gap-x-2 p-2 md:px-4">
+                                <div className="flex flex-col ">
+                                    <h1 className="text-base font-bold">
+                                        {teamOfProject.team_name}
+                                    </h1>
+                                    <p className="text-sm font-light">
+                                        {teamOfProject.team_id}
+                                    </p>
+                                </div>
                             </header>
+
+                            <div className="flex flex-col items-start justify-between leading-none px-2 md:px-4">
+                            <p className="text-sm italic">
+                                {teamOfProject.team_profile}
+                            </p>
+                            </div>
+                        </article>
                         </div>
-                    </div>
                 </div>
             }
             {
                 // Professor's project request list
                 role === 'Professor' && projectStatus === 'open' &&
-                <div className="border-b border-gray-900/10 pb-4">
-                    <h1 className="text-lg">Project Requests</h1>
+                <div className="border-b border-gray-900/10 py-4">
+                    <h1 className="text-lg font-bold">Project Requests</h1>
                     <div className="flex flex-wrap -mx-1 lg:-mx-4">
                     {pendingProjectRequests && (pendingProjectRequests.length)>0 
                     ? pendingProjectRequests.map((projectRequest) => (
                         <div key={projectRequest.project_request_id} className="my-1 px-1 w-full">
-                        <article className="overflow-hidden rounded-lg shadow-lg">
-                            <header className="flex items-center justify-between leading-tight gap-x-2 p-2 md:p-4">
-                            <h1 className="text-lg">
-                                {projectRequest.team_id}
-                            </h1>
+                        <article className="overflow-hidden rounded-lg shadow-lg md:py-3">
+                            <header className="flex items-center justify-between leading-tight gap-x-2 p-2 md:px-4">
+                                <div className="flex flex-col ">
+                                    <h1 className="text-base font-bold">
+                                        {projectRequest.team_name}
+                                    </h1>
+                                    <p className="text-sm font-light">
+                                        {projectRequest.team_id}
+                                    </p>
+                                </div>
                             {
                                 projectRequest.status === 'pending' ?
                                 <>
@@ -230,22 +280,24 @@ const ProjectDetailModal = ({projectId, isModalVisible, setOpenModal}: {projectI
                                 <div>
                                     projectRequest.status
                                 </div>
-
                             }
                             </header>
 
-                            <div className="flex items-center justify-between leading-none p-2 md:p-4">
-                            <p className="ml-2 text-sm">
-                                {projectRequest.message}
+                            <div className="flex flex-col items-start justify-between leading-none px-2 md:px-4">
+                            <p className="text-sm italic">
+                                {projectRequest.team_profile}
+                            </p>
+                            <p className="ml-2 text-sm pt-2">
+                                message: {projectRequest.message}
                             </p>
                             </div>
                         </article>
                         </div>
                     ))
                     : <div className="my-1 px-1 w-full">
-                            <header className="flex items-center justify-between leading-tight gap-x-2 p-2 md:p-4 ">
-                            <h1 className="text-lg">
-                                No project request
+                            <header className="flex items-center justify-between leading-tight gap-x-2 pl-2 md:pl-4">
+                            <h1 className="text-base">
+                                No project requests
                             </h1>
                             </header>
                         </div>
