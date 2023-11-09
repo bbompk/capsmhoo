@@ -1,6 +1,6 @@
-import CreateTeamForm from "../../components/form/createTeamForm"
+import CreateTeamForm from "../../components/form/CreateTeamForm"
 
-const createTeam = () => {
+const CreateTeam = () => {
   return (
     <div>
     <div className="min-h-screen"
@@ -16,4 +16,4 @@ const createTeam = () => {
   )
 }
 
-export default createTeam
+export default CreateTeam
