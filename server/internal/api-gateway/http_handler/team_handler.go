@@ -5,6 +5,7 @@ import (
 	"capsmhoo/internal/api-gateway/model"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt"
 )
 
 type TeamHandler struct {
@@ -192,6 +193,12 @@ func (h *TeamJoinRequestHandler) GetJoinRequestByTeamID(c *gin.Context) {
 
 func (h *TeamJoinRequestHandler) CreateJoinRequest(c *gin.Context) {
 	var request model.TeamJoinRequest
+
+	user, _ := c.Get("user")
+	claims := user.(*jwt.Token).Claims.(jwt.MapClaims)
+	userID := claims["id"].(string)
+	request.StudentID = userID
+
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(200, gin.H{
 			"code":  "400",
