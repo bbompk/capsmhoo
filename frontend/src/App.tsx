@@ -13,6 +13,7 @@ import { AuthProvider } from './components/auth/AuthProvider';
 import MockLogin from './components/auth/MockLogin';
 import TeamPage from './pages/team/TeamPage';
 import ProjectPage from './pages/proj/ProjectPage';
+import TeamJoinRequest from './pages/teamJoinRequest/TeamJoinRequest';
 
 function App() {
 
@@ -33,6 +34,7 @@ function App() {
           <Route path='/view-team' element={<TeamList/>} />
           <Route path='/team-detail/:id' element={<TeamPage/>} />
           <Route path='/project-detail/:id' element={<ProjectPage/>} />
+          <Route path='/join-request' element={<TeamJoinRequest/>} />
           <Route path='/private' element={<AuthProvider><h1>Private</h1></AuthProvider>} />
           <Route path='/mock-login' element={<MockLogin />} />
           </Routes>

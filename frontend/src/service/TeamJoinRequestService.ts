@@ -70,3 +70,14 @@ export const deleteTeamJoinRequestById = async (id: string) => {
     return res;
 }
 
+export const approvetudentIntoTeam = async (id: string) => {
+    const headers = getEmptyHeaderWithBearerToken();
+    const path = `${appConfig.BACKEND_BASE_URL}/team-join-request/approve/${id}`;
+    const axios_res = await axios.post(path, { headers });
+    const res = axios_res.data as ApiResponse<TeamJoinRequestInterface>;
+    if(!isResponseOk(res)) {
+        throw new ApiErrorResponse(res.code, res.error ?? "Unknown error");
+    }
+    return res;
+}
+

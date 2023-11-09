@@ -59,3 +59,13 @@ export const deleteTeamById = async (id: string) => {
     return res;
 }
 
+export const getTeamByUserId = async (userId: string) => {
+    const headers = getEmptyHeaderWithBearerToken();
+    const path = `${appConfig.BACKEND_BASE_URL}/team/user_id/${userId}`;
+    const axios_res = await axios.get(path, { headers });
+    const res = axios_res.data as ApiResponse<TeamInterface>;
+    if(!isResponseOk(res)) {
+        throw new ApiErrorResponse(res.code, res.error ?? "Unknown error");
+    }
+    return res;
+}

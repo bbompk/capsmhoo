@@ -13,7 +13,8 @@ const navigation = [
   { name: 'Create Project', component: '/create-project', current: false },
   { name: 'Create Team', component: '/create-team', current: false },
   { name: 'Project', component: '/view-project', current: false },
-  { name: 'Team', component: '/view-team', current: false }
+  { name: 'Team', component: '/view-team', current: false },
+  { name: 'Join Request', component: '/join-request', current: false }
 ]
 
 function classNames(...classes: string[]) {
