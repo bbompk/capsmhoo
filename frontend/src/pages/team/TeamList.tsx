@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react";
-import { getAllTeams } from "../../service/TeamService";
 import { TeamInterface } from "../../interfaces/TeamInterface";
 import Card from "../../components/card/Card";
 
 const TeamList = () => {
-  console.log(getAllTeams);
   const [data, setData] = useState<TeamInterface[]>();
   const fetchData = async () => {
     await fetch("http://localhost:8082/team")
@@ -17,8 +15,6 @@ const TeamList = () => {
   useEffect(() => {
     fetchData();
   }, []);
-
-  console.log(data)
 
   return (
     <div>

@@ -5,7 +5,6 @@ const CreateTeam = () => {
     <div>
     <div className="min-h-screen"
     style={{
-      backgroundImage:'url(src/assets/unsplash1.jpg)',
       backgroundSize:'cover',
       backgroundPosition:'center',
     }}
