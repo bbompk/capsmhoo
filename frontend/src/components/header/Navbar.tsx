@@ -14,7 +14,7 @@ const navigation = [
   { name: 'Create Team', component: '/create-team', current: false },
   { name: 'Project', component: '/view-project', current: false },
   { name: 'Team', component: '/view-team', current: false },
-  { name: 'My Team and Project', component: '/my-team', current: false }
+  { name: 'My Team and Project', component: '/my-team', current: false },
   { name: 'Join Request', component: '/join-request', current: false }
 ]
 
