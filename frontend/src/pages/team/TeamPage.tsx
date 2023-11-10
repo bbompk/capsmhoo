@@ -8,6 +8,7 @@ import { createTeamJoinRequest } from "../../service/TeamJoinRequestService";
 import { useUser } from "../../hooks/useUser";
 import Swal from "sweetalert2";
 import 'bootstrap/dist/css/bootstrap.css';
+import { getStudentByUserId } from "../../service/StudentService";
 
 const TeamPage = () => {
   const { id } = useParams();
@@ -35,6 +36,7 @@ const TeamPage = () => {
   }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     if (role !== "Student") {
       Swal.fire({
         icon: "error",
@@ -44,24 +46,42 @@ const TeamPage = () => {
     }
 
     if (!data) {
-      throw new Error("Failed to fetch team data");
+      throw new Error("Failed to fetch team data.");
     }
     if (!userId) {
-      throw new Error("Failed to fetch user data");
+      throw new Error("Failed to fetch user data.");
     }
-    const teamJoinRequest: TeamJoinRequestInterface = {
-      id: "",
-      team_id: data.id,
-      student_id: userId,
-    };
 
-    e.preventDefault();
     try {
+      const studentRes = await getStudentByUserId(userId);
+      if (!studentRes.data) {
+        throw new Error("Cannot find student ID.");
+      }
+
+      const teamJoinRequest: TeamJoinRequestInterface = {
+        id: "",
+        team_id: data.id,
+        student_id: studentRes.data.id
+      };
+
       await createTeamJoinRequest(teamJoinRequest);
-    } catch (error) {
+    } 
+    catch (error) {
       console.error(error);
+      Swal.fire({
+        icon: "error",
+        title: "Request to Join Failed",
+        text: "Please try again",
+      });
       return;
     }
+    Swal.fire({
+      icon: "success",
+      title: "Request Created",
+      text: `You requested to join team ${data.name}`,
+    });
+
+    navigate("/"); // Navigate to the home page
   };
 
   return (

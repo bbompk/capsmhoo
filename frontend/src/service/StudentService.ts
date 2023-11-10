@@ -96,3 +96,17 @@ export const deleteStudentById = async (id: string) => {
     return res;
 }
 
+export const updateStudentTeamById = async (id: string, student: Partial<StudentInterface>) => {
+    const headers = getEmptyHeaderWithBearerToken();
+    const path = `${appConfig.BACKEND_BASE_URL}/student/updateTeam/${id}`;
+    const axios_res = await axios.put(path, student, { headers });
+    const res = axios_res.data as ApiResponse<StudentInterface>;
+    if(!isResponseOk(res)) {
+        throw new ApiErrorResponse(res.code, res.error ?? "Unknown error");
+    }
+    return res;
+}
+
+export const alreadyHaveTeam = (student: StudentInterface) => {
+    return (student.team_id != null)
+}

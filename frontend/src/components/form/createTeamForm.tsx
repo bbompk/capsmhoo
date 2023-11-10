@@ -5,7 +5,8 @@ import Swal from "sweetalert2";
 import { useUser } from "../../hooks/useUser";
 import { createTeam } from "../../service/TeamService";
 import { TeamCreateInterface } from "../../interfaces/TeamInterface";
-import { getStudentByUserId } from "../../service/StudentService";
+import { alreadyHaveTeam, getStudentByUserId, updateStudentTeamById } from "../../service/StudentService";
+import { StudentInterface } from "../../interfaces/UserInterface";
 
 export default function CreateTeamForm() {
   const [name, setName] = useState("");
@@ -45,6 +46,15 @@ export default function CreateTeamForm() {
       throw new Error("Failed to fetch student data");
     }
 
+    if (alreadyHaveTeam(student.data)) {
+      Swal.fire({
+        icon: "error",
+        title: "Creating Team Failed",
+        text: "This student already has a team.",
+      });
+      navigate("/");
+    }
+
     const teamCreate: TeamCreateInterface = {
       id: "",
       name: name,
@@ -54,7 +64,14 @@ export default function CreateTeamForm() {
 
     try {
       const createdTeam = await createTeam(teamCreate);
-      const team_id = createdTeam.data?.id;
+      if (!createdTeam.data) {
+        throw new Error("Failed to create team.");
+      }
+      const team_id = createdTeam.data.id;
+      const studentBody : Partial<StudentInterface> = {
+        team_id: team_id
+      }
+      await updateStudentTeamById(student.data.id, studentBody)
       navigate(`/team-detail/${team_id}`);
     } catch (error) {
       console.error(error);
