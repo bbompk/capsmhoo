@@ -12,6 +12,7 @@ import Profile from './pages/profile/Profile';
 import { AuthProvider } from './components/auth/AuthProvider';
 import MockLogin from './components/auth/MockLogin';
 import TeamPage from './pages/team/TeamPage';
+import MyTeam from './pages/my-team/myTeam';
 import ProjectPage from './pages/proj/ProjectPage';
 import TeamJoinRequest from './pages/teamJoinRequest/TeamJoinRequest';
 
@@ -28,11 +29,12 @@ function App() {
           <Route path='/login' element={<Login />} />
           {/* <Route path='/profile' element={<AuthProvider><Profile/></AuthProvider>} /> */}
           <Route path='/profile' element={<Profile/>} />
-          <Route path='/create-project' element={<CreateProject />} />
+          {/* <Route path='/create-project' element={<CreateProject />} /> */}
           <Route path='/create-team' element={<CreateTeam />} />
-          <Route path='/view-project' element={<ProjectList/>} />
+          <Route path='/view-project' element={<AuthProvider><ProjectList/></AuthProvider>} />
           <Route path='/view-team' element={<TeamList/>} />
           <Route path='/team-detail/:id' element={<TeamPage/>} />
+          <Route path='/my-team' element={<MyTeam/>} />
           <Route path='/project-detail/:id' element={<ProjectPage/>} />
           <Route path='/join-request' element={<TeamJoinRequest/>} />
           <Route path='/private' element={<AuthProvider><h1>Private</h1></AuthProvider>} />

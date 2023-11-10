@@ -5,14 +5,14 @@ const MockLogin = () => {
     let navigate = useNavigate();
 
     let login = async () => {
-      localStorage.setItem("accessToken", "test");
-      localStorage.setItem("token_expires", addHoursToDate(new Date(), 1).toString())
+      sessionStorage.setItem("accessToken", "test");
+      sessionStorage.setItem("token_expires", addHoursToDate(new Date(), 1).toString())
       navigate("/");
     };
 
     let logout = async () => {
-      localStorage.removeItem('accessToken')
-      localStorage.removeItem('token_expires')
+      sessionStorage.removeItem('accessToken')
+      sessionStorage.removeItem('token_expires')
       navigate("/login");
     }
   

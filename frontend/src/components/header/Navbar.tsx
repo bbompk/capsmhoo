@@ -10,10 +10,11 @@ const navigation = [
   { name: 'Home', component: '/', current: false },
   { name: 'Register', component: '/register', current: false },
   { name: 'Login', component: '/login', current: false },
-  { name: 'Create Project', component: '/create-project', current: false },
+  // { name: 'Create Project', component: '/create-project', current: false },
   { name: 'Create Team', component: '/create-team', current: false },
   { name: 'Project', component: '/view-project', current: false },
   { name: 'Team', component: '/view-team', current: false },
+  { name: 'My Team and Project', component: '/my-team', current: false }
   { name: 'Join Request', component: '/join-request', current: false }
 ]
 
@@ -29,12 +30,12 @@ export default function Example() {
   }
 
   const logout = () => {
-    localStorage.removeItem('accessToken')
-    localStorage.removeItem('token_expires')
-    localStorage.removeItem('userId')
-    localStorage.removeItem('role')
-    localStorage.removeItem('studentId')
-    localStorage.removeItem('professorId')
+    sessionStorage.removeItem('accessToken')
+    sessionStorage.removeItem('token_expires')
+    sessionStorage.removeItem('userId')
+    sessionStorage.removeItem('role')
+    sessionStorage.removeItem('studentId')
+    sessionStorage.removeItem('professorId')
     console.log("logout")
     Swal.fire({
       icon: 'success',

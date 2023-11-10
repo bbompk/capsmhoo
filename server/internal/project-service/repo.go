@@ -15,8 +15,8 @@ type Repository struct {
 type ProjectRepository interface {
 	GetProjects() []Project
 	GetProjectByID(id string) (*Project, error)
-	// GetProjectByTeamID(id string) (*Project, error)
-	// GetProjectByProfessorID(id string) []Project
+	GetProjectByTeamID(id string) (*Project, error)
+	GetProjectByProfessorID(id string) ([]Project, error)
 	CreateProject(project Project) (*Project, error)
 	UpdateProjectByID(id string, project Project) (*Project, error)
 	DeleteProjectByID(id string) (*Project, error)
@@ -47,10 +47,10 @@ func (r *Repository) GetProjectByTeamID(id string) (*Project, error) {
 	return &project, nil
 }
 
-func (r *Repository) GetProjectByProfessorID(id string) []Project {
+func (r *Repository) GetProjectByProfessorID(id string) ([]Project, error) {
 	var projects []Project
 	r.db.Table("projects").Where("professor_id = ?", id).Find(&projects)
-	return projects
+	return projects, nil
 }
 
 func (r *Repository) GetProjectByID(id string) (*Project, error) {
@@ -137,6 +137,7 @@ func (r *Repository) CreateProjectRequest(projectRequest ProjectRequest) (*Proje
 	// Assign a unique ID to the new projectRequest (you may use a UUID generator)
 	id := uuid.New()
 	projectRequest.ProjectRequestID = id.String() // Replace with your logic
+	projectRequest.Status = "pending"
 
 	if err := r.db.Table("project_requests").Create(&projectRequest).Error; err != nil {
 		return nil, err

@@ -16,11 +16,11 @@ export const login = async (email: string, password: string) => {
         throw new ApiErrorResponse(res.code, res.error ?? "Unknown error");
     }
     if(res.data?.token != null) {
-        localStorage.setItem("accessToken", res.data.token)
-        localStorage.setItem("token_expires", addHoursToDate(new Date(), 1).toString())
+        sessionStorage.setItem("accessToken", res.data.token)
+        sessionStorage.setItem("token_expires", addHoursToDate(new Date(), 1).toString())
 
-        localStorage.setItem("userId", res.data.user.id)
-        localStorage.setItem("role", res.data.user.role)
+        sessionStorage.setItem("userId", res.data.user.id)
+        sessionStorage.setItem("role", res.data.user.role)
     }
 
     const studentPath = `${appConfig.BACKEND_BASE_URL}/student/userId/${res.data?.user.id}`;
@@ -33,7 +33,7 @@ export const login = async (email: string, password: string) => {
             if(!isResponseOk(studentRes)) {
                 throw new ApiErrorResponse(studentRes.code, studentRes.error ?? "Unknown error");
             }
-            localStorage.setItem("studentId", studentRes.data?.id ?? "");
+            sessionStorage.setItem("studentId", studentRes.data?.id ?? "");
             break;
         }
         case "Professor": {
@@ -42,7 +42,7 @@ export const login = async (email: string, password: string) => {
             if(!isResponseOk(professorRes)) {
                 throw new ApiErrorResponse(professorRes.code, professorRes.error ?? "Unknown error");
             }
-            localStorage.setItem("professorId", professorRes.data?.id ?? "");
+            sessionStorage.setItem("professorId", professorRes.data?.id ?? "");
             break;
         }
         default:

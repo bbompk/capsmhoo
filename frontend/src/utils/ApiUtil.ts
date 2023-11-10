@@ -21,5 +21,5 @@ export const isResponseOk = (response: ApiResponse): boolean => {
 }
 
 export const getEmptyHeaderWithBearerToken = (): any => {
-    return localStorage.getItem("accessToken") != undefined ?  { 'Authorization' : `Bearer ${localStorage.getItem("accessToken")}`} : {}
+    return sessionStorage.getItem("accessToken") != undefined ?  { 'Authorization' : `Bearer ${sessionStorage.getItem("accessToken")}`} : {}
 }
