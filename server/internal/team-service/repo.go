@@ -14,6 +14,7 @@ type Repository struct {
 type TeamRepository interface {
 	GetTeams() []Team
 	GetTeamByID(id string) (*Team, error)
+	GetTeamByUserID(user_id string) (*Team, error)
 	CreateTeam(team Team) (*Team, error)
 	UpdateTeamByID(id string, team Team) (*Team, error)
 	DeleteTeamByID(id string) (*Team, error)
@@ -30,6 +31,20 @@ func (r *Repository) GetTeamByID(id string) (*Team, error) {
 	var team Team
 	if err := r.db.Table("teams").Where("id = ?", id).First(&team).Error; err != nil {
 		return nil, errors.New("Team not found.")
+	}
+	return &team, nil
+}
+
+func (r *Repository) GetTeamByUserID(user_id string) (*Team, error) {
+	var student Student
+
+	if err := r.db.Table("students").Where("user_id = ?", user_id).First(&student).Error; err != nil {
+		return nil, errors.New("User not found in student database.")
+	}
+
+	var team Team
+	if err := r.db.Table("teams").Where("id = ?", student.TeamID).First(&team).Error; err != nil {
+		return nil, errors.New("This user is not in a team.")
 	}
 	return &team, nil
 }

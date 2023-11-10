@@ -15,6 +15,7 @@ type TeamHandler struct {
 type TeamHttpHandler interface {
 	GetTeams(c *gin.Context)
 	GetTeamByID(c *gin.Context)
+	GetTeamByUserID(c *gin.Context)
 	CreateTeam(c *gin.Context)
 	UpdateTeamByID(c *gin.Context)
 	DeleteTeamByID(c *gin.Context)
@@ -32,6 +33,21 @@ func (h *TeamHandler) GetTeams(c *gin.Context) {
 func (h *TeamHandler) GetTeamByID(c *gin.Context) {
 	id := c.Param("id")
 	team, err := h.repo.GetTeamByID(id)
+	if err != nil {
+		c.JSON(200, common.HttpResponse{
+			Code:  "400",
+			Error: err.Error(),
+		})
+		return
+	}
+	c.JSON(200, common.HttpResponse{
+		Code: "200",
+		Data: team,
+	})
+}
+func (h *TeamHandler) GetTeamByUserID(c *gin.Context) {
+	user_id := c.Param("user_id")
+	team, err := h.repo.GetTeamByUserID(user_id)
 	if err != nil {
 		c.JSON(200, common.HttpResponse{
 			Code:  "400",

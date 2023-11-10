@@ -4,36 +4,20 @@ import Swal from "sweetalert2";
 import { TeamJoinRequestInterface } from "../../interfaces/TeamInterface";
 import { useNavigate } from "react-router-dom";
 import {
-  approvetudentIntoTeam,
+  approveStudentIntoTeam,
   deleteTeamJoinRequestById,
   getAllTeamJoinRequestByTeamId,
 } from "../../service/TeamJoinRequestService";
 import JoiningRequestCard from "../../components/card/JoiningRequestCard";
+import { getTeamByUserId } from "../../service/TeamService";
 
 const TeamJoinRequest = () => {
   const { userId, role } = useUser();
   const [data, setData] = useState<TeamJoinRequestInterface[]>();
   const navigate = useNavigate();
 
-  const fetchData = async () => {
-    const team = await getTeamByUserId(userId);
-    if (!team) {
-      Swal.fire("This student is not in a team.");
-      navigate("/view-team");
-      return;
-    }
-
-    const teamJoinRequest = await getAllTeamJoinRequestByTeamId(team.id);
-    if (!teamJoinRequest.data) {
-      Swal.fire("Failed to load team joining request data");
-      navigate("/");
-      return;
-    }
-    setData(teamJoinRequest.data);
-  }
-
   useEffect(() => {
-    async () => {
+    const fetchData = async () => {
       if (!userId) {
         Swal.fire("Please log in to view your team joining request.");
         navigate("/login");
@@ -45,19 +29,34 @@ const TeamJoinRequest = () => {
         navigate("/");
         return;
       }
-      fetchData()
+
+      const team = await getTeamByUserId(userId);
+      if (!team.data) {
+        Swal.fire("This student is not in a team.");
+        navigate("/view-team");
+        return;
+      }
+
+      const teamJoinRequest = await getAllTeamJoinRequestByTeamId(team.data.id);
+      if (!teamJoinRequest) {
+        Swal.fire("Failed to load team joining request data");
+        navigate("/");
+        return;
+      }
+      setData(teamJoinRequest.data);
     };
+    fetchData();
   });
 
   const handleAccept = async (id: string) => {
-    approvetudentIntoTeam(id);
+    approveStudentIntoTeam(id);
     deleteTeamJoinRequestById(id);
-    fetchData();
+    window.location.reload();
   };
 
   const handleReject = async (id: string) => {
     deleteTeamJoinRequestById(id);
-    fetchData();
+    window.location.reload();
   };
 
   return (

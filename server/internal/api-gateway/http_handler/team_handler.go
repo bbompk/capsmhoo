@@ -5,7 +5,6 @@ import (
 	"capsmhoo/internal/api-gateway/model"
 
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt"
 )
 
 type TeamHandler struct {
@@ -19,6 +18,7 @@ type TeamJoinRequestHandler struct {
 type ITeamHandler interface {
 	GetAllTeams(c *gin.Context)
 	GetTeamByID(c *gin.Context)
+	GetTeamByUserID(c *gin.Context)
 	CreateTeam(c *gin.Context)
 	UpdateTeamByID(c *gin.Context)
 	DeleteTeamByID(c *gin.Context)
@@ -68,16 +68,33 @@ func (h *TeamHandler) GetTeamByID(c *gin.Context) {
 	})
 }
 
+func (h *TeamHandler) GetTeamByUserID(c *gin.Context) {
+	user_id := c.Param("userId")
+	team, err := h.teamClientgRPC.GetTeamByUserID(c, user_id)
+	if err != nil {
+		c.JSON(200, gin.H{
+			"code":  "500",
+			"error": err.Error(),
+		})
+		return
+	}
+	c.JSON(200, gin.H{
+		"code": "200",
+		"data": team,
+	})
+}
+
 func (h *TeamHandler) CreateTeam(c *gin.Context) {
-	var team model.Team
-	if err := c.ShouldBindJSON(&team); err != nil {
+	var teamCreate model.TeamCreate
+	if err := c.ShouldBindJSON(&teamCreate); err != nil {
 		c.JSON(200, gin.H{
 			"code":  "400",
 			"error": err.Error(),
 		})
 		return
 	}
-	createdTeam, err := h.teamClientgRPC.CreateTeam(c, &team)
+
+	createdTeam, err := h.teamClientgRPC.CreateTeam(c, &teamCreate)
 	if err != nil {
 		c.JSON(200, gin.H{
 			"code":  "500",
@@ -193,11 +210,6 @@ func (h *TeamJoinRequestHandler) GetJoinRequestByTeamID(c *gin.Context) {
 
 func (h *TeamJoinRequestHandler) CreateJoinRequest(c *gin.Context) {
 	var request model.TeamJoinRequest
-
-	user, _ := c.Get("user")
-	claims := user.(*jwt.Token).Claims.(jwt.MapClaims)
-	userID := claims["id"].(string)
-	request.StudentID = userID
 
 	if err := c.ShouldBindJSON(&request); err != nil {
 		c.JSON(200, gin.H{

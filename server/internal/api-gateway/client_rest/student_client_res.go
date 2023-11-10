@@ -23,6 +23,7 @@ type StudentClientRest interface {
 	DeleteStudentByID(id string) (model.Student, error)
 	GetAllStudentsByTeamID(id string) ([]model.Student, error)
 	GetStudentByUserID(id string) (model.Student, error)
+	UpdateStudentTeamByID(id string, student model.Student) (model.Student, error)
 }
 
 func (s *StudentClient) GetAllStudents() ([]model.Student, error) {
@@ -101,14 +102,12 @@ func (s *StudentClient) CreateStudent(student model.StudentRequestBody) (model.S
 
 func (s *StudentClient) UpdateStudentByID(id string, student model.StudentRequestBody) (model.Student, error) {
 	path := "http://" + viper.GetString("user-service.host") + ":" + viper.GetString("user-service.port") + "/student/" + id
-
 	// prepare request body
 	byteData, err := json.Marshal(student)
 	if err != nil {
 		return model.Student{}, err
 	}
 	bodyReader := bytes.NewReader(byteData)
-
 	// send request
 	req, err := http.NewRequest(http.MethodPut, path, bodyReader)
 	if err != nil {
@@ -200,6 +199,39 @@ func (s *StudentClient) GetStudentByUserID(id string) (model.Student, error) {
 	if resp.Code != "200" {
 		return model.Student{}, errors.New(resp.Error)
 	}
+	return resp.Data, nil
+}
+
+func (s *StudentClient) UpdateStudentTeamByID(id string, student model.Student) (model.Student, error) {
+	path := "http://" + viper.GetString("user-service.host") + ":" + viper.GetString("user-service.port") + "/student/updateTeam/" + id
+
+	// prepare request body
+	byteData, err := json.Marshal(student)
+	if err != nil {
+		return model.Student{}, err
+	}
+	bodyReader := bytes.NewReader(byteData)
+	// send request
+	req, err := http.NewRequest(http.MethodPut, path, bodyReader)
+	if err != nil {
+		return model.Student{}, err
+	}
+	response, err := s.client.Do(req)
+	if err != nil {
+		return model.Student{}, err
+	}
+	defer response.Body.Close()
+
+	// read response
+	var resp model.StudentResponseBody
+	err = json.NewDecoder(response.Body).Decode(&resp)
+	if err != nil {
+		return model.Student{}, err
+	}
+	if resp.Code != "200" {
+		return model.Student{}, errors.New(resp.Error)
+	}
+
 	return resp.Data, nil
 }
 

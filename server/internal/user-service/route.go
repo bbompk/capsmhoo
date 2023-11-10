@@ -26,6 +26,7 @@ func ProvideRouter(r *gin.Engine, h *UserHandler, hh *StudentHandler, hhh *Profe
 	r.GET("/student", hh.GetStudent)
 	r.POST("/student", hh.CreateStudent)
 	r.PUT("/student/:id", hh.UpdateStudentByID)
+	r.PUT("/student/updateTeam/:id", hh.UpdateStudentTeamByID)
 	r.DELETE("/student/:id", hh.DeleteStudentByID)
 
 	r.GET("/professor/userId/:user_id", hhh.GetProfessorByUserID)

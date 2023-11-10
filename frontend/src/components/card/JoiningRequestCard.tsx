@@ -19,14 +19,15 @@ const JoiningRequestCard = ({
   const [studentName, setStudentName] = useState("");
 
   useEffect(() => {
-    async () => {
+    const fetchData = async () => {
       const student = await getStudentById(student_id);
       if (!student.data) {
         Swal.fire("Failed to load the student data");
         return;
       }
-      setStudentName(student.data?.name);
+      setStudentName(student.data.name);
     };
+    fetchData();
   });
 
   return (
