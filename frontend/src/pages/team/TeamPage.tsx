@@ -1,11 +1,29 @@
 import { useState, useEffect } from "react";
-import { TeamInterface } from "../../interfaces/TeamInterface";
-import { useParams } from "react-router-dom";
+import {
+  TeamInterface,
+  TeamJoinRequestInterface,
+} from "../../interfaces/TeamInterface";
+import { useNavigate, useParams } from "react-router-dom";
+import { createTeamJoinRequest } from "../../service/TeamJoinRequestService";
+import { useUser } from "../../hooks/useUser";
+import Swal from "sweetalert2";
+import 'bootstrap/dist/css/bootstrap.css';
+import { getStudentByUserId } from "../../service/StudentService";
 
 const TeamPage = () => {
   const { id } = useParams();
+  const { userId, role } = useUser();
   const [data, setData] = useState<TeamInterface>();
+
+  const navigate = useNavigate();
+
   const fetchData = async () => {
+    if (!id) {
+      Swal.fire("Cannot retrive this team data");
+      navigate("/view-team");
+      return;
+    }
+
     await fetch("http://localhost:8082/team/" + id).then(async (res) => {
       const response = await res.json();
       setData(response.data);
@@ -17,17 +35,65 @@ const TeamPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (role !== "Student") {
+      Swal.fire({
+        icon: "error",
+        title: "Only student can join a team.",
+        text: "Only student can join a team. Professor can only view teams.",
+      });
+    }
+
+    if (!data) {
+      throw new Error("Failed to fetch team data.");
+    }
+    if (!userId) {
+      throw new Error("Failed to fetch user data.");
+    }
+
+    try {
+      const studentRes = await getStudentByUserId(userId);
+      if (!studentRes.data) {
+        throw new Error("Cannot find student ID.");
+      }
+
+      const teamJoinRequest: TeamJoinRequestInterface = {
+        id: "",
+        team_id: data.id,
+        student_id: studentRes.data.id
+      };
+
+      await createTeamJoinRequest(teamJoinRequest);
+    } 
+    catch (error) {
+      console.error(error);
+      Swal.fire({
+        icon: "error",
+        title: "Request to Join Failed",
+        text: "Please try again",
+      });
+      return;
+    }
+    Swal.fire({
+      icon: "success",
+      title: "Request Created",
+      text: `You requested to join team ${data.name}`,
+    });
+
+    navigate("/"); // Navigate to the home page
+  };
+
   return (
     <div>
       <div className="min-h-screen">
         <h1 className=" text-center text-3xl p-4">Team Page</h1>
         <h2>Name: {data?.name}</h2>
         <p>Profile: {data?.profile}</p>
-        <form action="http://localhost:8082/team-join-request" method="POST">
-          <input type="hidden" name="teamID" value={data?.id} />
-          <button type="submit" className="btn btn-primary">
-            Request to Join
-          </button>
+        <form onSubmit={handleSubmit}>
+          <div className="btn btn-primary">
+            <button type="submit">Request to Join</button>
+          </div>
         </form>
       </div>
     </div>

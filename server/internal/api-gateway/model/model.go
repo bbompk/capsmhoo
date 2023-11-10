@@ -6,6 +6,13 @@ type Team struct {
 	Profile string `json:"profile"`
 }
 
+type TeamCreate struct {
+	ID      string `json:"id"`
+	Name    string `json:"name"`
+	Profile string `json:"profile"`
+	CreatorID string `json:"creator_id"`
+}
+
 type TeamJoinRequest struct {
 	ID        string `json:"id"`
 	TeamID    string `json:"team_id"`
@@ -122,4 +129,8 @@ type LoginResponseBody struct {
 	Error string `json:"error"`
 	Token string `json:"token"`
 	User  User   `json:"user"`
+}
+
+type UpdateStudentTeamRequestBody struct {
+	TeamID	string `json:"team_id"`
 }

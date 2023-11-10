@@ -1,11 +1,10 @@
-import CreateTeamForm from "../../components/form/createTeamForm"
+import CreateTeamForm from "../../components/form/CreateTeamForm"
 
-const createTeam = () => {
+const CreateTeam = () => {
   return (
     <div>
     <div className="min-h-screen"
     style={{
-      backgroundImage:'url(src/assets/unsplash1.jpg)',
       backgroundSize:'cover',
       backgroundPosition:'center',
     }}
@@ -16,4 +15,4 @@ const createTeam = () => {
   )
 }
 
-export default createTeam
+export default CreateTeam

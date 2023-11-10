@@ -18,7 +18,8 @@ type TeamJoinRequestClient struct {
 type TeamgRPCClient interface {
 	GetAllTeams(ctx context.Context) ([]*model.Team, error)
 	GetTeamByID(ctx context.Context, id string) (*model.Team, error)
-	CreateTeam(ctx context.Context, team *model.Team) (*model.Team, error)
+	GetTeamByUserID(ctx context.Context, user_id string) (*model.Team, error)
+	CreateTeam(ctx context.Context, team *model.TeamCreate) (*model.TeamCreate, error)
 	UpdateTeamByID(ctx context.Context, id string, team *model.Team) (*model.Team, error)
 	DeleteTeamByID(ctx context.Context, id string) (*model.Team, error)
 	AddStudentToTeam(ctx context.Context, teamID string, studentID string) error
@@ -64,17 +65,38 @@ func (t *TeamClient) GetTeamByID(ctx context.Context, id string) (*model.Team, e
 	return team, nil
 }
 
-func (t *TeamClient) CreateTeam(ctx context.Context, team *model.Team) (*model.Team, error) {
-	teamRes, err := (*t.client).CreateTeam(ctx, &pb.Team{Name: team.Name, Profile: team.Profile})
+func (t *TeamClient) GetTeamByUserID(ctx context.Context, user_id string) (*model.Team, error) {
+	teamRes, err := (*t.client).GetTeamByUserId(ctx, &pb.UserId{Id: user_id})
 	if err != nil {
 		return nil, err
 	}
-	team = &model.Team{
+	team := &model.Team{
 		ID:      teamRes.Id,
 		Name:    teamRes.Name,
 		Profile: teamRes.Profile,
 	}
 	return team, nil
+}
+
+func (t *TeamClient) CreateTeam(ctx context.Context, teamCreate *model.TeamCreate) (*model.TeamCreate, error) {
+	teamRes, err := (*t.client).CreateTeam(ctx, &pb.Team{Name: teamCreate.Name, Profile: teamCreate.Profile})
+	if err != nil {
+		return nil, err
+	}
+
+	teamCreate = &model.TeamCreate{
+		ID:        teamRes.Id,
+		Name:      teamRes.Name,
+		Profile:   teamRes.Profile,
+		CreatorID: teamCreate.CreatorID,
+	}
+
+	/*_, err2 := (*t.client).AddStudentToTeam(ctx, &pb.TeamAndStudentID{TeamId: teamCreate.ID, StudentId: teamCreate.CreatorID})
+	if err2 != nil {
+		return nil, err2
+	}*/
+
+	return teamCreate, nil
 }
 
 func (t *TeamClient) UpdateTeamByID(ctx context.Context, id string, team *model.Team) (*model.Team, error) {

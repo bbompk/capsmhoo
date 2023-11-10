@@ -16,7 +16,8 @@ import (
 type teamServer struct {
 	// Implements the generated TeamServer interface
 	pb.UnimplementedTeamServiceServer
-	repo TeamRepository
+	repo         TeamRepository
+	student_repo StudentRepository
 }
 
 func (s *teamServer) mustEmbedUnimplementedTeamServiceServer() {}
@@ -44,6 +45,22 @@ func (s *teamServer) GetTeamById(ctx context.Context, teamId *pb.TeamId) (*pb.Te
 	team, err := s.repo.GetTeamByID(teamId.Id)
 	if err != nil {
 		return nil, errors.New("team not found")
+	}
+
+	teamRes := pb.Team{
+		Id:      team.ID,
+		Name:    team.Name,
+		Profile: team.Profile,
+	}
+
+	return &teamRes, nil
+}
+
+func (s *teamServer) GetTeamByUserId(ctx context.Context, user_id *pb.UserId) (*pb.Team, error) {
+	fmt.Println("Get Team By UserID")
+	team, err := s.repo.GetTeamByUserID(user_id.Id)
+	if err != nil {
+		return nil, err
 	}
 
 	teamRes := pb.Team{
@@ -113,8 +130,23 @@ func (s *teamServer) DeleteTeam(ctx context.Context, teamId *pb.TeamId) (*pb.Tea
 	return &deletedTeamRes, nil
 }
 
-func (s *teamServer) AddStudentToTeam(ctx context.Context, teamAndStudentID *pb.TeamAndStudentID) (*pb.Empty, error) {
-	return nil, nil
+func (s *teamServer) AddStudentToTeam(ctx context.Context, teamAndStudentID *pb.TeamAndStudentID) (*pb.Student, error) {
+	fmt.Println("Add Student To Team")
+
+	updatedStudent, err := s.student_repo.UpdateStudentTeam(teamAndStudentID.StudentId, teamAndStudentID.TeamId)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+
+	student := pb.Student{
+		Id:     updatedStudent.ID,
+		Name:   updatedStudent.Name,
+		UserId: updatedStudent.UserID,
+		TeamId: *updatedStudent.TeamID,
+	}
+
+	return &student, nil
 }
 
 func (s *teamServer) RemoveStudentFromTeam(ctx context.Context, teamAndStudentID *pb.TeamAndStudentID) (*pb.Empty, error) {

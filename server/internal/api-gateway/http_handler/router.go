@@ -30,6 +30,7 @@ func ProvideRouter(
 	r.GET("/student", studentHandler.GetAllStudents)
 	r.POST("/student", studentHandler.CreateStudent)
 	r.PUT("/student/:id", studentHandler.UpdateStudentByID)
+	r.PUT("/student/updateTeam/:id", studentHandler.UpdateStudentTeamByID)
 	r.DELETE("/student/:id", studentHandler.DeleteStudentByID)
 	r.DELETE("/student", studentHandler.DeleteStudentAll)
 
@@ -50,6 +51,7 @@ func ProvideRouter(
 	// team service
 	r.GET("/team", teamHandler.GetAllTeams)
 	r.GET("/team/:id", teamHandler.GetTeamByID)
+	r.GET("/team/user_id/:userId", teamHandler.GetTeamByUserID)
 	r.POST("/team", teamHandler.CreateTeam)
 	r.PUT("/team/:id", teamHandler.UpdateTeamByID)
 	r.DELETE("/team/:id", teamHandler.DeleteTeamByID)

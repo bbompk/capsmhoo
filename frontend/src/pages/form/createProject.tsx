@@ -1,11 +1,10 @@
-import CreateProjectForm from "../../components/form/createProjectForm"
+import CreateProjectForm from "../../components/form/CreateProjectForm"
 
-const createProject = () => {
+const CreateProject = () => {
   return (
     <div>
     <div className="min-h-screen"
     style={{
-      backgroundImage:'url(src/assets/unsplash1.jpg)',
       backgroundSize:'cover',
       backgroundPosition:'center',
     }}
@@ -16,4 +15,4 @@ const createProject = () => {
   )
 }
 
-export default createProject
+export default CreateProject

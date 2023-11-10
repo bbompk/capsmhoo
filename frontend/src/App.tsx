@@ -2,8 +2,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css'
 import Navbar from './components/header/Navbar';
 import Home from './pages/home/Home';
-import CreateProject from './pages/form/createProject';
-import CreateTeam from './pages/form/createTeam';
+import CreateProject from './pages/form/CreateProject';
+import CreateTeam from './pages/form/CreateTeam';
 import ProjectList from './pages/proj/ProjectList';
 import TeamList from './pages/team/TeamList';
 import Register from './pages/register/Register';
@@ -13,6 +13,8 @@ import { AuthProvider } from './components/auth/AuthProvider';
 import MockLogin from './components/auth/MockLogin';
 import TeamPage from './pages/team/TeamPage';
 import MyTeam from './pages/my-team/myTeam';
+import ProjectPage from './pages/proj/ProjectPage';
+import TeamJoinRequest from './pages/teamJoinRequest/TeamJoinRequest';
 
 function App() {
 
@@ -33,6 +35,8 @@ function App() {
           <Route path='/view-team' element={<TeamList/>} />
           <Route path='/team-detail/:id' element={<TeamPage/>} />
           <Route path='/my-team' element={<MyTeam/>} />
+          <Route path='/project-detail/:id' element={<ProjectPage/>} />
+          <Route path='/join-request' element={<TeamJoinRequest/>} />
           <Route path='/private' element={<AuthProvider><h1>Private</h1></AuthProvider>} />
           <Route path='/mock-login' element={<MockLogin />} />
           </Routes>

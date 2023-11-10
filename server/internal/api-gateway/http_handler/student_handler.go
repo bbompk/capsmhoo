@@ -23,6 +23,7 @@ type IStudentHandler interface {
 	DeleteStudentAll(c *gin.Context)
 	GetAllStudentsByTeamID(c *gin.Context)
 	GetStudentByUserID(c *gin.Context)
+	UpdateStudentTeamByID(c *gin.Context)
 }
 
 func (h *StudentHandler) GetStudentByID(c *gin.Context) {
@@ -140,6 +141,31 @@ func (h *StudentHandler) GetStudentByUserID(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
+		"code": "200",
+		"data": student,
+	})
+}
+
+func (h *StudentHandler) UpdateStudentTeamByID(c *gin.Context) {
+	id := c.Param("id")
+	var params model.Student
+	if err := c.ShouldBindJSON(&params); err != nil {
+		c.JSON(200, gin.H{
+			"code":  "400",
+			"error": err.Error(),
+		})
+		return
+	}
+
+	student, err := h.studentClientRest.UpdateStudentTeamByID(id, params)
+	if err != nil {
+		c.JSON(200, gin.H{
+			"code":  "500",
+			"error": err.Error(),
+		})
+		return
+	}
+	c.JSON(200, gin.H{
 		"code": "200",
 		"data": student,
 	})

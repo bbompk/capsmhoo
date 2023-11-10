@@ -15,6 +15,7 @@ const navigation = [
   { name: 'Project', component: '/view-project', current: false },
   { name: 'Team', component: '/view-team', current: false },
   { name: 'My Team and Project', component: '/my-team', current: false }
+  { name: 'Join Request', component: '/join-request', current: false }
 ]
 
 function classNames(...classes: string[]) {

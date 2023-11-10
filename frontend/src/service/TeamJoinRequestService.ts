@@ -28,7 +28,7 @@ export const getTeamJoinRequestById = async (id: string) => {
 
 export const getAllTeamJoinRequestByTeamId = async (id: string) => {
     const headers = getEmptyHeaderWithBearerToken();
-    const path = `${appConfig.BACKEND_BASE_URL}/team-join-request/${id}`;
+    const path = `${appConfig.BACKEND_BASE_URL}/team-join-request/teamid/${id}`;
     const axios_res = await axios.get(path, { headers });
     const res = axios_res.data as ApiResponse<TeamJoinRequestInterface[]>;
     if(!isResponseOk(res)) {
@@ -63,6 +63,17 @@ export const deleteTeamJoinRequestById = async (id: string) => {
     const headers = getEmptyHeaderWithBearerToken();
     const path = `${appConfig.BACKEND_BASE_URL}/team-join-request/${id}`;
     const axios_res = await axios.delete(path, { headers });
+    const res = axios_res.data as ApiResponse<TeamJoinRequestInterface>;
+    if(!isResponseOk(res)) {
+        throw new ApiErrorResponse(res.code, res.error ?? "Unknown error");
+    }
+    return res;
+}
+
+export const approveStudentIntoTeam = async (id: string) => {
+    const headers = getEmptyHeaderWithBearerToken();
+    const path = `${appConfig.BACKEND_BASE_URL}/team-join-request/approve/${id}`;
+    const axios_res = await axios.post(path, { headers });
     const res = axios_res.data as ApiResponse<TeamJoinRequestInterface>;
     if(!isResponseOk(res)) {
         throw new ApiErrorResponse(res.code, res.error ?? "Unknown error");
