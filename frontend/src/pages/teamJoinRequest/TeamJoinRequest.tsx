@@ -46,7 +46,7 @@ const TeamJoinRequest = () => {
       setData(teamJoinRequest.data);
     };
     fetchData();
-  });
+  },[]);
 
   const handleAccept = async (id: string) => {
     approveStudentIntoTeam(id);

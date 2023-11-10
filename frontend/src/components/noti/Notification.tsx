@@ -31,7 +31,7 @@ const Notification = () => {
     setDummy('dummy')
   },[isShowing])
   const read = async () => {
-    // if(role==="Student")readAllNotificationsByRoleId(studentId)
+    if(role==="Student")readAllNotificationsByRoleId(studentId)
     if(role==="Professor")readAllNotificationsByRoleId(professorId)
   }
   useEffect(()=>{
