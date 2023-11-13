@@ -217,6 +217,28 @@ func (s *teamJoinRequestServer) GetJoinRequestByTeamId(ctx context.Context, team
 	}, nil
 }
 
+func (s *teamJoinRequestServer) GetJoinRequestBySudentID(ctx context.Context, studentID *joinRequestPb.StudentId) (*joinRequestPb.TeamJoinRequestList, error) {
+	fmt.Println("Get Join Requests By Student ID")
+
+	requests, err := s.repo.GetJoinRequestBySudentID(studentID.StudentId)
+	if err != nil {
+		return nil, err
+	}
+
+	requestRes := []*joinRequestPb.TeamJoinRequest{}
+	for _, req := range requests {
+		requestRes = append(requestRes, &joinRequestPb.TeamJoinRequest{
+			Id:        req.ID,
+			TeamId:    req.TeamID,
+			StudentId: req.StudentID,
+		})
+	}
+
+	return &joinRequestPb.TeamJoinRequestList{
+		JoinRequests: requestRes,
+	}, nil
+}
+
 func (s *teamJoinRequestServer) CreateJoinRequest(ctx context.Context, teamJoinRequest *joinRequestPb.TeamJoinRequest) (*joinRequestPb.TeamJoinRequest, error) {
 	fmt.Println("Create Join Request")
 

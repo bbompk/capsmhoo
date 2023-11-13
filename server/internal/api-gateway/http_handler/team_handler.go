@@ -35,6 +35,7 @@ type ITeamJoinRequestHandler interface {
 	DeleteJoinRequest(c *gin.Context)
 	ApproveJoinRequest(c *gin.Context)
 	DeclineJoinRequest(c *gin.Context)
+	GetJoinRequestByStudentID(c *gin.Context)
 }
 
 func (h *TeamHandler) GetAllTeams(c *gin.Context) {
@@ -196,6 +197,21 @@ func (h *TeamJoinRequestHandler) GetJoinRequestByID(c *gin.Context) {
 func (h *TeamJoinRequestHandler) GetJoinRequestByTeamID(c *gin.Context) {
 	id := c.Param("id")
 	requests, err := h.teamJoinRequestClientgRPC.GetJoinRequestByTeamID(c, id)
+	if err != nil {
+		c.JSON(200, gin.H{
+			"code":  "500",
+			"error": err.Error(),
+		})
+	}
+	c.JSON(200, gin.H{
+		"code": "200",
+		"data": requests,
+	})
+}
+
+func (h *TeamJoinRequestHandler) GetJoinRequestByStudentID(c *gin.Context) {
+	id := c.Param("id")
+	requests, err := h.teamJoinRequestClientgRPC.GetJoinRequestByStudentID(c, id)
 	if err != nil {
 		c.JSON(200, gin.H{
 			"code":  "500",

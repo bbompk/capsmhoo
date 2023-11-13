@@ -53,6 +53,7 @@ export default function CreateTeamForm() {
         text: "This student already has a team.",
       });
       navigate("/");
+      return;
     }
 
     const teamCreate: TeamCreateInterface = {
