@@ -153,7 +153,7 @@ const ProjectDetailModal = ({projectId, isModalVisible, setOpenModal}: {projectI
             Swal.fire("Success","Project request rejected", 'success')
         } catch (error) {
             console.log(error);
-            Swal.fire("Error","Cannot reject project request", 'error')
+            Swal.fire("Error",`Cannot reject project request: ${error}`, 'error')
             return;
         }
     }

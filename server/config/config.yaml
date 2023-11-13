@@ -9,7 +9,7 @@ rabbitmq:
   url: amqp://guest:guest@localhost:5672/
   noti_queue_name: capsmhooo-noti
 user-service:
-  host: http://127.0.0.1
+  host: 127.0.0.1
   port: 8080
 team-service:
   port: 8081
