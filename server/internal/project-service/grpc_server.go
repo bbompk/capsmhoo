@@ -222,14 +222,16 @@ func (s *projectServer) AcceptProjectRequest(ctx context.Context, projectRequest
 		return nil, err
 	}
 
+	existProj, err := s.repo.GetProjectByTeamID(projReq.TeamID)
+	if err != nil {
+		return nil, errors.New("cant get project by team id")
+	} else if existProj != nil {
+		return nil, errors.New("team already has a project")
+	}
+
 	err = s.repo.AddTeamToProject(projReq.TeamID, projReq.ProjectID)
 	if err != nil {
 		return nil, err
-	}
-
-	_, err = s.repo.GetProjectByTeamID(projReq.TeamID)
-	if err == nil {
-		return nil, errors.New("team already has a project")
 	}
 
 	err = s.repo.AcceptProjectRequest(projectRequest.ProjectRequestId)
