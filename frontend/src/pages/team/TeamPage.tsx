@@ -4,7 +4,7 @@ import {
   TeamJoinRequestInterface,
 } from "../../interfaces/TeamInterface";
 import { useNavigate, useParams } from "react-router-dom";
-import { createTeamJoinRequest } from "../../service/TeamJoinRequestService";
+import { createTeamJoinRequest, getAllTeamJoinRequestByStudentId } from "../../service/TeamJoinRequestService";
 import { useUser } from "../../hooks/useUser";
 import Swal from "sweetalert2";
 import 'bootstrap/dist/css/bootstrap.css';
@@ -43,6 +43,7 @@ const TeamPage = () => {
         title: "Only student can join a team.",
         text: "Only student can join a team. Professor can only view teams.",
       });
+      return;
     }
 
     if (!data) {
@@ -52,18 +53,31 @@ const TeamPage = () => {
       throw new Error("Failed to fetch user data.");
     }
 
-    try {
-      const studentRes = await getStudentByUserId(userId);
-      if (!studentRes.data) {
-        throw new Error("Cannot find student ID.");
-      }
+    const studentRes = await getStudentByUserId(userId);
+    if (!studentRes.data) {
+      throw new Error("Cannot find student ID.");
+    }
+    const student_id = studentRes.data.id;
 
+    const teamJoinRes = await getAllTeamJoinRequestByStudentId(student_id)
+    if (!teamJoinRes.data) {
+      throw new Error("Cannot retrieve Team Join Request DB data.");
+    }
+    if(teamJoinRes.data.length !== 0) {
+      Swal.fire({
+        icon: "error",
+        title: "You already requested to join another team.",
+        text: "Only one team joining request is allowed for a student. Please contact the team you previously requested to join.",
+      });
+      return;
+    }
+
+    try {
       const teamJoinRequest: TeamJoinRequestInterface = {
         id: "",
         team_id: data.id,
-        student_id: studentRes.data.id
+        student_id: student_id
       };
-
       await createTeamJoinRequest(teamJoinRequest);
     } 
     catch (error) {
