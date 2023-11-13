@@ -1,4 +1,4 @@
-import CreateTeamForm from "../../components/form/CreateTeamForm"
+import CreateTeamForm from "../../components/form/createTeamForm"
 
 const CreateTeam = () => {
   return (
