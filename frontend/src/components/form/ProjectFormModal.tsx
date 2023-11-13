@@ -8,16 +8,16 @@ import { getProjectById, createProject, updateProjectById, deleteProjectById } f
 
 const items: MenuProps['items'] = [
     {
-        label: 'item 1',
-        key: 'item 1',
+        label: 'data science',
+        key: 'data science',
     },
     {
-        label: 'item 2',
-        key: 'item 2',
+        label: 'software development',
+        key: 'software development',
     },
     {
-        label: 'item 3',
-        key: 'item 3',
+        label: 'research',
+        key: 'research',
     },
 ]
 

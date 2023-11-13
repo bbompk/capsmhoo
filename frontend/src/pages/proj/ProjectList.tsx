@@ -86,13 +86,8 @@ const ProjectList = () => {
             <div key={project.id} className="my-1 px-1 w-full md:w-1/2 lg:w-1/3 cursor-pointer" onClick={()=>{showProjectDetailModal(project.id!)}}>
               <article className="overflow-hidden rounded-lg shadow-lg">
                 <div className="flex items-center justify-start leading-tight pt-3 px-3">
-                  <h1 className="text-lg">
-                    <a
-                      className="no-underline hover:underline text-black"
-                      href={`/detail/${project.id}`}
-                      >
-                      {project.name}
-                    </a>
+                  <h1 className="text-lg">   
+                    {project.name}
                   </h1>
                   <Tag className="text-grey-darker text-sm ml-2" bordered={false} color={project.status==='open'?'success':'error'}>
                     {project.status}

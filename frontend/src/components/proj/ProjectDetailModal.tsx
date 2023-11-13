@@ -99,7 +99,7 @@ const ProjectDetailModal = ({projectId, isModalVisible, setOpenModal}: {projectI
         }
 
         try {
-            const projectRequestRes = await createProjectRequest({project_id: projectId, team_id: teamId, message: 'hello', status: 'pending'})
+            const projectRequestRes = await createProjectRequest({project_id: projectId, team_id: teamId, message: 'request to join the project', status: 'pending'})
 
             if(projectRequestRes.code != '200'){
                 Swal.fire("Error","Cannot request project", 'error')
