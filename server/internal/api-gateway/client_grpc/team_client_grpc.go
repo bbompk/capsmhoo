@@ -178,7 +178,7 @@ func (t *TeamJoinRequestClient) GetJoinRequestByTeamID(ctx context.Context, team
 }
 
 func (t *TeamJoinRequestClient) GetJoinRequestByStudentID(ctx context.Context, studentID string) ([]*model.TeamJoinRequest, error) {
-	res, err := (*t.client).GetJoinRequestByStudentId(ctx, &joinRequestPb.StudentId{StudentId: studentID})
+	res, err := (*t.client).GetJoinRequestByStudentId(ctx, &joinRequestPb.TeamJoinRequestStudentId{StudentId: studentID})
 	if err != nil {
 		return nil, err
 	}

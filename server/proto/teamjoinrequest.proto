@@ -11,7 +11,7 @@ service TeamJoinRequestService {
     rpc DeleteJoinRequest(TeamJoinRequestId) returns (TeamJoinRequest);
     rpc ApproveJoinRequest(TeamJoinRequestId) returns (TeamJoinRequest);
     rpc DeclineJoinRequest(TeamJoinRequestId) returns (TeamJoinRequest);
-    rpc GetJoinRequestByStudentId(StudentId) returns (TeamJoinRequestList);
+    rpc GetJoinRequestByStudentId(TeamJoinRequestStudentId) returns (TeamJoinRequestList);
 }
 
 message TeamJoinReqeustEmpty {}
@@ -34,6 +34,6 @@ message TeamJoinRequestTeamId {
     string team_id = 1;
 }
 
-message StudentId {
+message TeamJoinRequestStudentId {
     string student_id = 1;
 }

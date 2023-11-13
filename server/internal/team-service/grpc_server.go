@@ -217,7 +217,7 @@ func (s *teamJoinRequestServer) GetJoinRequestByTeamId(ctx context.Context, team
 	}, nil
 }
 
-func (s *teamJoinRequestServer) GetJoinRequestBySudentID(ctx context.Context, studentID *joinRequestPb.StudentId) (*joinRequestPb.TeamJoinRequestList, error) {
+func (s *teamJoinRequestServer) GetJoinRequestBySudentID(ctx context.Context, studentID *joinRequestPb.TeamJoinRequestStudentId) (*joinRequestPb.TeamJoinRequestList, error) {
 	fmt.Println("Get Join Requests By Student ID")
 
 	requests, err := s.repo.GetJoinRequestBySudentID(studentID.StudentId)

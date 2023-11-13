@@ -30,7 +30,7 @@ type TeamJoinRequestServiceClient interface {
 	DeleteJoinRequest(ctx context.Context, in *TeamJoinRequestId, opts ...grpc.CallOption) (*TeamJoinRequest, error)
 	ApproveJoinRequest(ctx context.Context, in *TeamJoinRequestId, opts ...grpc.CallOption) (*TeamJoinRequest, error)
 	DeclineJoinRequest(ctx context.Context, in *TeamJoinRequestId, opts ...grpc.CallOption) (*TeamJoinRequest, error)
-	GetJoinRequestByStudentId(ctx context.Context, in *StudentId, opts ...grpc.CallOption) (*TeamJoinRequestList, error)
+	GetJoinRequestByStudentId(ctx context.Context, in *TeamJoinRequestStudentId, opts ...grpc.CallOption) (*TeamJoinRequestList, error)
 }
 
 type teamJoinRequestServiceClient struct {
@@ -113,7 +113,7 @@ func (c *teamJoinRequestServiceClient) DeclineJoinRequest(ctx context.Context, i
 	return out, nil
 }
 
-func (c *teamJoinRequestServiceClient) GetJoinRequestByStudentId(ctx context.Context, in *StudentId, opts ...grpc.CallOption) (*TeamJoinRequestList, error) {
+func (c *teamJoinRequestServiceClient) GetJoinRequestByStudentId(ctx context.Context, in *TeamJoinRequestStudentId, opts ...grpc.CallOption) (*TeamJoinRequestList, error) {
 	out := new(TeamJoinRequestList)
 	err := c.cc.Invoke(ctx, "/TeamJoinRequestService/GetJoinRequestByStudentId", in, out, opts...)
 	if err != nil {
@@ -134,7 +134,7 @@ type TeamJoinRequestServiceServer interface {
 	DeleteJoinRequest(context.Context, *TeamJoinRequestId) (*TeamJoinRequest, error)
 	ApproveJoinRequest(context.Context, *TeamJoinRequestId) (*TeamJoinRequest, error)
 	DeclineJoinRequest(context.Context, *TeamJoinRequestId) (*TeamJoinRequest, error)
-	GetJoinRequestByStudentId(context.Context, *StudentId) (*TeamJoinRequestList, error)
+	GetJoinRequestByStudentId(context.Context, *TeamJoinRequestStudentId) (*TeamJoinRequestList, error)
 	mustEmbedUnimplementedTeamJoinRequestServiceServer()
 }
 
@@ -166,7 +166,7 @@ func (UnimplementedTeamJoinRequestServiceServer) ApproveJoinRequest(context.Cont
 func (UnimplementedTeamJoinRequestServiceServer) DeclineJoinRequest(context.Context, *TeamJoinRequestId) (*TeamJoinRequest, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeclineJoinRequest not implemented")
 }
-func (UnimplementedTeamJoinRequestServiceServer) GetJoinRequestByStudentId(context.Context, *StudentId) (*TeamJoinRequestList, error) {
+func (UnimplementedTeamJoinRequestServiceServer) GetJoinRequestByStudentId(context.Context, *TeamJoinRequestStudentId) (*TeamJoinRequestList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetJoinRequestByStudentId not implemented")
 }
 func (UnimplementedTeamJoinRequestServiceServer) mustEmbedUnimplementedTeamJoinRequestServiceServer() {
@@ -328,7 +328,7 @@ func _TeamJoinRequestService_DeclineJoinRequest_Handler(srv interface{}, ctx con
 }
 
 func _TeamJoinRequestService_GetJoinRequestByStudentId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(StudentId)
+	in := new(TeamJoinRequestStudentId)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -340,7 +340,7 @@ func _TeamJoinRequestService_GetJoinRequestByStudentId_Handler(srv interface{}, 
 		FullMethod: "/TeamJoinRequestService/GetJoinRequestByStudentId",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TeamJoinRequestServiceServer).GetJoinRequestByStudentId(ctx, req.(*StudentId))
+		return srv.(TeamJoinRequestServiceServer).GetJoinRequestByStudentId(ctx, req.(*TeamJoinRequestStudentId))
 	}
 	return interceptor(ctx, in, info, handler)
 }
