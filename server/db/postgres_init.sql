@@ -27,7 +27,7 @@ CREATE TABLE professors (
     id VARCHAR(255) PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     profile TEXT,
-    user_id VARCHAR(255) REFERENCES users(id)
+    user_id VARCHAR(255) REFERENCES users(id) ON DELETE CASCADE
 );
 
 -- Create a "team" table
@@ -41,16 +41,16 @@ CREATE TABLE teams (
 CREATE TABLE students (
     id VARCHAR(255) PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    user_id VARCHAR(255) REFERENCES users(id),
-    team_id VARCHAR(255) REFERENCES teams(id)
+    user_id VARCHAR(255) REFERENCES users(id) ON DELETE CASCADE,
+    team_id VARCHAR(255) REFERENCES teams(id) ON DELETE CASCADE
 );
 
 
 
 CREATE TABLE projects (
     project_id VARCHAR(255) PRIMARY KEY,
-    team_id VARCHAR(255) REFERENCES teams(id),
-    professor_id VARCHAR(255) REFERENCES professors(id),
+    team_id VARCHAR(255) REFERENCES teams(id) ON DELETE CASCADE,
+    professor_id VARCHAR(255) REFERENCES professors(id) ON DELETE CASCADE,
     name VARCHAR(255),
     description TEXT,
     status VARCHAR(255),
@@ -60,14 +60,14 @@ CREATE TABLE projects (
 -- Create a "project_request" table with a foreign key to the "project" and "team" table
 CREATE TABLE project_requests (
     project_request_id VARCHAR(255) PRIMARY KEY,
-    team_id VARCHAR(255) REFERENCES teams(id),
-    project_id VARCHAR(255) REFERENCES projects(project_id),
+    team_id VARCHAR(255) REFERENCES teams(id) ON DELETE CASCADE,
+    project_id VARCHAR(255) REFERENCES projects(project_id) ON DELETE CASCADE,
     message VARCHAR(255),
     status VARCHAR(255)
 );
 
 CREATE TABLE team_join_requests (
     id VARCHAR(255) PRIMARY KEY,
-    team_id VARCHAR(255) REFERENCES teams(id),
-    student_id VARCHAR(255) REFERENCES students(id)
+    team_id VARCHAR(255) REFERENCES teams(id) ON DELETE CASCADE,
+    student_id VARCHAR(255) REFERENCES students(id) ON DELETE CASCADE
 );
