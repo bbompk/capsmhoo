@@ -227,6 +227,11 @@ func (s *projectServer) AcceptProjectRequest(ctx context.Context, projectRequest
 		return nil, err
 	}
 
+	_, err = s.repo.GetProjectByTeamID(projReq.TeamID)
+	if err == nil {
+		return nil, errors.New("team already has a project")
+	}
+
 	err = s.repo.AcceptProjectRequest(projectRequest.ProjectRequestId)
 	if err != nil {
 		return nil, err
