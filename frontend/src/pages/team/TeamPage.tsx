@@ -67,7 +67,7 @@ const TeamPage = () => {
       Swal.fire({
         icon: "error",
         title: "You already requested to join another team.",
-        text: "Only one team joining request is allowed for a student. Please contact the team you previously requested to join.",
+        text: "Only one team joining request is allowed for a student. Please contact the team you previously sent a request.",
       });
       return;
     }
@@ -94,7 +94,6 @@ const TeamPage = () => {
       title: "Request Created",
       text: `You requested to join team ${data.name}`,
     });
-
     navigate("/"); // Navigate to the home page
   };
 
