@@ -303,16 +303,34 @@ func (s *teamJoinRequestServer) ApproveJoinRequest(ctx context.Context, reqID *j
 		return nil, err
 	}
 
-	// Update student team
-	_, err = s.student_repo.UpdateStudentTeam(req.StudentID, req.TeamID)
+	std, err := s.student_repo.GetStudentByID(req.StudentID)
 	if err != nil {
 		return nil, err
+	}
+
+	updatedTeam := false
+
+	if std.TeamID == nil {
+		// Update student team
+		_, err = s.student_repo.UpdateStudentTeam(req.StudentID, req.TeamID)
+		if err != nil {
+			return nil, err
+		}
+		updatedTeam = true
 	}
 
 	// Delete join request
 	req, err = s.repo.DeleteJoinRequestByID(reqID.Id)
 	if err != nil {
 		return nil, err
+	}
+
+	if !updatedTeam {
+		return &joinRequestPb.TeamJoinRequest{
+			Id:        req.ID,
+			TeamId:    req.TeamID,
+			StudentId: req.StudentID,
+		}, errors.New("student already in a team")
 	}
 
 	return &joinRequestPb.TeamJoinRequest{

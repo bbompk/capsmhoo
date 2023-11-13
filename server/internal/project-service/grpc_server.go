@@ -133,6 +133,11 @@ func (s *projectServer) DeleteProject(ctx context.Context, projectId *pb.Project
 		return nil, err
 	}
 
+	err = s.repo.DeleteAllProjectRequestsByProjectID(projectId.ProjectId)
+	if err != nil {
+		return nil, err
+	}
+
 	deletedProjectRes := convertProjectRes(project)
 
 	return deletedProjectRes, nil

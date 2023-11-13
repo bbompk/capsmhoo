@@ -31,6 +31,7 @@ type ProjectRepository interface {
 	AcceptProjectRequest(id string) error
 	RejectProjectRequest(id string) error
 	AddTeamToProject(teamID string, projectID string) error
+	DeleteAllProjectRequestsByProjectID(id string) error
 }
 
 func (r *Repository) GetProjects() []Project {
@@ -104,6 +105,16 @@ func (r *Repository) DeleteProjectByID(id string) (*Project, error) {
 func (r *Repository) DeleteAll() error {
 
 	if err := r.db.Table("projects").Where("project_id > ''").Delete(&Project{}).Error; err != nil {
+		// Handle database error.
+		return err
+	}
+	// Projects were deleted successfully.
+	return nil
+}
+
+func (r *Repository) DeleteAllProjectRequestsByProjectID(id string) error {
+
+	if err := r.db.Table("project_requests").Where("project_id = ?", id).Delete(&ProjectRequest{}).Error; err != nil {
 		// Handle database error.
 		return err
 	}
