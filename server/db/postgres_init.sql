@@ -27,7 +27,7 @@ CREATE TABLE professors (
     id VARCHAR(255) PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     profile TEXT,
-    user_id VARCHAR(255) REFERENCES users(id) ON DELETE CASCADE
+    user_id VARCHAR(255) REFERENCES users(id)
 );
 
 -- Create a "team" table
@@ -41,16 +41,16 @@ CREATE TABLE teams (
 CREATE TABLE students (
     id VARCHAR(255) PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    user_id VARCHAR(255) REFERENCES users(id) ON DELETE CASCADE,
-    team_id VARCHAR(255) REFERENCES teams(id) ON DELETE CASCADE
+    user_id VARCHAR(255) REFERENCES users(id),
+    team_id VARCHAR(255) REFERENCES teams(id)
 );
 
 
 
 CREATE TABLE projects (
     project_id VARCHAR(255) PRIMARY KEY,
-    team_id VARCHAR(255) REFERENCES teams(id) ON DELETE CASCADE,
-    professor_id VARCHAR(255) REFERENCES professors(id) ON DELETE CASCADE,
+    team_id VARCHAR(255) REFERENCES teams(id),
+    professor_id VARCHAR(255) REFERENCES professors(id),
     name VARCHAR(255),
     description TEXT,
     status VARCHAR(255),
