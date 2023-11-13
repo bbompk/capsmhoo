@@ -1,7 +1,11 @@
-import { UserInterface, StudentInterface, ProfessorInterface } from "./UserInterface";
+import {
+  UserInterface,
+  StudentInterface,
+  ProfessorInterface,
+} from "./UserInterface";
 
 export interface AuthContextInterface {
-  isAuthenticated?: boolean,
-  user?: UserInterface | StudentInterface | ProfessorInterface,
-  loading?: boolean
+  isAuthenticated?: boolean;
+  user?: UserInterface | StudentInterface | ProfessorInterface;
+  loading?: boolean;
 }

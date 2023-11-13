@@ -11,13 +11,14 @@
     border-radius: 32px;
 } */
 
-html, body {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+html,
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 body {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
 }

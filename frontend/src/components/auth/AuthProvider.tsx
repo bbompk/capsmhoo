@@ -21,36 +21,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setLoading(true)
     let interval: string | number | NodeJS.Timeout | undefined;
     const accessToken = sessionStorage.getItem('accessToken')
-    if(accessToken == null){
-        navigate("/login");
-        clearInterval(interval);
-        Swal.fire("Error","Please log in", 'error')
-        return;
+    if (accessToken == null) {
+      navigate("/login");
+      clearInterval(interval);
+      Swal.fire("Error", "Please log in", 'error')
+      return;
     } else {
-        setUser({ id: "test" } as UserInterface)
+      setUser({ id: "test" } as UserInterface)
     }
 
     interval = setInterval(() => {
-        const expiredAt = new Date(sessionStorage.getItem("token_expires") ?? addHoursToDate(new Date(), -1))
-        const now = new Date();
-        if (now > expiredAt) {
-            ForceLogout();
-        }
+      const expiredAt = new Date(sessionStorage.getItem("token_expires") ?? addHoursToDate(new Date(), -1))
+      const now = new Date();
+      if (now > expiredAt) {
+        ForceLogout();
+      }
     }, 1000);
-    
-    function ForceLogout() {
-        clearInterval(interval);
-        sessionStorage.removeItem('accessToken')
-        sessionStorage.removeItem('token_expires')
-        navigate("/login");
 
-        Swal.fire("Error","Please log in", 'error')
+    function ForceLogout() {
+      clearInterval(interval);
+      sessionStorage.removeItem('accessToken')
+      sessionStorage.removeItem('token_expires')
+      navigate("/login");
+
+      Swal.fire("Error", "Please log in", 'error')
     }
     setLoading(false)
     return () => clearInterval(interval);
   }, [])
 
-  return <authContext.Provider value={{ isAuthenticated: !!user, user, loading}}>{children}</authContext.Provider>;
+  return <authContext.Provider value={{ isAuthenticated: !!user, user, loading }}>{children}</authContext.Provider>;
 }
 
 export const useAuth = () => useContext(authContext);

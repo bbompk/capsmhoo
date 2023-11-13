@@ -59,7 +59,7 @@ export default function CreateProjectForm() {
       const project_id = createdProject.data?.id;
       console.log(project_id)
       navigate(`/project-detail/${project_id}`);
-    } 
+    }
     catch (error) {
       console.error(error);
       Swal.fire({

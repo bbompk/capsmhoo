@@ -2,7 +2,7 @@ import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { NavLink, useLocation } from 'react-router-dom';
-import Notification  from '../noti/Notification'
+import Notification from '../noti/Notification'
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2'
 import { useUser } from '../../hooks/useUser';
@@ -59,14 +59,14 @@ export default function Example() {
   const location = useLocation();
 
   useEffect(() => {
-    if(user.role === "Student"){
+    if (user.role === "Student") {
       setNavigation(studentNavigations)
-    }else if(user.role === "Professor"){
+    } else if (user.role === "Professor") {
       setNavigation(professorNavigations)
     } else {
       setNavigation(noAuthNavigations)
     }
-  },[location])
+  }, [location])
 
   const profile = () => {
     navigate("/profile");
@@ -128,7 +128,7 @@ export default function Example() {
                 </div>
               </div>
               <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                <Notification/>
+                <Notification />
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative ml-3">
                   <div>
