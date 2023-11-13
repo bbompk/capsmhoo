@@ -108,5 +108,5 @@ export const updateStudentTeamById = async (id: string, student: Partial<Student
 }
 
 export const alreadyHaveTeam = (student: StudentInterface) => {
-    return (student.team_id != null)
+    return (student.team_id !== "")
 }
