@@ -118,12 +118,18 @@ const MyTeam = () => {
   };
   const updateTeamData = async () => {
     // Logic to update team data, possibly involving an API call
-    const newTeam : TeamInterface = {
-      id: team?.id!,
-      name: teamName,
-      profile: teamProfile
+    try {
+      const newTeam : TeamInterface = {
+        id: team?.id!,
+        name: teamName,
+        profile: teamProfile
+      }
+      await updateTeamById(newTeam.id, newTeam)
+      Swal.fire("Success","Team data updated", 'success')
+    } catch (error) {
+      console.error(error);
+      Swal.fire("Error","Cannot update team data", 'error')
     }
-    await updateTeamById(newTeam.id, newTeam)
   };
   return (
     <div style={styles.container}>

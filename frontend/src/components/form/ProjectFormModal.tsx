@@ -72,17 +72,18 @@ export const ProjectFormModal = ({isModalVisible, formMode, setOpenModal, projec
                     return;
                 }
                 await createProject({name: projectName, description: projectDescription, label: projectLabel, professor_id: professorId, team_id: '', status: 'open'})
+                Swal.fire("Success","Project created", 'success')
             }else if(formMode == 'edit'){
                 if(!projectName || !projectDescription || !projectLabel || !professorId){
                     console.log('missing field');
                     return;
                 }
                 await updateProjectById(projectId, {name: projectName, description: projectDescription, label: projectLabel, professor_id: professorId, team_id: '', status: 'open'})
-    
+                Swal.fire("Success","Project edited", 'success')
             }
         }catch(err){
             console.log(err);
-            Swal.fire("Error","Cannot create project", 'error')
+            Swal.fire("Error","Cannot create/edit project", 'error')
         }finally{
             setOpenModal(false);
             resetForm();
@@ -125,6 +126,7 @@ export const ProjectFormModal = ({isModalVisible, formMode, setOpenModal, projec
         open={isModalVisible} 
         onOk={handleOk} 
         onCancel={handleCancel}
+        okButtonProps={{className: 'px-4 py-1 border-transparent text-base rounded-md shadow-sm text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 cursor-pointer'}}
         >
         <div className="space-y-12">
             <div className="border-b border-gray-900/10 pb-12">
