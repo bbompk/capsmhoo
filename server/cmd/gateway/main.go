@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -13,15 +14,36 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
+	projectpb "capsmhoo/gen/projectpb"
 	pb "capsmhoo/gen/proto"
-	gatewaygRPCClient "capsmhoo/mono/api-gateway/client_grpc"
-	gatewayHTTPHandler "capsmhoo/mono/api-gateway/http_handler"
+	joinRequestPb "capsmhoo/gen/team-join-request-pb"
+	gatewaygRPCClient "capsmhoo/internal/api-gateway/client_grpc"
+	restClient "capsmhoo/internal/api-gateway/client_rest"
+	gatewayHTTPHandler "capsmhoo/internal/api-gateway/http_handler"
 )
 
 type Team struct {
 	Id      string `json:"id"`
 	Name    string `json:"title"`
 	Profile string `json:"profile"`
+}
+
+func CORSMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		log.Println("Handling CORS :D")
+
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With, Authorization")
+		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE")
+
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(http.StatusNoContent)
+			return
+		}
+
+		c.Next()
+	}
 }
 
 func main() {
@@ -32,18 +54,48 @@ func main() {
 	initConfig()
 
 	r := gin.Default()
+
+	// Initialize gRPC connections
 	teamgRPCConn := initTeamgRPCConnection()
 	teamgRPCClienter := pb.NewTeamServiceClient(teamgRPCConn)
+	notigRPCConn := initNotigRPCConnection()
+	notigRPCClienter := pb.NewNotiServiceClient(notigRPCConn)
+	teamJoinRequestgRPCClienter := joinRequestPb.NewTeamJoinRequestServiceClient(teamgRPCConn)
+	projectgRPCConn := initProjectgRPCConnection()
+	projectgRPCClienter := projectpb.NewProjectServiceClient(projectgRPCConn)
 
 	defer teamgRPCConn.Close()
+	defer notigRPCConn.Close()
+	defer projectgRPCConn.Close()
 
-	// dependency injection
+	// Dependency Injection
 	teamgRPCClient := gatewaygRPCClient.ProvideTeamClient(&teamgRPCClienter)
+	teamJoinRequestgRPCClient := gatewaygRPCClient.ProvideTeamJoinRequestClient(&teamJoinRequestgRPCClienter)
 	teamHandler := gatewayHTTPHandler.ProvideTeamHandler(teamgRPCClient)
+	teamJoinRequestHandler := gatewayHTTPHandler.ProvideTeamJoinRequestHandler(teamJoinRequestgRPCClient)
+	notigRPCClient := gatewaygRPCClient.ProvideNotiClient(&notigRPCClienter)
+	notiHandler := gatewayHTTPHandler.ProvideNotiHandler(notigRPCClient)
+	studentClientRest := restClient.ProvideStudentClientRest(&http.Client{})
+	studentHandler := gatewayHTTPHandler.ProvideStudentHandler(studentClientRest)
+	professorClientRest := restClient.ProvideProfessorClientRest(&http.Client{})
+	professorHandler := gatewayHTTPHandler.ProvideProfessorHandler(professorClientRest)
+	userClientRest := restClient.ProvideUserClientRest(&http.Client{})
+	userHandler := gatewayHTTPHandler.ProvideUserHandler(userClientRest)
+	projectgRPCClient := gatewaygRPCClient.ProvideProjectClient(&projectgRPCClienter)
+	projectHandler := gatewayHTTPHandler.ProvideProjectHandler(projectgRPCClient)
 
-	gatewayHTTPHandler.ProvideRouter(r, teamHandler)
+	r.Use(CORSMiddleware())
+	gatewayHTTPHandler.ProvideRouter(r,
+		teamHandler,
+		teamJoinRequestHandler,
+		userHandler,
+		studentHandler,
+		professorHandler,
+		projectHandler,
+		notiHandler,
+	)
 
-	r.Run(":" + "8082")
+	r.Run(":" + viper.GetString("api-gateway.port"))
 }
 
 // Read Config file
@@ -66,6 +118,28 @@ func initTeamgRPCConnection() *grpc.ClientConn {
 		log.Fatalf("did not connect: %v", err)
 	}
 	log.Default().Println("Connected to Team gRPC Service")
+	return conn
+}
+
+func initNotigRPCConnection() *grpc.ClientConn {
+	dest := fmt.Sprintf("%s:%s", viper.GetString("noti-service.grpc-host"), viper.GetString("noti-service.grpc-port"))
+	// Set up a connection to the server.
+	conn, err := grpc.Dial(dest, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	log.Default().Println("Connected to Noti gRPC Service")
+	return conn
+}
+
+func initProjectgRPCConnection() *grpc.ClientConn {
+	dest := fmt.Sprintf("%s:%s", viper.GetString("project-service.grpc-host"), viper.GetString("project-service.grpc-port"))
+	// Set up a connection to the server.
+	conn, err := grpc.Dial(dest, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		log.Fatalf("did not connect: %v", err)
+	}
+	log.Default().Println("Connected to Project gRPC Service")
 	return conn
 }
 

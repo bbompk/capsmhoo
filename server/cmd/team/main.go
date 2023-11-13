@@ -6,7 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	team "capsmhoo/mono/team-service"
+	team "capsmhoo/internal/team-service"
 
 	"github.com/spf13/viper"
 	"gorm.io/driver/postgres"
@@ -26,8 +26,10 @@ func main() {
 
 	// Dependency Injection
 	repo := team.ProvideRepository(db)
+	join_request_repo := team.ProvideJoinRequestRepository(db)
+	student_repo := team.ProvideStudentRepository(db)
 
-	team.StartgRPCServer(repo, viper.GetString("team-service.grpc-host"), viper.GetString("team-service.grpc-port"))
+	team.StartgRPCServer(repo, join_request_repo, student_repo, "", viper.GetString("team-service.grpc-port"))
 }
 
 // Read Config file

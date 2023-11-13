@@ -1,0 +1,26 @@
+db:
+  host: capsmhoo-postgres
+  port: 5432
+  POSTGRES_ROOT_PASSWORD: postgres
+  POSTGRES_USER: admin
+  POSTGRES_PASSWORD: postgres
+  POSTGRES_DB: capsmhoo
+rabbitmq:
+  url: amqp://guest:guest@capsmhoo-rabbitmq:5672/
+  noti_queue_name: capsmhooo-noti
+user-service:
+  host: user-service
+  port: 8080
+team-service:
+  port: 8081
+  grpc-host: team-service
+  grpc-port: 50051
+noti-service:
+  grpc-host: noti-service
+  grpc-port: 50054
+project-service:
+  port: 8083
+  grpc-host: project-service
+  grpc-port: 50052
+api-gateway:
+  port: 8082

@@ -17,7 +17,8 @@
 -- Create a "user" table
 CREATE TABLE users (
     id VARCHAR(255) PRIMARY KEY,
-    email VARCHAR(255) NOT NULL,
+    role VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL
 );
 
@@ -44,12 +45,29 @@ CREATE TABLE students (
     team_id VARCHAR(255) REFERENCES teams(id)
 );
 
+
+
 CREATE TABLE projects (
     project_id VARCHAR(255) PRIMARY KEY,
     team_id VARCHAR(255) REFERENCES teams(id),
-    professor_id VARCHAR(255) REFERENCES users(id),
+    professor_id VARCHAR(255) REFERENCES professors(id),
     name VARCHAR(255),
-    description TEXT
+    description TEXT,
+    status VARCHAR(255),
+    label VARCHAR(255)
 );
 
+-- Create a "project_request" table with a foreign key to the "project" and "team" table
+CREATE TABLE project_requests (
+    project_request_id VARCHAR(255) PRIMARY KEY,
+    team_id VARCHAR(255) REFERENCES teams(id) ON DELETE CASCADE,
+    project_id VARCHAR(255) REFERENCES projects(project_id) ON DELETE CASCADE,
+    message VARCHAR(255),
+    status VARCHAR(255)
+);
 
+CREATE TABLE team_join_requests (
+    id VARCHAR(255) PRIMARY KEY,
+    team_id VARCHAR(255) REFERENCES teams(id) ON DELETE CASCADE,
+    student_id VARCHAR(255) REFERENCES students(id) ON DELETE CASCADE
+);
