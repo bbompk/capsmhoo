@@ -66,22 +66,20 @@ const Register = () => {
             <button
               type="button"
               onClick={() => setUserType(UserType.Student)}
-              className={`px-4 py-2 rounded-md ${
-                userType === UserType.Student
+              className={`px-4 py-2 rounded-md ${userType === UserType.Student
                   ? "bg-indigo-600 text-white"
                   : "bg-white text-indigo-600"
-              }`}
+                }`}
             >
               Student
             </button>
             <button
               type="button"
               onClick={() => setUserType(UserType.Professor)}
-              className={`px-4 py-2 rounded-md ml-4 ${
-                userType === UserType.Professor
+              className={`px-4 py-2 rounded-md ml-4 ${userType === UserType.Professor
                   ? "bg-indigo-600 text-white"
                   : "bg-white text-indigo-600"
-              }`}
+                }`}
             >
               Professor
             </button>

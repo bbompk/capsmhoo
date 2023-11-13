@@ -46,8 +46,8 @@ const TeamJoinRequest = () => {
       setData(teamJoinRequest.data);
     };
     fetchData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleAccept = async (id: string) => {
     approveStudentIntoTeam(id);
@@ -70,14 +70,14 @@ const TeamJoinRequest = () => {
           <div className="list-group">
             {Array.isArray(data)
               ? data.map((item) => (
-                  <JoiningRequestCard
-                    key={item.id}
-                    id={item.id}
-                    student_id={item.student_id}
-                    handleAccept={() => handleAccept(item.id)}
-                    handleReject={() => handleReject(item.id)}
-                  />
-                ))
+                <JoiningRequestCard
+                  key={item.id}
+                  id={item.id}
+                  student_id={item.student_id}
+                  handleAccept={() => handleAccept(item.id)}
+                  handleReject={() => handleReject(item.id)}
+                />
+              ))
               : null}
           </div>
         </div>

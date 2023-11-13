@@ -1,5 +1,5 @@
 export interface NotificationInterface {
-    title: string;
-    body: string;
-    user_id: string;
+  title: string;
+  body: string;
+  user_id: string;
 }

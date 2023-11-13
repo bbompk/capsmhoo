@@ -20,23 +20,23 @@ function App() {
   return (
     <div>
       <Router>
-          <Navbar />
+        <Navbar />
 
-          <Routes>
+        <Routes>
           <Route path='/' element={<Home />} />
-          <Route path='/register' element={<Register/>} />
+          <Route path='/register' element={<Register />} />
           <Route path='/login' element={<Login />} />
-          <Route path='/profile' element={<AuthProvider><Profile/></AuthProvider>} />
+          <Route path='/profile' element={<AuthProvider><Profile /></AuthProvider>} />
           <Route path='/create-team' element={<AuthProvider><CreateTeam /></AuthProvider>} />
-          <Route path='/view-project' element={<AuthProvider><ProjectList/></AuthProvider>} />
-          <Route path='/view-team' element={<AuthProvider><TeamList/></AuthProvider>} />
-          <Route path='/team-detail/:id' element={<AuthProvider><TeamPage/></AuthProvider>} />
-          <Route path='/my-team' element={<AuthProvider><MyTeam/></AuthProvider>} />
-          <Route path='/project-detail/:id' element={<AuthProvider><ProjectPage/></AuthProvider>} />
-          <Route path='/join-request' element={<AuthProvider><TeamJoinRequest/></AuthProvider>} />
+          <Route path='/view-project' element={<AuthProvider><ProjectList /></AuthProvider>} />
+          <Route path='/view-team' element={<AuthProvider><TeamList /></AuthProvider>} />
+          <Route path='/team-detail/:id' element={<AuthProvider><TeamPage /></AuthProvider>} />
+          <Route path='/my-team' element={<AuthProvider><MyTeam /></AuthProvider>} />
+          <Route path='/project-detail/:id' element={<AuthProvider><ProjectPage /></AuthProvider>} />
+          <Route path='/join-request' element={<AuthProvider><TeamJoinRequest /></AuthProvider>} />
           <Route path='/private' element={<AuthProvider><h1>Private</h1></AuthProvider>} />
           <Route path='/mock-login' element={<MockLogin />} />
-          </Routes>
+        </Routes>
 
       </Router>
     </div>

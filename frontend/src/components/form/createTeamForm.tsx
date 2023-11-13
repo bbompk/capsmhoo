@@ -69,7 +69,7 @@ export default function CreateTeamForm() {
         throw new Error("Failed to create team.");
       }
       const team_id = createdTeam.data.id;
-      const studentBody : Partial<StudentInterface> = {
+      const studentBody: Partial<StudentInterface> = {
         team_id: team_id
       }
       await updateStudentTeamById(student.data.id, studentBody)

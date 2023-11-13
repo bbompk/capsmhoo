@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import React, { CSSProperties } from 'react';
-import { useUser,useStudent,useProfessor } from "../../hooks/useUser"
+import { useUser, useStudent, useProfessor } from "../../hooks/useUser"
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { getAllStudentByTeamId, getStudentById, getStudentByUserId } from "../../service/StudentService";
@@ -22,7 +22,7 @@ const MyTeam = () => {
   const [teamProfile, setTeamProfile] = useState('');
   const navigate = useNavigate();
   const styles: Record<string, CSSProperties> = {
- 
+
     container: {
       display: 'flex',
       flexDirection: 'column',
@@ -67,7 +67,7 @@ const MyTeam = () => {
       marginTop: '1rem',
     },
   };
-  
+
   useEffect(() => {
     const fetchUserData = async () => {
       // Should be create as a hook
@@ -78,13 +78,13 @@ const MyTeam = () => {
       }
       // Get Team and Project data
       const resStudent = await getStudentByUserId(userId)
-      if(!resStudent.data){
+      if (!resStudent.data) {
         throw new Error("Failed to fetch student data")
       }
       SetStudent(resStudent.data)
-      if(resStudent.data?.team_id!= ""){
+      if (resStudent.data?.team_id != "") {
         const resTeam = await getTeamById(resStudent.data!.team_id!)
-        if(!resTeam.data){
+        if (!resTeam.data) {
           throw new Error("Failed to fetch team data")
         }
         SetTeam(resTeam.data)
@@ -92,23 +92,23 @@ const MyTeam = () => {
         setTeamProfile(resTeam.data.profile)
         console.log(resTeam)
         const resStudentList = await getAllStudentByTeamId(resStudent.data!.team_id!)
-        if(resStudentList.data){
+        if (resStudentList.data) {
           SetStudentList(resStudentList.data)
         }
         const resProject = await getProjectByTeamId(resTeam.data.id)
-          // Should return []
-          if(resProject.data){
-            console.log(resProject.data)
-            SetProject(resProject.data)
-            const resProfessor = await getProfessorById(resProject.data.professor_id)
-            if(resProfessor.data){
-              SetProfessor(resProfessor.data)
-            }
+        // Should return []
+        if (resProject.data) {
+          console.log(resProject.data)
+          SetProject(resProject.data)
+          const resProfessor = await getProfessorById(resProject.data.professor_id)
+          if (resProfessor.data) {
+            SetProfessor(resProfessor.data)
           }
         }
       }
-      fetchUserData()
-  }, [userId,navigate,role]);
+    }
+    fetchUserData()
+  }, [userId, navigate, role]);
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTeamName(e.target.value);
   };
@@ -119,66 +119,65 @@ const MyTeam = () => {
   const updateTeamData = async () => {
     // Logic to update team data, possibly involving an API call
     try {
-      const newTeam : TeamInterface = {
+      const newTeam: TeamInterface = {
         id: team?.id!,
         name: teamName,
         profile: teamProfile
       }
       await updateTeamById(newTeam.id, newTeam)
-      Swal.fire("Success","Team data updated", 'success')
+      Swal.fire("Success", "Team data updated", 'success')
     } catch (error) {
       console.error(error);
-      Swal.fire("Error","Cannot update team data", 'error')
+      Swal.fire("Error", "Cannot update team data", 'error')
     }
   };
   return (
     <div style={styles.container}>
-      <h1 style={{fontSize: "1.3rem", fontWeight: "normal"}}>My Team</h1>
-    {team && (
-      <>
-        <div style={styles.formGroup}>
-          <label htmlFor="teamName" style={{marginRight:"0.5rem",marginTop: "1rem"}}>Team Name:</label>
-          <input
-            id="teamName"
-            style={styles.input}
-            value={teamName}
-            onChange={handleNameChange}
-          />
-        </div>
-        <div style={styles.formGroup}>
-          <label htmlFor="teamProfile" style={{marginRight:"0.5rem",marginTop: "1rem"}}>Team Profile:</label>
-          <textarea
-            id="teamProfile"
-            style={styles.textArea}
-            value={teamProfile}
-            onChange={handleProfileChange}
-          />
-        </div>
-        {studentList && (
-          <div>
-            <h1>Student List</h1>
-            {studentList.map((student,studentnum)=>
-              <h1>{studentnum+1+" "+student.name}</h1>
-            )}
+      <h1 style={{ fontSize: "1.3rem", fontWeight: "normal" }}>My Team</h1>
+      {team && (
+        <>
+          <div style={styles.formGroup}>
+            <label htmlFor="teamName" style={{ marginRight: "0.5rem", marginTop: "1rem" }}>Team Name:</label>
+            <input
+              id="teamName"
+              style={styles.input}
+              value={teamName}
+              onChange={handleNameChange}
+            />
           </div>
-        )}
-        <button style={styles.button} onClick={updateTeamData}>
-          Save Changes
-        </button>
+          <div style={styles.formGroup}>
+            <label htmlFor="teamProfile" style={{ marginRight: "0.5rem", marginTop: "1rem" }}>Team Profile:</label>
+            <textarea
+              id="teamProfile"
+              style={styles.textArea}
+              value={teamProfile}
+              onChange={handleProfileChange}
+            />
+          </div>
+          {studentList && (
+            <div>
+              <h1>Student List</h1>
+              {studentList.map((student, studentnum) =>
+                <h1>{studentnum + 1 + " " + student.name}</h1>
+              )}
+            </div>
+          )}
+          <button style={styles.button} onClick={updateTeamData}>
+            Save Changes
+          </button>
         </>
       )}
       {project && (
-        <div style={{marginTop:"2rem"}}>
-          <h1 style={{fontSize: "1.3rem", fontWeight: "normal"}}>My Project</h1>
-          <h1>{"Project Name: "+project.name}</h1>
-          <h1>{"Project Label: "+project.label}</h1>
-          <h1>{"Project Detail: "+project.description}</h1>
-          <h1>{"Professor Name: "+professor?.name}</h1>
+        <div style={{ marginTop: "2rem" }}>
+          <h1 style={{ fontSize: "1.3rem", fontWeight: "normal" }}>My Project</h1>
+          <h1>{"Project Name: " + project.name}</h1>
+          <h1>{"Project Label: " + project.label}</h1>
+          <h1>{"Project Detail: " + project.description}</h1>
+          <h1>{"Professor Name: " + professor?.name}</h1>
         </div>
       )}
     </div>
   );
-  };
-  
+};
+
 export default MyTeam;
-  
