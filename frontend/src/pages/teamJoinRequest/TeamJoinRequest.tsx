@@ -46,6 +46,7 @@ const TeamJoinRequest = () => {
       setData(teamJoinRequest.data);
     };
     fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   },[]);
 
   const handleAccept = async (id: string) => {
