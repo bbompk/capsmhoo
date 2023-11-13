@@ -37,6 +37,17 @@ export const getAllTeamJoinRequestByTeamId = async (id: string) => {
     return res;
 }
 
+export const getAllTeamJoinRequestByStudentId = async (id: string) => {
+    const headers = getEmptyHeaderWithBearerToken();
+    const path = `${appConfig.BACKEND_BASE_URL}/team-join-request/studentid/${id}`;
+    const axios_res = await axios.get(path, { headers });
+    const res = axios_res.data as ApiResponse<TeamJoinRequestInterface[]>;
+    if(!isResponseOk(res)) {
+        throw new ApiErrorResponse(res.code, res.error ?? "Unknown error");
+    }
+    return res;
+}
+
 export const createTeamJoinRequest = async (teamJoinRequest: TeamJoinRequestInterface) => {
     const headers = getEmptyHeaderWithBearerToken();
     const path = `${appConfig.BACKEND_BASE_URL}/team-join-request`;

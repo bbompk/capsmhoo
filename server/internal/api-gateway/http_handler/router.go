@@ -62,6 +62,7 @@ func ProvideRouter(
 	teamJoinRequestRoute.GET("", teamJoinRequestHandler.GetAllJoinRequests)
 	teamJoinRequestRoute.GET("/:id", teamJoinRequestHandler.GetJoinRequestByID)
 	teamJoinRequestRoute.GET("/teamid/:id", teamJoinRequestHandler.GetJoinRequestByTeamID)
+	teamJoinRequestRoute.GET("/studentid/:id", teamJoinRequestHandler.GetJoinRequestByStudentID)
 	teamJoinRequestRoute.POST("", teamJoinRequestHandler.CreateJoinRequest)
 	teamJoinRequestRoute.PUT("/:id", teamJoinRequestHandler.UpdateJoinRequest)
 	teamJoinRequestRoute.DELETE("/:id", teamJoinRequestHandler.DeleteJoinRequest)
