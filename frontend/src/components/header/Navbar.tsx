@@ -1,12 +1,40 @@
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import Notification  from '../noti/Notification'
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2'
+import { useUser } from '../../hooks/useUser';
+import { useEffect, useState } from 'react';
 
-const navigation = [
+type nav = {
+  name: string,
+  component: string,
+  current: boolean
+}
+
+const noAuthNavigations = [
+  { name: 'Home', component: '/', current: false },
+  { name: 'Register', component: '/register', current: false },
+  { name: 'Login', component: '/login', current: false },
+]
+
+const studentNavigations = [
+  { name: 'Home', component: '/', current: false },
+  { name: 'Create Team', component: '/create-team', current: false },
+  { name: 'Project', component: '/view-project', current: false },
+  { name: 'Team', component: '/view-team', current: false },
+  { name: 'My Team and Project', component: '/my-team', current: false },
+  { name: 'Join Request', component: '/join-request', current: false }
+]
+
+const professorNavigations = [
+  { name: 'Home', component: '/', current: false },
+  { name: 'Project', component: '/view-project', current: false },
+]
+
+const navigations = [
   { name: 'Home', component: '/', current: false },
   { name: 'Register', component: '/register', current: false },
   { name: 'Login', component: '/login', current: false },
@@ -25,6 +53,21 @@ function classNames(...classes: string[]) {
 export default function Example() {
   const navigate = useNavigate();
 
+  const user = useUser();
+  const [navigation, setNavigation] = useState<nav[]>(noAuthNavigations);
+
+  const location = useLocation();
+
+  useEffect(() => {
+    if(user.role === "Student"){
+      setNavigation(studentNavigations)
+    }else if(user.role === "Professor"){
+      setNavigation(professorNavigations)
+    } else {
+      setNavigation(noAuthNavigations)
+    }
+  },[location])
+
   const profile = () => {
     navigate("/profile");
   }
@@ -42,6 +85,7 @@ export default function Example() {
       title: 'Logout Success',
       text: 'You have successfully logged out',
     })
+    //setNavigation(noAuthNavigations)
     navigate("/login");
   }
 

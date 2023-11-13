@@ -35,6 +35,7 @@ const Login = () => {
         text: 'login success',
       })
       navigate("/")
+      //navigate(0)
     }
 
     return (
