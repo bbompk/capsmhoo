@@ -60,10 +60,11 @@ const TeamPage = () => {
     const student_id = studentRes.data.id;
 
     const teamJoinRes = await getAllTeamJoinRequestByStudentId(student_id)
-    if (!teamJoinRes.data) {
+
+    if (teamJoinRes.code !== '200' ) {
       throw new Error("Cannot retrieve Team Join Request DB data.");
     }
-    if(teamJoinRes.data.length !== 0) {
+    if(teamJoinRes.data !== null) {
       Swal.fire({
         icon: "error",
         title: "You already requested to join another team.",
