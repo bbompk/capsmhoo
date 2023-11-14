@@ -4,10 +4,13 @@ import {
   TeamJoinRequestInterface,
 } from "../../interfaces/TeamInterface";
 import { useNavigate, useParams } from "react-router-dom";
-import { createTeamJoinRequest, getAllTeamJoinRequestByStudentId } from "../../service/TeamJoinRequestService";
+import {
+  createTeamJoinRequest,
+  getAllTeamJoinRequestByStudentId,
+} from "../../service/TeamJoinRequestService";
 import { useUser } from "../../hooks/useUser";
 import Swal from "sweetalert2";
-import 'bootstrap/dist/css/bootstrap.css';
+import "bootstrap/dist/css/bootstrap.css";
 import { getStudentByUserId } from "../../service/StudentService";
 import { getTeamById } from "../../service/TeamService";
 
@@ -33,10 +36,9 @@ const TeamPage = () => {
         return;
       }
       setData(teamDetailRes.data);
-    }
-    catch (err) {
+    } catch (err) {
       console.log(err);
-      Swal.fire("Error", "Cannot get this team", 'error')
+      Swal.fire("Error", "Cannot get this team", "error");
     }
   };
 
@@ -69,9 +71,9 @@ const TeamPage = () => {
     }
     const student_id = studentRes.data.id;
 
-    const teamJoinRes = await getAllTeamJoinRequestByStudentId(student_id)
+    const teamJoinRes = await getAllTeamJoinRequestByStudentId(student_id);
 
-    if (teamJoinRes.code !== '200') {
+    if (teamJoinRes.code !== "200") {
       throw new Error("Cannot retrieve Team Join Request DB data.");
     }
     if (teamJoinRes.data !== null) {
@@ -87,11 +89,10 @@ const TeamPage = () => {
       const teamJoinRequest: TeamJoinRequestInterface = {
         id: "",
         team_id: data.id,
-        student_id: student_id
+        student_id: student_id,
       };
       await createTeamJoinRequest(teamJoinRequest);
-    }
-    catch (error) {
+    } catch (error) {
       console.error(error);
       Swal.fire({
         icon: "error",

@@ -23,10 +23,9 @@ const ProjectPage = () => {
         return;
       }
       setData(projDetailRes.data);
-    }
-    catch (err) {
+    } catch (err) {
       console.log(err);
-      Swal.fire("Error", "Cannot get this project", 'error')
+      Swal.fire("Error", "Cannot get this project", "error");
     }
   };
 
