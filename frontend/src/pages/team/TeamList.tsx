@@ -38,7 +38,7 @@ const TeamList = () => {
                     id={team.id}
                     title={team.name}
                     body={team.profile}
-                    next_path="team-detail"
+                    next_path="/team-detail"
                   />
                 ))
               : null}
