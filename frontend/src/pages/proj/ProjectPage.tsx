@@ -1,15 +1,33 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ProjectInterface } from "../../interfaces/ProjectInterface";
+import Swal from "sweetalert2";
+import { getProjectById } from "../../service/ProjectService";
 
 const ProjectPage = () => {
   const { id } = useParams();
   const [data, setData] = useState<ProjectInterface>();
+  const navigate = useNavigate();
   const fetchData = async () => {
-    await fetch("http://localhost:8082/project/" + id).then(async (res) => {
-      const response = await res.json();
-      setData(response.data);
-    });
+    if (!id) {
+      Swal.fire("Cannot retrive this project data");
+      navigate("/view-project");
+      return;
+    }
+
+    try {
+      const projDetailRes = await getProjectById(id);
+      if (!projDetailRes.data) {
+        Swal.fire("Failed to load project data");
+        navigate("/view-project");
+        return;
+      }
+      setData(projDetailRes.data);
+    }
+    catch (err) {
+      console.log(err);
+      Swal.fire("Error", "Cannot get this project", 'error')
+    }
   };
 
   useEffect(() => {

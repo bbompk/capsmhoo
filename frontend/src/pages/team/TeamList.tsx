@@ -1,15 +1,24 @@
 import { useState, useEffect } from "react";
 import { TeamInterface } from "../../interfaces/TeamInterface";
 import Card from "../../components/card/Card";
+import { getAllTeams } from "../../service/TeamService";
+import Swal from "sweetalert2";
 
 const TeamList = () => {
   const [data, setData] = useState<TeamInterface[]>();
   const fetchData = async () => {
-    await fetch("http://localhost:8082/team")
-      .then(async (res) => {
-        const response = await res.json();
-        setData(response.data)
-      })
+    try {
+      const teamRes = await getAllTeams()
+      if (!teamRes.data) {
+        Swal.fire("Error", 'Cannot retrieve team data.')
+        return;
+      }
+      setData(teamRes.data)
+    }
+    catch (err) {
+      console.log(err);
+      Swal.fire("Error", "Cannot get teams", 'error')
+    }
   };
 
   useEffect(() => {
