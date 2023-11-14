@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import "./Card.css";
 
 interface Props {
@@ -8,6 +9,13 @@ interface Props {
 }
 
 const Card = ({ id, title, body, next_path }: Props) => {
+  const navigate = useNavigate();
+  const handleClick = (id: string) => {
+    const string_path = next_path + "/" + id;
+    navigate(string_path);
+    return;
+  }
+
   return (
     <div className="card-container">
       <div className="card-content">
@@ -18,13 +26,10 @@ const Card = ({ id, title, body, next_path }: Props) => {
           <div className="card-text">
             <p>{body}</p>
           </div>
-          <div className="card-botton">
-            <a
-              href={"http://localhost:5173/" + next_path + "/" + id}
-              className="btn btn-primary"
-            >
+          <div className="card-botton btn btn-primary">
+            <button type="button" onClick={() => handleClick(id)}>
               View More
-            </a>
+            </button>
           </div>
         </div>
       </div>
