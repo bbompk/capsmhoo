@@ -9,7 +9,7 @@ const TeamList = () => {
   const fetchData = async () => {
     try {
       const teamRes = await getAllTeams();
-      if (teamRes.code !== '200') {
+      if (teamRes.code !== "200") {
         Swal.fire("Error", "Cannot retrieve team data.");
         return;
       }
